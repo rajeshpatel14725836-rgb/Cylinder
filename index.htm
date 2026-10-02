@@ -1,0 +1,181 @@
+import sqlite3
+from datetime import datetime
+
+class GasAgencySystem:
+    def __init__(self, db_name="gas_agency.db"):
+        self.conn = sqlite3.connect(db_name)
+        self.create_tables()
+
+    def create_tables(self):
+        cursor = self.conn.cursor()
+        
+        # 1. Consumers Table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS consumers (
+                consumer_no TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                phone TEXT,
+                pending_empty_cylinders INTEGER DEFAULT 0,
+                due_balance REAL DEFAULT 0.0
+            )
+        ''')
+        
+        # 2. Transactions Table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS daily_transactions (
+                txn_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                consumer_no TEXT,
+                date_time TEXT,
+                empty_received INTEGER,
+                filled_issued INTEGER,
+                amount_paid REAL,
+                payment_mode TEXT,
+                upi_txn_ref TEXT,
+                FOREIGN KEY(consumer_no) REFERENCES consumers(consumer_no)
+            )
+        ''')
+        self.conn.commit()
+
+    def add_consumer(self, consumer_no, name, phone):
+        """Naye Consumer ko register karne ke liye"""
+        cursor = self.conn.cursor()
+        cursor.execute(
+            "INSERT OR IGNORE INTO consumers (consumer_no, name, phone) VALUES (?, ?, ?)",
+            (consumer_no, name, phone)
+        )
+        self.conn.commit()
+
+    def record_refill(self, consumer_no, empty_qty, filled_qty, rate, amount_paid, payment_mode, upi_ref=""):
+        """Gas Refill aur Payment Entry Record karna"""
+        cursor = self.conn.cursor()
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        total_bill = filled_qty * rate
+        
+        # Transaction record karo
+        cursor.execute('''
+            INSERT INTO daily_transactions 
+            (consumer_no, date_time, empty_received, filled_issued, amount_paid, payment_mode, upi_txn_ref)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (consumer_no, now, empty_qty, filled_qty, amount_paid, payment_mode.upper(), upi_ref))
+        
+        # Consumer ka Ledger Update karo
+        cylinder_diff = filled_qty - empty_qty  # Agar cylinder kam diye hain toh pending barhega
+        balance_diff = total_bill - amount_paid  # Agar payment kam diya toh due barhega
+        
+        cursor.execute('''
+            UPDATE consumers 
+            SET pending_empty_cylinders = pending_empty_cylinders + ?,
+                due_balance = due_balance + ?
+            WHERE consumer_no = ?
+        ''', (cylinder_diff, balance_diff, consumer_no))
+        
+        self.conn.commit()
+        print(f"✅ Refill Recorded for Consumer: {consumer_no} | Bill: ₹{total_bill} | Paid: ₹{amount_paid} ({payment_mode})")
+
+    def get_consumer_ledger(self, consumer_no):
+        """Single Consumer ki Ledger History Dekhna"""
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT * FROM consumers WHERE consumer_no = ?", (consumer_no,))
+        consumer = cursor.fetchone()
+        
+        if not consumer:
+            print("❌ Consumer nahi mila!")
+            return
+            
+        print(f"\n--- 📋 LEDGER REPORT FOR {consumer[0]} ({consumer[1]}) ---")
+        print(f"Phone: {consumer[2]}")
+        print(f"Pending Empty Cylinders: {consumer[3]}")
+        print(f"Due Amount Balance: ₹{consumer[4]}")
+        
+        cursor.execute("SELECT txn_id, date_time, empty_received, filled_issued, amount_paid, payment_mode FROM daily_transactions WHERE consumer_no = ?", (consumer_no,))
+        txns = cursor.fetchall()
+        print("\nTxn History:")
+        print("ID | Date & Time | Empty In | Filled Out | Paid Amount | Mode")
+        print("-" * 60)
+        for t in txns:
+            print(f"{t[0]} | {t[1]} | {t[2]} | {t[3]} | ₹{t[4]} | {t[5]}")
+
+    def evening_reconciliation(self, target_date, physical_cash_counted, upi_bank_statement):
+        """Evening Tally Process: System totals vs Actual Cash & UPI"""
+        cursor = self.conn.cursor()
+        
+        cursor.execute('''
+            SELECT 
+                SUM(CASE WHEN payment_mode = 'CASH' THEN amount_paid ELSE 0 END) as sys_cash,
+                SUM(CASE WHEN payment_mode = 'UPI' THEN amount_paid ELSE 0 END) as sys_upi,
+                SUM(empty_received) as total_empty_in,
+                SUM(filled_issued) as total_filled_out,
+                COUNT(txn_id) as total_customers
+            FROM daily_transactions
+            WHERE date(date_time) = date(?)
+        ''', (target_date,))
+        
+        res = cursor.fetchone()
+        sys_cash = res[0] or 0.0
+        sys_upi = res[1] or 0.0
+        total_empty = res[2] or 0
+        total_filled = res[3] or 0
+        total_cust = res[4] or 0
+        
+        cash_diff = physical_cash_counted - sys_cash
+        upi_diff = upi_bank_statement - sys_upi
+        
+        print(f"\n==========================================")
+        print(f"📊 EVENING TALLY REPORT ({target_date})")
+        print(f"==========================================")
+        print(f"Total Refill Transactions: {total_cust}")
+        print(f"Empty Cylinders Collected: {total_empty}")
+        print(f"Filled Cylinders Issued   : {total_filled}")
+        print(f"------------------------------------------")
+        print(f"💵 CASH MATCHING:")
+        print(f"   - System Cash Expected : ₹{sys_cash:.2f}")
+        print(f"   - Physical Cash Counted : ₹{physical_cash_counted:.2f}")
+        print(f"   - Cash Difference      : ₹{cash_diff:.2f} {'✅ (MATCHED)' if cash_diff == 0 else '⚠️ (MISMATCH)'}")
+        print(f"------------------------------------------")
+        print(f"📱 UPI MATCHING:")
+        print(f"   - System UPI Expected  : ₹{sys_upi:.2f}")
+        print(f"   - Bank Statement UPI   : ₹{upi_bank_statement:.2f}")
+        print(f"   - UPI Difference       : ₹{upi_diff:.2f} {'✅ (MATCHED)' if upi_diff == 0 else '⚠️ (MISMATCH)'}")
+        print(f"==========================================")
+
+
+# --- EXAMPLE RUN / TESTING ---
+if __name__ == "__main__":
+    app = GasAgencySystem()
+    
+    # 1. Consumer Add Karein
+    app.add_consumer("CONS1001", "Ramesh Kumar", "9876543210")
+    app.add_consumer("CONS1002", "Suresh Sharma", "9123456789")
+    
+    today = datetime.now().strftime("%Y-%m-%d")
+    
+    # 2. Din bhar ki Refill Entries
+    app.record_refill(
+        consumer_no="CONS1001", 
+        empty_qty=1, 
+        filled_qty=1, 
+        rate=850.0, 
+        amount_paid=850.0, 
+        payment_mode="CASH"
+    )
+    
+    app.record_refill(
+        consumer_no="CONS1002", 
+        empty_qty=1, 
+        filled_qty=1, 
+        rate=850.0, 
+        amount_paid=850.0, 
+        payment_mode="UPI", 
+        upi_ref="UPI12345678"
+    )
+    
+    # 3. Consumer Ledger Dekhna
+    app.get_consumer_ledger("CONS1001")
+    
+    # 4. Shaam ko Tally Karna (Evening Reconciliation)
+    # Maan lijiye counter cash drawer mein ₹850 mile aur bank mein UPI ₹850 aaya
+    app.evening_reconciliation(
+        target_date=today, 
+        physical_cash_counted=850.0, 
+        upi_bank_statement=850.0
+    )
