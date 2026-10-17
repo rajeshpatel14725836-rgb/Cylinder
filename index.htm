@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>पर्सनल लेजर एवं बैंक मैनेजर</title>
+    <title>Personal Ledger & Bank Tracker</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -49,6 +49,7 @@
         .txt-out { color: var(--out-color); font-weight: bold; }
         
         .add-box { background: #eef6fb; border: 1px dashed var(--accent); padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .empty-msg { font-size: 14px; color: #888; text-align: center; padding: 10px 0; }
     </style>
 </head>
 <body>
@@ -64,17 +65,17 @@
     <div id="accountsView" class="view-panel active">
         <!-- Add New Bank Form -->
         <div class="add-box">
-            <h4 style="margin-bottom:10px;">नया बैंक खाता जोड़ें</h4>
+            <h4 style="margin-bottom:10px;">Add New Bank Account</h4>
             <div class="form-group">
-                <input type="text" id="newBankName" placeholder="बैंक का नाम (उदा. Bank of Baroda)">
+                <input type="text" id="newBankName" placeholder="Bank Name (e.g., Bank of Baroda)">
             </div>
             <div class="form-group">
-                <input type="number" id="newBankBalance" placeholder="प्रारंभिक बैलेंस (Opening Balance)">
+                <input type="number" id="newBankBalance" placeholder="Opening Balance (₹)">
             </div>
-            <button class="btn-primary" onclick="addBank()">बैंक खाता जोड़ें</button>
+            <button class="btn-primary" onclick="addBank()">Add Bank Account</button>
         </div>
 
-        <h3>बैंक खातों की सूची</h3>
+        <h3>Bank Accounts List</h3>
         <div id="banksList"></div>
     </div>
 
@@ -82,33 +83,28 @@
     <div id="personsView" class="view-panel">
         <!-- Add New Person Form -->
         <div class="add-box">
-            <h4 style="margin-bottom:10px;">नया Person / Head जोड़ें</h4>
+            <h4 style="margin-bottom:10px;">Add New Person / Head</h4>
             <div class="form-group">
-                <input type="text" id="newPersonName" placeholder="व्यक्ति या हेड का नाम (उदा. Ashutosh)">
+                <input type="text" id="newPersonName" placeholder="Person / Head Name (e.g., Ashutosh)">
             </div>
-            <button class="btn-primary" onclick="addPerson()">व्यक्ति जोड़ें</button>
+            <button class="btn-primary" onclick="addPerson()">Add Person</button>
         </div>
 
-        <h3>व्यक्तियों / हेड्स की सूची</h3>
+        <h3>Persons / Heads List</h3>
         <div id="personsList"></div>
     </div>
 </div>
 
 <script>
-    // State Management (LocalStorage Based)
-    let state = JSON.parse(localStorage.getItem('ledgerApp')) || {
-        banks: [
-            { id: 'b1', name: 'Bank of Baroda', balance: 10000 },
-            { id: 'b2', name: 'Bank 2', balance: 5000 }
-        ],
-        persons: [
-            { id: 'p1', name: 'Ashutosh' }
-        ],
+    // State Management (LocalStorage Based) - Default starts empty
+    let state = JSON.parse(localStorage.getItem('ledgerAppClean')) || {
+        banks: [],
+        persons: [],
         transactions: []
     };
 
     function saveData() {
-        localStorage.setItem('ledgerApp', JSON.stringify(state));
+        localStorage.setItem('ledgerAppClean', JSON.stringify(state));
         render();
     }
 
@@ -129,7 +125,7 @@
     function addBank() {
         const name = document.getElementById('newBankName').value.trim();
         const balance = parseFloat(document.getElementById('newBankBalance').value) || 0;
-        if(!name) return alert('कृपया बैंक का नाम भरें');
+        if(!name) return alert('Please enter Bank Name');
         
         state.banks.push({ id: 'b_' + Date.now(), name, balance });
         document.getElementById('newBankName').value = '';
@@ -140,7 +136,7 @@
     // Add New Person
     function addPerson() {
         const name = document.getElementById('newPersonName').value.trim();
-        if(!name) return alert('कृपया व्यक्ति का नाम भरें');
+        if(!name) return alert('Please enter Person Name');
         
         state.persons.push({ id: 'p_' + Date.now(), name });
         document.getElementById('newPersonName').value = '';
@@ -150,18 +146,18 @@
     // Record Transaction
     function submitTransaction(bankId, personId, type, amountId) {
         const amount = parseFloat(document.getElementById(amountId).value);
-        if(!amount || amount <= 0) return alert('कृपया सही राशि दर्ज करें');
+        if(!amount || amount <= 0) return alert('Please enter a valid amount');
 
         const bank = state.banks.find(b => b.id === bankId);
         const person = state.persons.find(p => p.id === personId);
 
-        if(!bank || !person) return alert('कृपया बैंक और व्यक्ति दोनों सेलेक्ट करें');
+        if(!bank || !person) return alert('Please select both Bank and Person');
 
         // Update Bank Balance
         if(type === 'IN') {
-            bank.balance += amount; // पैसे आए तो बैंक बैलेंस बढ़ा
+            bank.balance += amount; // Money came in
         } else {
-            bank.balance -= amount; // पैसे गए तो बैंक बैलेंस घटा
+            bank.balance -= amount; // Money went out
         }
 
         // Add Transaction Record
@@ -173,7 +169,7 @@
             personName: person.name,
             type,
             amount,
-            date: new Date().toLocaleDateString('hi-IN')
+            date: new Date().toLocaleDateString('en-IN')
         });
 
         saveData();
@@ -185,78 +181,92 @@
         const banksList = document.getElementById('banksList');
         banksList.innerHTML = '';
 
-        state.banks.forEach(bank => {
-            const personOptions = state.persons.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-            const bankTrans = state.transactions.filter(t => t.bankId === bank.id);
+        if (state.banks.length === 0) {
+            banksList.innerHTML = '<p class="empty-msg">No bank accounts added yet. Add one above!</p>';
+        } else {
+            state.banks.forEach(bank => {
+                const personOptions = state.persons.length > 0 
+                    ? state.persons.map(p => `<option value="${p.id}">${p.name}</option>`).join('')
+                    : '<option value="">No Persons Added</option>';
+                
+                const bankTrans = state.transactions.filter(t => t.bankId === bank.id);
 
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="card-header">
-                    <span class="card-title">🏦 ${bank.name}</span>
-                    <span class="card-balance">बैलेंस: ₹${bank.balance}</span>
-                </div>
-                <div class="form-group">
-                    <label>किस व्यक्ति/हेड से लेन-देन हुआ?</label>
-                    <select id="person_select_${bank.id}">
-                        <option value="">-- व्यक्ति चुनें --</option>
-                        ${personOptions}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <input type="number" id="amount_bank_${bank.id}" placeholder="राशि (₹)">
-                </div>
-                <div class="btn-group">
-                    <button class="btn-in" onclick="handleBankTrans('${bank.id}', 'IN')">+ IN (रुपये आए)</button>
-                    <button class="btn-out" onclick="handleBankTrans('${bank.id}', 'OUT')">- OUT (रुपये गए)</button>
-                </div>
-                ${renderHistoryTable(bankTrans, 'personName')}
-            `;
-            banksList.appendChild(card);
-        });
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="card-title">🏦 ${bank.name}</span>
+                        <span class="card-balance">Balance: ₹${bank.balance}</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Select Person/Head:</label>
+                        <select id="person_select_${bank.id}">
+                            <option value="">-- Select Person --</option>
+                            ${personOptions}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="amount_bank_${bank.id}" placeholder="Amount (₹)">
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn-in" onclick="handleBankTrans('${bank.id}', 'IN')">+ IN (Received)</button>
+                        <button class="btn-out" onclick="handleBankTrans('${bank.id}', 'OUT')">- OUT (Paid)</button>
+                    </div>
+                    ${renderHistoryTable(bankTrans, 'personName')}
+                `;
+                banksList.appendChild(card);
+            });
+        }
 
         // --- 2. Render Persons View ---
         const personsList = document.getElementById('personsList');
         personsList.innerHTML = '';
 
-        state.persons.forEach(person => {
-            const bankOptions = state.banks.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
-            const personTrans = state.transactions.filter(t => t.personId === person.id);
+        if (state.persons.length === 0) {
+            personsList.innerHTML = '<p class="empty-msg">No persons added yet. Add one above!</p>';
+        } else {
+            state.persons.forEach(person => {
+                const bankOptions = state.banks.length > 0 
+                    ? state.banks.map(b => `<option value="${b.id}">${b.name}</option>`).join('')
+                    : '<option value="">No Banks Added</option>';
+                
+                const personTrans = state.transactions.filter(t => t.personId === person.id);
 
-            // Calculate Balance with Person
-            let personBalance = 0;
-            personTrans.forEach(t => {
-                if(t.type === 'OUT') personBalance += t.amount; // आपने दिया
-                if(t.type === 'IN') personBalance -= t.amount;  // उनसे लिया
+                // Calculate Net Balance with Person
+                let personBalance = 0;
+                personTrans.forEach(t => {
+                    if(t.type === 'OUT') personBalance += t.amount; // You gave
+                    if(t.type === 'IN') personBalance -= t.amount;  // You received
+                });
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="card-title">👤 ${person.name}</span>
+                        <span class="card-balance" style="color: ${personBalance >= 0 ? 'var(--in-color)' : 'var(--out-color)'}">
+                            ${personBalance >= 0 ? 'To Get: ₹' + personBalance : 'To Pay: ₹' + Math.abs(personBalance)}
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label>Select Bank Account:</label>
+                        <select id="bank_select_${person.id}">
+                            <option value="">-- Select Bank --</option>
+                            ${bankOptions}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="amount_person_${person.id}" placeholder="Amount (₹)">
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn-in" onclick="handlePersonTrans('${person.id}', 'IN')">+ IN (Received)</button>
+                        <button class="btn-out" onclick="handlePersonTrans('${person.id}', 'OUT')">- OUT (Paid)</button>
+                    </div>
+                    ${renderHistoryTable(personTrans, 'bankName')}
+                `;
+                personsList.appendChild(card);
             });
-
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="card-header">
-                    <span class="card-title">👤 ${person.name}</span>
-                    <span class="card-balance" style="color: ${personBalance >= 0 ? 'var(--in-color)' : 'var(--out-color)'}">
-                        ${personBalance >= 0 ? 'लैन (देना बाकी): ₹' + personBalance : 'देन (लेना बाकी): ₹' + Math.abs(personBalance)}
-                    </span>
-                </div>
-                <div class="form-group">
-                    <label>किस बैंक खाते का उपयोग किया?</label>
-                    <select id="bank_select_${person.id}">
-                        <option value="">-- बैंक खाता चुनें --</option>
-                        ${bankOptions}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <input type="number" id="amount_person_${person.id}" placeholder="राशि (₹)">
-                </div>
-                <div class="btn-group">
-                    <button class="btn-in" onclick="handlePersonTrans('${person.id}', 'IN')">+ IN (पैसे प्राप्त हुए)</button>
-                    <button class="btn-out" onclick="handlePersonTrans('${person.id}', 'OUT')">- OUT (पैसे दिए)</button>
-                </div>
-                ${renderHistoryTable(personTrans, 'bankName')}
-            `;
-            personsList.appendChild(card);
-        });
+        }
     }
 
     function handleBankTrans(bankId, type) {
@@ -270,7 +280,7 @@
     }
 
     function renderHistoryTable(transactions, relatedField) {
-        if(transactions.length === 0) return '<p style="font-size:12px; color:#888; margin-top:10px;">कोई लेन-देन नहीं हुआ है।</p>';
+        if(transactions.length === 0) return '<p style="font-size:12px; color:#888; margin-top:10px;">No transactions recorded.</p>';
         
         let rows = transactions.map(t => `
             <tr>
@@ -284,7 +294,7 @@
         return `
             <table>
                 <thead>
-                    <tr><th>विवरण</th><th>प्रकार</th><th>राशि</th><th>तारीख</th></tr>
+                    <tr><th>Details</th><th>Type</th><th>Amount</th><th>Date</th></tr>
                 </thead>
                 <tbody>${rows}</tbody>
             </table>
