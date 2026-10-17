@@ -205,14 +205,14 @@
 </div>
 
 <script>
-    let state = JSON.parse(localStorage.getItem('ledgerAppV4')) || {
+    let state = JSON.parse(localStorage.getItem('ledgerAppV5')) || {
         banks: [],
         persons: [],
         transactions: []
     };
 
     function saveData() {
-        localStorage.setItem('ledgerAppV4', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV5', JSON.stringify(state));
         render();
     }
 
@@ -292,6 +292,40 @@
         saveData();
     }
 
+    // Dropdown Change Handler to detect "+ Create New" selection
+    function handlePersonDropdown(bankId) {
+        const selectElem = document.getElementById(`person_select_${bankId}`);
+        if (selectElem.value === 'CREATE_NEW') {
+            const newName = prompt("Enter new Person / Head Name:");
+            if (newName && newName.trim()) {
+                const newPersonId = 'p_' + Date.now();
+                state.persons.push({ id: newPersonId, name: newName.trim() });
+                saveData();
+                // Automatically select the newly created person
+                document.getElementById(`person_select_${bankId}`).value = newPersonId;
+            } else {
+                selectElem.value = ""; // Reset if cancelled
+            }
+        }
+    }
+
+    function handleBankDropdown(personId) {
+        const selectElem = document.getElementById(`bank_select_${personId}`);
+        if (selectElem.value === 'CREATE_NEW') {
+            const newName = prompt("Enter new Bank Account Name:");
+            if (newName && newName.trim()) {
+                const newBankBal = prompt("Enter Opening Balance (₹):", "0");
+                const newBankId = 'b_' + Date.now();
+                state.banks.push({ id: newBankId, name: newName.trim(), balance: parseFloat(newBankBal) || 0 });
+                saveData();
+                // Automatically select the newly created bank
+                document.getElementById(`bank_select_${personId}`).value = newBankId;
+            } else {
+                selectElem.value = ""; // Reset if cancelled
+            }
+        }
+    }
+
     function submitTransaction(bankId, personId, type, amountId, descId) {
         const amount = parseFloat(document.getElementById(amountId).value);
         const description = document.getElementById(descId).value.trim() || 'No description';
@@ -351,9 +385,8 @@
             banksList.innerHTML = '<p class="empty-msg">No bank accounts added yet.</p>';
         } else {
             state.banks.forEach(bank => {
-                const personOptions = state.persons.length > 0 
-                    ? state.persons.map(p => `<option value="${p.id}">${p.name}</option>`).join('')
-                    : '<option value="">No Persons Added</option>';
+                let personOptions = state.persons.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+                personOptions += `<option value="CREATE_NEW" style="font-weight: bold; color: #4f46e5;">+ Create New Person</option>`;
                 
                 const bankTrans = state.transactions.filter(t => t.bankId === bank.id);
 
@@ -372,7 +405,7 @@
                     </div>
                     <div class="form-group">
                         <label>Select Person/Head</label>
-                        <select id="person_select_${bank.id}">
+                        <select id="person_select_${bank.id}" onchange="handlePersonDropdown('${bank.id}')">
                             <option value="">-- Select Person --</option>
                             ${personOptions}
                         </select>
@@ -403,9 +436,8 @@
             personsList.innerHTML = '<p class="empty-msg">No persons added yet.</p>';
         } else {
             state.persons.forEach(person => {
-                const bankOptions = state.banks.length > 0 
-                    ? state.banks.map(b => `<option value="${b.id}">${b.name}</option>`).join('')
-                    : '<option value="">No Banks Added</option>';
+                let bankOptions = state.banks.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
+                bankOptions += `<option value="CREATE_NEW" style="font-weight: bold; color: #4f46e5;">+ Create New Bank Account</option>`;
                 
                 const personTrans = state.transactions.filter(t => t.personId === person.id);
 
@@ -432,7 +464,7 @@
                     </div>
                     <div class="form-group">
                         <label>Select Bank Account</label>
-                        <select id="bank_select_${person.id}">
+                        <select id="bank_select_${person.id}" onchange="handleBankDropdown('${person.id}')">
                             <option value="">-- Select Bank --</option>
                             ${bankOptions}
                         </select>
