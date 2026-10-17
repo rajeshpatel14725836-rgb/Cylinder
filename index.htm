@@ -1,83 +1,575 @@
-/* =====================================================
-   TRANSACTION MODAL (Updated & Fixed)
-===================================================== */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0759ad">
+<title>My Money Ledger</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f7f8fa;color:#273142}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.header{background:#0759ad;color:white;padding:20px 16px 0}
+.title{font-size:24px;font-weight:bold}
+.subtitle{margin-top:5px;opacity:.9}
+.tabs{display:flex;gap:28px;margin-top:20px}
+.tab{padding:12px 5px;font-weight:bold;cursor:pointer}
+.tab.active{border-bottom:4px solid #ffc107}
+.page{display:none;padding-bottom:100px}
+.page.active{display:block}
+.search-area{display:flex;gap:10px;padding:16px}
+.search{flex:1;min-width:0;border:1px solid #d5d9dd;border-radius:12px;padding:13px;background:white}
+.filter{border:1px solid #0759ad;background:white;color:#0759ad;border-radius:12px;padding:0 15px}
+.person{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #eee;background:white;cursor:pointer}
+.avatar{width:48px;height:48px;flex-shrink:0;border-radius:50%;background:#eaf1fb;display:flex;justify-content:center;align-items:center;font-weight:bold;margin-right:12px;color:#0759ad}
+.person-info{flex:1;min-width:0}
+.person-name{font-size:17px;font-weight:600}
+.time{color:#777;font-size:13px;margin-top:4px}
+.balance{font-size:17px;font-weight:bold}
+.green{color:#087f52}
+.red{color:#b5122e}
+.gray{color:#555}
+.add-btn{position:fixed;right:16px;bottom:88px;border:0;border-radius:30px;background:#b00059;color:white;padding:15px 20px;font-weight:bold;box-shadow:0 5px 15px #0003;z-index:10}
+.bottom{position:fixed;bottom:0;left:0;right:0;height:70px;background:white;border-top:1px solid #ddd;display:flex;justify-content:space-around;align-items:center;z-index:20}
+.bottom button{background:none;border:0;color:#555;font-size:12px}
+.bottom button.active{color:#0759ad;font-weight:bold}
+.bottom-icon{display:block;font-size:22px;margin-bottom:3px}
+.detail-header,.account-detail-header{background:#0759ad;color:white;padding:15px 18px 22px}
+.back{background:none;border:0;color:white;font-size:28px;padding:0}
+.detail-name{font-size:24px;font-weight:bold;margin-top:4px}
+.detail-balance,.account-total{background:white;color:#444;padding:16px;margin-top:16px;border-radius:10px;font-size:16px}
+.detail-balance strong,.account-total strong{float:right;color:#087f52;font-size:21px}
+.detail-actions{display:flex;justify-content:space-around;text-align:center;padding:15px;background:white;border-bottom:1px solid #ddd;color:#0759ad}
+.transactions{background:#f1f3f5;min-height:40vh;padding:10px 10px 90px}
+.transaction{background:white;border-radius:9px;margin:10px 0;padding:13px;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;box-shadow:0 2px 5px #0001}
+.transaction-date{font-size:13px;color:#555}
+.note{color:#666;margin-top:7px;font-size:13px;overflow-wrap:anywhere}
+.account-tag{display:inline-block;background:#e7f4ef;color:#087f52;padding:4px 7px;border-radius:5px;font-size:12px;margin-top:7px}
+.gave,.got{font-weight:bold;font-size:15px;text-align:right;white-space:nowrap}
+.gave{color:#b5122e}
+.got{color:#087f52}
+.transaction-actions{position:fixed;bottom:70px;left:0;right:0;background:white;padding:10px 12px;display:flex;gap:10px;z-index:15;border-top:1px solid #ddd}
+.transaction-actions button{flex:1;padding:14px 4px;border:0;border-radius:7px;color:white;font-weight:bold;font-size:14px}
+.gave-btn{background:#b5122e}
+.got-btn{background:#087f52}
+.account-summary{margin:16px;padding:18px;border-radius:12px;background:#eaf2fb}
+.account-summary h2{margin:7px 0;color:#0759ad}
+.account{margin:10px 16px;padding:15px;border:1px solid #ddd;border-radius:12px;display:flex;align-items:center;background:white;box-shadow:0 2px 7px #0001;gap:10px}
+.account-icon{width:43px;height:43px;flex-shrink:0;border-radius:50%;background:#eef5fc;display:flex;align-items:center;justify-content:center;font-size:20px}
+.account-info{flex:1;min-width:0}
+.account-name{font-size:16px;font-weight:bold}
+.account-type{color:#777;font-size:13px;margin-top:4px}
+.account-balance{font-size:16px;color:#087f52;font-weight:bold}
+.account-menu{border:0;background:none;font-size:22px}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;z-index:100}
+.modal.show{display:flex}
+.modal-box{background:white;width:100%;max-height:92vh;overflow-y:auto;padding:22px 18px;border-radius:20px 20px 0 0}
+.modal-box h2{margin:0 0 18px}
+.field{margin-bottom:14px}
+.field label{display:block;font-weight:bold;margin-bottom:6px;font-size:14px}
+.field input,.field select,.field textarea{width:100%;padding:13px;border:1px solid #ccd3da;border-radius:8px;background:white;color:#222}
+.save,.cancel,.delete-btn{width:100%;padding:14px;border:0;border-radius:8px;font-weight:bold}
+.save{background:#0759ad;color:white}
+.cancel{background:#eee;color:#333;margin-top:8px}
+.delete-btn{background:#b5122e;color:white;margin-top:8px}
+.empty{text-align:center;color:#777;padding:42px 20px;line-height:1.6}
+.account-detail-title{font-size:23px;font-weight:bold;margin-top:5px}
+.more-item{padding:18px;background:white;border-bottom:1px solid #eee;font-size:16px;cursor:pointer}
+.small-btn{border:1px solid #ccd3da;background:white;border-radius:7px;padding:9px;color:#0759ad}
+.section-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0}
+.report-card{background:white;margin:12px 16px;padding:15px;border-radius:10px;border:1px solid #e4e7eb}
+.muted{color:#6b7280;font-size:13px}
+.danger-text{color:#b5122e}
+@media(min-width:700px){
+.modal{align-items:center;justify-content:center}
+.modal-box{max-width:500px;border-radius:16px}
+.page{max-width:760px;margin:0 auto}
+.bottom,.transaction-actions{max-width:760px;left:50%;transform:translateX(-50%)}
+}
+</style>
+</head>
+<body>
+
+<div id="peoplePage" class="page active">
+ <div class="header">
+  <div class="title">My Money ✏️</div>
+  <div class="subtitle">Personal Money Ledger</div>
+  <div class="tabs">
+   <div class="tab active" onclick="showPeoplePage()">PEOPLE</div>
+   <div class="tab" onclick="showAccountsPage()">ACCOUNTS</div>
+  </div>
+ </div>
+ <div class="search-area">
+  <input id="searchInput" class="search" placeholder="🔍 Search person" oninput="renderPeople()">
+  <button class="filter" onclick="showAccountsPage()">🏦</button>
+ </div>
+ <div id="peopleList"></div>
+ <button class="add-btn" onclick="openPersonModal()">＋ ADD PERSON</button>
+</div>
+
+<div id="personDetailPage" class="page">
+ <div class="detail-header">
+  <button class="back" onclick="showPeoplePage()">←</button>
+  <div id="personDetailName" class="detail-name"></div>
+  <div id="personMobileLabel">Person ledger</div>
+  <div class="detail-balance">
+   <span id="personBalanceLabel">You will get</span>
+   <strong id="personDetailBalance">₹0</strong>
+   <div style="clear:both"></div>
+  </div>
+ </div>
+ <div class="detail-actions">
+  <div>📄<br><button class="small-btn" onclick="showPersonReport()">Report</button></div>
+  <div>✏️<br><button class="small-btn" onclick="editPerson(selectedPersonId)">Edit</button></div>
+  <div>🗑️<br><button class="small-btn" onclick="deletePerson(selectedPersonId)">Delete</button></div>
+ </div>
+ <div id="personTransactions" class="transactions"></div>
+ <div class="transaction-actions">
+  <button class="gave-btn" onclick="openTransactionModal('gave')">YOU GAVE ₹</button>
+  <button class="got-btn" onclick="openTransactionModal('got')">PAYMENT RECEIVED ₹</button>
+ </div>
+</div>
+
+<div id="accountsPage" class="page">
+ <div class="header">
+  <div class="title">Bank Accounts</div>
+  <div class="subtitle">Manage your money</div>
+  <div class="tabs">
+   <div class="tab" onclick="showPeoplePage()">PEOPLE</div>
+   <div class="tab active">ACCOUNTS</div>
+  </div>
+ </div>
+ <div class="account-summary">
+  <small>Total money across all accounts and cash</small>
+  <h2 id="totalMoney">₹0</h2>
+ </div>
+ <div class="section-row"><h3>Your accounts</h3></div>
+ <div id="accountsList"></div>
+ <button class="add-btn" onclick="openAccountModal()">＋ ADD ACCOUNT</button>
+</div>
+
+<div id="accountDetailPage" class="page">
+ <div class="account-detail-header">
+  <button class="back" onclick="showAccountsPage()">←</button>
+  <div id="accountDetailName" class="account-detail-title"></div>
+  <div id="accountDetailType"></div>
+  <div class="account-total">Current Balance<strong id="accountDetailBalance">₹0</strong><div style="clear:both"></div></div>
+ </div>
+ <div class="section-row">
+  <h3>Account history</h3>
+  <button class="small-btn" onclick="openAdjustmentModal()">Adjust balance</button>
+ </div>
+ <div id="accountTransactions" class="transactions"></div>
+</div>
+
+<div id="reportPage" class="page">
+ <div class="header">
+  <button class="back" onclick="openPerson(selectedPersonId)">←</button>
+  <div class="title">Person Report</div>
+  <div id="reportPersonName" class="subtitle"></div>
+ </div>
+ <div id="personReportContent"></div>
+</div>
+
+<div id="morePage" class="page">
+ <div class="header"><div class="title">More</div><div class="subtitle">App and data settings</div></div>
+ <div class="more-item" onclick="exportData()">📤 Export backup (JSON)</div>
+ <div class="more-item" onclick="document.getElementById('importFile').click()">📥 Restore backup (JSON)</div>
+ <input id="importFile" type="file" accept="application/json,.json" hidden onchange="importData(event)">
+ <div class="more-item" onclick="clearAllData()">🗑️ Clear all data</div>
+ <div class="more-item">💾 Data is stored on this device</div>
+</div>
+
+<div class="bottom">
+ <button id="navPeople" class="active" onclick="showPeoplePage()"><span class="bottom-icon">👥</span>People</button>
+ <button id="navAccounts" onclick="showAccountsPage()"><span class="bottom-icon">🏦</span>Accounts</button>
+ <button id="navMore" onclick="showMorePage()"><span class="bottom-icon">⋯</span>More</button>
+</div>
+
+<div id="modal" class="modal" onclick="closeModalOutside(event)">
+ <div class="modal-box" onclick="event.stopPropagation()">
+  <h2 id="modalTitle"></h2>
+  <div id="modalContent"></div>
+ </div>
+</div>
+
+<script>
+const STORAGE_KEY="myMoneyLedgerV4";
+
+function generateId(){
+ return Date.now().toString()+Math.random().toString(36).slice(2);
+}
+
+function defaultDatabase(){
+ return {
+  people:[],
+  accounts:[
+   {id:generateId(),name:"Bank of Baroda",type:"Savings Account",balance:0},
+   {id:generateId(),name:"SBI",type:"Savings Account",balance:0},
+   {id:generateId(),name:"Cash",type:"Cash",balance:0}
+  ],
+  transactions:[],
+  adjustments:[]
+ };
+}
+
+let database;
+try{
+ database=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");
+}catch(e){
+ database=null;
+}
+if(!database||!Array.isArray(database.people)||!Array.isArray(database.accounts)||!Array.isArray(database.transactions)){
+ database=defaultDatabase();
+}
+if(!Array.isArray(database.adjustments))database.adjustments=[];
+let selectedPersonId=null;
+let selectedAccountId=null;
+let transactionType=null;
+
+function saveDatabase(){
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(database));
+}
+function money(value){
+ return "₹"+Number(value||0).toLocaleString("en-IN",{maximumFractionDigits:2});
+}
+function escapeHtml(text){
+ return String(text??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+function today(){
+ const d=new Date();
+ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function formatDate(date){
+ if(!date)return "";
+ const d=new Date(date+"T00:00:00");
+ return isNaN(d)?"":d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+}
+function hideAllPages(){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+}
+function setNav(id){
+ document.querySelectorAll(".bottom button").forEach(b=>b.classList.remove("active"));
+ document.getElementById(id)?.classList.add("active");
+}
+function showPeoplePage(){
+ hideAllPages();
+ document.getElementById("peoplePage").classList.add("active");
+ setNav("navPeople");
+ renderPeople();
+}
+function showAccountsPage(){
+ hideAllPages();
+ document.getElementById("accountsPage").classList.add("active");
+ setNav("navAccounts");
+ renderAccounts();
+}
+function showMorePage(){
+ hideAllPages();
+ document.getElementById("morePage").classList.add("active");
+ setNav("navMore");
+}
+function openModal(){
+ document.getElementById("modal").classList.add("show");
+}
+function closeModal(){
+ document.getElementById("modal").classList.remove("show");
+}
+function closeModalOutside(event){
+ if(event.target.id==="modal")closeModal();
+}
+
+/* PEOPLE */
+
+function openPersonModal(){
+ document.getElementById("modalTitle").textContent="Add Person";
+ document.getElementById("modalContent").innerHTML=`
+  <div class="field"><label>Person Name *</label><input id="personName" placeholder="e.g. Ashutosh"></div>
+  <div class="field"><label>Mobile Number</label><input id="personMobile" type="tel" inputmode="numeric" placeholder="Optional"></div>
+  <button class="save" onclick="savePerson()">SAVE PERSON</button>
+  <button class="cancel" onclick="closeModal()">CANCEL</button>`;
+ openModal();
+}
+function savePerson(){
+ const name=document.getElementById("personName").value.trim();
+ const mobile=document.getElementById("personMobile").value.trim();
+ if(!name)return alert("Please enter person name.");
+ database.people.push({id:generateId(),name,mobile,createdAt:new Date().toISOString()});
+ saveDatabase();closeModal();renderPeople();
+}
+function getPersonBalance(id){
+ return database.transactions.filter(t=>t.personId===id)
+ .reduce((sum,t)=>sum+(t.type==="gave"?Number(t.amount):-Number(t.amount)),0);
+}
+function getInitials(name){
+ return name.trim().split(/\s+/).map(x=>x[0]||"").join("").slice(0,2).toUpperCase();
+}
+function renderPeople(){
+ const search=(document.getElementById("searchInput")?.value||"").toLowerCase();
+ const list=document.getElementById("peopleList");
+ const people=database.people.filter(p=>p.name.toLowerCase().includes(search));
+ if(!people.length){
+  list.innerHTML='<div class="empty">No people found.<br><br>Tap <b>ADD PERSON</b> to start.</div>';
+  return;
+ }
+ list.innerHTML="";
+ people.forEach(p=>{
+  const balance=getPersonBalance(p.id);
+  const row=document.createElement("div");
+  row.className="person";
+  row.onclick=()=>openPerson(p.id);
+  row.innerHTML=`
+   <div class="avatar">${escapeHtml(getInitials(p.name))}</div>
+   <div class="person-info">
+    <div class="person-name">${escapeHtml(p.name)}</div>
+    <div class="time">${escapeHtml(p.mobile||"No mobile")}</div>
+   </div>
+   <div class="balance ${balance>0?"green":balance<0?"red":"gray"}">${money(Math.abs(balance))}<div class="time">${balance>0?"You will get":balance<0?"You owe":"Settled"}</div></div>`;
+  list.appendChild(row);
+ });
+}
+function openPerson(id){
+ selectedPersonId=id;
+ hideAllPages();
+ document.getElementById("personDetailPage").classList.add("active");
+ setNav("navPeople");
+ renderPersonDetail();
+}
+function renderPersonDetail(){
+ const p=database.people.find(x=>x.id===selectedPersonId);
+ if(!p)return showPeoplePage();
+ document.getElementById("personDetailName").textContent=p.name;
+ document.getElementById("personMobileLabel").textContent=p.mobile||"Person ledger";
+ const balance=getPersonBalance(p.id);
+ document.getElementById("personBalanceLabel").textContent=balance>0?"You will get":balance<0?"You owe":"Balance settled";
+ document.getElementById("personDetailBalance").textContent=money(Math.abs(balance));
+ const box=document.getElementById("personTransactions");
+ const ts=database.transactions.filter(t=>t.personId===p.id).sort((a,b)=>(b.date||"").localeCompare(a.date||"")||(b.createdAt||"").localeCompare(a.createdAt||""));
+ if(!ts.length){box.innerHTML='<div class="empty">No transactions yet.<br><br>Tap YOU GAVE or PAYMENT RECEIVED.</div>';return;}
+ box.innerHTML="";
+ ts.forEach(t=>{
+  const a=database.accounts.find(x=>x.id===t.accountId);
+  const div=document.createElement("div");
+  div.className="transaction";
+  div.innerHTML=`
+   <div><div class="transaction-date">${formatDate(t.date)}</div>
+    <span class="account-tag">${escapeHtml(a?.name||"Deleted account")}</span>
+    <div class="note">${escapeHtml(t.note||"")}</div></div>
+   <div class="gave">${t.type==="gave"?money(t.amount):""}</div>
+   <div class="got">${t.type==="got"?money(t.amount):""}</div>`;
+  box.appendChild(div);
+ });
+}
+function editPerson(id){
+ const p=database.people.find(x=>x.id===id);
+ if(!p)return;
+ document.getElementById("modalTitle").textContent="Edit Person";
+ document.getElementById("modalContent").innerHTML=`
+  <div class="field"><label>Person Name *</label><input id="editPersonName" value="${escapeHtml(p.name)}"></div>
+  <div class="field"><label>Mobile Number</label><input id="editPersonMobile" value="${escapeHtml(p.mobile||"")}"></div>
+  <button class="save" onclick="updatePerson('${id}')">UPDATE PERSON</button>
+  <button class="cancel" onclick="closeModal()">CANCEL</button>`;
+ openModal();
+}
+function updatePerson(id){
+ const p=database.people.find(x=>x.id===id);
+ const name=document.getElementById("editPersonName").value.trim();
+ if(!p)return;
+ if(!name)return alert("Please enter a name.");
+ p.name=name;p.mobile=document.getElementById("editPersonMobile").value.trim();
+ saveDatabase();closeModal();renderPersonDetail();renderPeople();
+}
+function deletePerson(id){
+ const p=database.people.find(x=>x.id===id);
+ if(!p)return;
+ if(database.transactions.some(t=>t.personId===id))return alert("This person has transactions. Keep the record to preserve your ledger.");
+ if(!confirm("Delete "+p.name+"?"))return;
+ database.people=database.people.filter(x=>x.id!==id);
+ saveDatabase();showPeoplePage();
+}
+
+/* TRANSACTIONS: THIS FIXES PAYMENT RECEIVED FORM */
 
 function openTransactionModal(type){
-
-    // Check karein ki koi person select hai ya nahi
-    if (!selectedPersonId) {
-        alert("Pehle kisi person ko select karein!");
-        return;
-    }
-
-    transactionType = type;
-
-    document.getElementById("modalTitle").innerText =
-        type === "gave" ? "YOU GAVE ₹" : "YOU GOT ₹";
-
-    // Bank accounts ki list dropdown ke liye
-    const options = database.accounts.map(a => `
-        <option value="${a.id}">
-            ${escapeHtml(a.name)} — Balance: ${money(a.balance)}
-        </option>
-    `).join("");
-
-    // Modal Content jisme Amount input explicitly clear aur visible ho
-    document.getElementById("modalContent").innerHTML = `
-        <div class="field">
-            <label>Amount (₹)</label>
-            <input
-                id="transactionAmount"
-                type="number"
-                min="0.01"
-                step="0.01"
-                inputmode="decimal"
-                placeholder="0"
-                style="font-size: 20px; font-weight: bold; color: #0759ad;"
-                autofocus
-            >
-        </div>
-
-        <div class="field">
-            <label>
-                ${type === "gave" ? "Kaha se rupya diya? (Bank/Cash)" : "Kaha rupya aaya? (Bank/Cash)"}
-            </label>
-            <select id="transactionAccount">
-                ${options}
-            </select>
-        </div>
-
-        <div class="field">
-            <label>Date</label>
-            <input
-                id="transactionDate"
-                type="date"
-                value="${today()}"
-            >
-        </div>
-
-        <div class="field">
-            <label>Note / Description</label>
-            <input
-                id="transactionNote"
-                placeholder="e.g. Ashutosh ko diye / Cylinder payment"
-            >
-        </div>
-
-        <button
-            class="save"
-            onclick="saveTransaction()"
-        >
-            SAVE TRANSACTION
-        </button>
-
-        <button
-            class="cancel"
-            onclick="closeModal()"
-        >
-            CANCEL
-        </button>
-    `;
-
-    openModal();
+ transactionType=type;
+ if(!selectedPersonId||!database.people.some(p=>p.id===selectedPersonId)){
+  alert("Please open a person first.");
+  return;
+ }
+ if(!database.accounts.length){
+  alert("Please add a bank account first.");
+  return;
+ }
+ document.getElementById("modalTitle").textContent=type==="gave"?"You Gave Money":"Payment Received";
+ const options=database.accounts.map(a=>`
+  <option value="${a.id}">${escapeHtml(a.name)} — ${money(a.balance)}</option>`).join("");
+ document.getElementById("modalContent").innerHTML=`
+  <div class="field">
+   <label>Amount (₹) *</label>
+   <input id="transactionAmount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Enter amount" required>
+  </div>
+  <div class="field">
+   <label>${type==="gave"?"Paid from account":"Payment received in account"} *</label>
+   <select id="transactionAccount" required>${options}</select>
+  </div>
+  <div class="field">
+   <label>Date *</label>
+   <input id="transactionDate" type="date" value="${today()}" required>
+  </div>
+  <div class="field">
+   <label>Note (optional)</label>
+   <input id="transactionNote" maxlength="250" placeholder="e.g. Cash, UPI, loan repayment">
+  </div>
+  <button class="save" onclick="saveTransaction()">CONFIRM ${type==="gave"?"PAYMENT":"RECEIVED"}</button>
+  <button class="cancel" onclick="closeModal()">CANCEL</button>`;
+ openModal();
+ setTimeout(()=>document.getElementById("transactionAmount")?.focus(),100);
 }
+function saveTransaction(){
+ const amount=Number(document.getElementById("transactionAmount")?.value);
+ const accountId=document.getElementById("transactionAccount")?.value;
+ const date=document.getElementById("transactionDate")?.value;
+ const note=document.getElementById("transactionNote")?.value.trim()||"";
+ if(!Number.isFinite(amount)||amount<=0)return alert("Enter a valid amount greater than zero.");
+ if(!date)return alert("Please select a date.");
+ const account=database.accounts.find(a=>a.id===accountId);
+ if(!account)return alert("Please select a valid account.");
+ if(transactionType==="gave"&&Number(account.balance)<amount)return alert("Insufficient balance in "+account.name+". Add/adjust the account balance first if needed.");
+ if(transactionType==="gave")account.balance=Number(account.balance)-amount;
+ else account.balance=Number(account.balance)+amount;
+ database.transactions.push({
+  id:generateId(),personId:selectedPersonId,accountId,
+  type:transactionType,amount,date,note,createdAt:new Date().toISOString()
+ });
+ saveDatabase();closeModal();renderPersonDetail();renderPeople();
+}
+
+/* ACCOUNTS */
+
+function openAccountModal(){
+ document.getElementById("modalTitle").textContent="Add Account";
+ document.getElementById("modalContent").innerHTML=`
+  <div class="field"><label>Account / Wallet Name *</label><input id="accountName" placeholder="e.g. Bank of Baroda"></div>
+  <div class="field"><label>Account Type</label>
+   <select id="accountType">
+    <option>Savings Account</option><option>Current Account</option><option>Cash</option><option>UPI Wallet</option><option>Other</option>
+   </select>
+  </div>
+  <div class="field"><label>Opening Balance (₹)</label><input id="accountBalance" type="number" min="0" step="0.01" inputmode="decimal" value="0"></div>
+  <button class="save" onclick="saveAccount()">SAVE ACCOUNT</button>
+  <button class="cancel" onclick="closeModal()">CANCEL</button>`;
+ openModal();
+}
+function saveAccount(){
+ const name=document.getElementById("accountName").value.trim();
+ const type=document.getElementById("accountType").value;
+ const balance=Number(document.getElementById("accountBalance").value||0);
+ if(!name)return alert("Please enter account name.");
+ if(!Number.isFinite(balance)||balance<0)return alert("Opening balance must be zero or more.");
+ database.accounts.push({id:generateId(),name,type,balance});
+ saveDatabase();closeModal();renderAccounts();
+}
+function renderAccounts(){
+ document.getElementById("totalMoney").textContent=money(database.accounts.reduce((s,a)=>s+Number(a.balance||0),0));
+ const list=document.getElementById("accountsList");
+ if(!database.accounts.length){list.innerHTML='<div class="empty">No accounts added. Tap ADD ACCOUNT.</div>';return;}
+ list.innerHTML="";
+ database.accounts.forEach(a=>{
+  const div=document.createElement("div");
+  div.className="account";
+  div.onclick=()=>openAccountDetail(a.id);
+  div.innerHTML=`
+   <div class="account-icon">${a.type==="Cash"?"💵":"🏦"}</div>
+   <div class="account-info"><div class="account-name">${escapeHtml(a.name)}</div><div class="account-type">${escapeHtml(a.type)}</div></div>
+   <div class="account-balance">${money(a.balance)}</div>
+   <button class="account-menu" aria-label="Account menu">⋮</button>`;
+  div.querySelector(".account-menu").onclick=e=>{e.stopPropagation();accountMenu(a.id);};
+  list.appendChild(div);
+ });
+}
+function accountMenu(id){
+ const choice=prompt("Choose an option:\n1 = Edit account\n2 = Delete account\n3 = Cancel");
+ if(choice==="1")editAccount(id);
+ else if(choice==="2")deleteAccount(id);
+}
+function editAccount(id){
+ const a=database.accounts.find(x=>x.id===id);
+ if(!a)return;
+ document.getElementById("modalTitle").textContent="Edit Account";
+ document.getElementById("modalContent").innerHTML=`
+  <div class="field"><label>Account Name *</label><input id="editAccountName" value="${escapeHtml(a.name)}"></div>
+  <div class="field"><label>Account Type</label><input id="editAccountType" value="${escapeHtml(a.type)}"></div>
+  <div class="field"><label>Current Balance (₹)</label><input id="editAccountBalance" type="number" min="0" step="0.01" value="${Number(a.balance)}"></div>
+  <p class="muted">Changing the balance directly is a manual correction. It does not change past transactions.</p>
+  <button class="save" onclick="updateAccount('${id}')">UPDATE ACCOUNT</button>
+  <button class="delete-btn" onclick="closeModal();deleteAccount('${id}')">DELETE ACCOUNT</button>
+  <button class="cancel" onclick="closeModal()">CANCEL</button>`;
+ openModal();
+}
+function updateAccount(id){
+ const a=database.accounts.find(x=>x.id===id);
+ const name=document.getElementById("editAccountName").value.trim();
+ const type=document.getElementById("editAccountType").value.trim();
+ const balance=Number(document.getElementById("editAccountBalance").value);
+ if(!a)return;
+ if(!name)return alert("Account name is required.");
+ if(!type)return alert("Account type is required.");
+ if(!Number.isFinite(balance)||balance<0)return alert("Enter a valid non-negative balance.");
+ a.name=name;a.type=type;a.balance=balance;
+ saveDatabase();closeModal();renderAccounts();
+ if(selectedAccountId===id)renderAccountDetail();
+}
+function deleteAccount(id){
+ const a=database.accounts.find(x=>x.id===id);
+ if(!a)return;
+ if(database.transactions.some(t=>t.accountId===id))return alert("This account has transaction history and cannot be deleted.");
+ if(!confirm("Delete "+a.name+"?"))return;
+ database.accounts=database.accounts.filter(x=>x.id!==id);
+ saveDatabase();renderAccounts();
+}
+function openAccountDetail(id){
+ selectedAccountId=id;hideAllPages();
+ document.getElementById("accountDetailPage").classList.add("active");
+ setNav("navAccounts");renderAccountDetail();
+}
+function renderAccountDetail(){
+ const a=database.accounts.find(x=>x.id===selectedAccountId);
+ if(!a)return showAccountsPage();
+ document.getElementById("accountDetailName").textContent=a.name;
+ document.getElementById("accountDetailType").textContent=a.type;
+ document.getElementById("accountDetailBalance").textContent=money(a.balance);
+ renderAccountTransactions();
+}
+function renderAccountTransactions(){
+ const box=document.getElementById("accountTransactions");
+ const ts=database.transactions.filter(t=>t.accountId===selectedAccountId);
+ const adjustments=(database.adjustments||[]).filter(t=>t.accountId===selectedAccountId);
+ const entries=[
+  ...ts.map(t=>({...t,entryType:"transaction"})),
+  ...adjustments.map(t=>({...t,entryType:"adjustment"}))
+ ].sort((a,b)=>(b.date||"").localeCompare(a.date||"")||(b.createdAt||"").localeCompare(a.createdAt||""));
+ if(!entries.length){box.innerHTML='<div class="empty">No transactions for this account yet.</div>';return;}
+ box.innerHTML="";
+ entries.forEach(t=>{
+  const p=database.people.find(x=>x.id===t.personId);
+  const incoming=t.entryType==="adjustment"?t.direction==="in":t.type==="got";
+  const div=document.createElement("div");div.className="transaction";
+  div.innerHTML=`
+   <div><div class="transaction-date">${formatDate(t.date)}</div>
+    <div class="note">${escapeHtml(t.entryType==="adjustment"?"Balance adjustment":p?.name||"Unknown person")}</div>
+    <div class="note">${escapeHtml(t.note||"")}</div></div>
+   <div class="${incoming?"got":"gave"}">${incoming?money(t.amount):""}</div>
+   <div class="${incoming?"gave":"got"}">${incoming?"":money(t.amount)}</div>`;
+  box.appendChild(div);
+ });
+}
+function openAdjustmentModal(){
+ const a=database.accounts.find(x=>x.id===selectedAccountId);
+ if(!a)return;
+ document.getElementById("modalTitle").textContent="Adjust Account Balance";
+ document.getElementById("modalContent").innerHTML=`
+  <p class="muted">Record money added to or removed from this account.</p>
+  <div class="field"><label>Adjustment direction</label><select id="adjustDirection"><option value="in">Money added</option><option value="out">Money removed</option></select></div>
+  <div class="field"><label>Amount (₹)</label><input id="adjustAmount
