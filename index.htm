@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Ledger & Bank Tracker</title>
+    <title>Khata - Personal Ledger & Bank Manager</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -21,10 +21,10 @@
         }
 
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding: 20px 10px; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 20px 10px 40px 10px; }
         .container { max-width: 680px; margin: 0 auto; }
 
-        /* Header & Overview */
+        /* Header */
         .app-header {
             background: var(--primary-gradient);
             color: white;
@@ -34,7 +34,7 @@
             box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.3);
             text-align: center;
         }
-        .app-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; }
+        .app-header h1 { font-size: 26px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.5px; }
         .app-header p { font-size: 13px; opacity: 0.85; }
 
         /* Navigation Switcher */
@@ -137,6 +137,19 @@
         .badge-out { background: var(--out-bg); color: var(--out-color); padding: 3px 8px; border-radius: 12px; font-weight: 600; }
 
         .empty-msg { font-size: 13px; color: var(--text-muted); text-align: center; padding: 15px 0; }
+
+        /* Footer Branding */
+        .app-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+        .app-footer span { color: #4f46e5; }
     </style>
 </head>
 <body>
@@ -144,8 +157,8 @@
 <div class="container">
     <!-- Header -->
     <div class="app-header">
-        <h1>Personal Ledger Dashboard</h1>
-        <p>Manage accounts, people & seamless transfers</p>
+        <h1>Khata</h1>
+        <p>Personal Ledger & Bank Accounts Manager</p>
     </div>
 
     <!-- Navigation Switcher -->
@@ -184,17 +197,22 @@
         <h3 style="font-size: 15px; margin-bottom: 12px; color: var(--text-muted);">PERSONS / HEADS</h3>
         <div id="personsList"></div>
     </div>
+
+    <!-- Footer Credit -->
+    <div class="app-footer">
+        Concept by <span>Rajesh</span>
+    </div>
 </div>
 
 <script>
-    let state = JSON.parse(localStorage.getItem('ledgerAppV3')) || {
+    let state = JSON.parse(localStorage.getItem('ledgerAppV4')) || {
         banks: [],
         persons: [],
         transactions: []
     };
 
     function saveData() {
-        localStorage.setItem('ledgerAppV3', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV4', JSON.stringify(state));
         render();
     }
 
@@ -274,8 +292,10 @@
         saveData();
     }
 
-    function submitTransaction(bankId, personId, type, amountId) {
+    function submitTransaction(bankId, personId, type, amountId, descId) {
         const amount = parseFloat(document.getElementById(amountId).value);
+        const description = document.getElementById(descId).value.trim() || 'No description';
+        
         if(!amount || amount <= 0) return alert('Please enter a valid amount');
 
         const bank = state.banks.find(b => b.id === bankId);
@@ -297,6 +317,7 @@
             personName: person.name,
             type,
             amount,
+            description,
             date: new Date().toLocaleDateString('en-IN')
         });
 
@@ -360,6 +381,10 @@
                         <label>Amount</label>
                         <input type="number" id="amount_bank_${bank.id}" placeholder="0.00">
                     </div>
+                    <div class="form-group">
+                        <label>Description / Note</label>
+                        <input type="text" id="desc_bank_${bank.id}" placeholder="e.g., Dinner expenses, rent...">
+                    </div>
                     <div class="btn-group">
                         <button class="btn-in" onclick="handleBankTrans('${bank.id}', 'IN')">+ IN (Received)</button>
                         <button class="btn-out" onclick="handleBankTrans('${bank.id}', 'OUT')">- OUT (Paid)</button>
@@ -416,6 +441,10 @@
                         <label>Amount</label>
                         <input type="number" id="amount_person_${person.id}" placeholder="0.00">
                     </div>
+                    <div class="form-group">
+                        <label>Description / Note</label>
+                        <input type="text" id="desc_person_${person.id}" placeholder="e.g., Given for petrol, loan...">
+                    </div>
                     <div class="btn-group">
                         <button class="btn-in" onclick="handlePersonTrans('${person.id}', 'IN')">+ IN (Received)</button>
                         <button class="btn-out" onclick="handlePersonTrans('${person.id}', 'OUT')">- OUT (Paid)</button>
@@ -429,12 +458,12 @@
 
     function handleBankTrans(bankId, type) {
         const personId = document.getElementById(`person_select_${bankId}`).value;
-        submitTransaction(bankId, personId, type, `amount_bank_${bankId}`);
+        submitTransaction(bankId, personId, type, `amount_bank_${bankId}`, `desc_bank_${bankId}`);
     }
 
     function handlePersonTrans(personId, type) {
         const bankId = document.getElementById(`bank_select_${personId}`).value;
-        submitTransaction(bankId, personId, type, `amount_person_${personId}`);
+        submitTransaction(bankId, personId, type, `amount_person_${personId}`, `desc_person_${personId}`);
     }
 
     function renderHistoryTable(transactions, relatedField) {
@@ -442,7 +471,10 @@
         
         let rows = transactions.map(t => `
             <tr>
-                <td><strong>${t[relatedField]}</strong></td>
+                <td>
+                    <strong>${t[relatedField]}</strong><br>
+                    <span style="font-size: 11px; color: var(--text-muted);">${t.description}</span>
+                </td>
                 <td><span class="${t.type === 'IN' ? 'badge-in' : 'badge-out'}">${t.type}</span></td>
                 <td><strong>₹${t.amount.toLocaleString('en-IN')}</strong></td>
                 <td style="color:var(--text-muted);">${t.date}</td>
@@ -456,7 +488,7 @@
             <div class="table-wrapper">
                 <table>
                     <thead>
-                        <tr><th>Details</th><th>Type</th><th>Amount</th><th>Date</th><th>Action</th></tr>
+                        <tr><th>Details & Note</th><th>Type</th><th>Amount</th><th>Date</th><th>Action</th></tr>
                     </thead>
                     <tbody>${rows}</tbody>
                 </table>
@@ -466,6 +498,6 @@
 
     render();
 </script>
-powered by rajesh 
+
 </body>
 </html>
