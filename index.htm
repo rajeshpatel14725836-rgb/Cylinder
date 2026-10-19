@@ -24,6 +24,55 @@
         body { background-color: var(--bg-color); color: var(--text-main); padding: 20px 10px 40px 10px; }
         .container { max-width: 680px; margin: 0 auto; }
 
+        /* Splash Screen Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .splash-title {
+            font-size: 42px;
+            font-weight: 900;
+            color: #000000;
+            letter-spacing: 2px;
+            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        .splash-tagline {
+            margin-top: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #4f46e5;
+            letter-spacing: 1px;
+            animation: fadeIn 0.8s ease 0.4s forwards;
+            opacity: 0;
+        }
+
+        @keyframes popIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
         /* Header */
         .app-header {
             background: var(--primary-gradient);
@@ -87,16 +136,36 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        .card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
 
         .card-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 14px;
+            align-items: center;
         }
         .card-title { font-size: 17px; font-weight: 700; color: var(--text-main); }
-        .card-balance { font-size: 15px; font-weight: 700; }
+        .card-balance { font-size: 16px; font-weight: 700; }
+
+        .toggle-btn {
+            background: #f1f5f9;
+            color: var(--accent-blue);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .card-body {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border-color);
+        }
+        .card-body.open { display: block; }
 
         /* Form Styling */
         .form-group { margin-bottom: 12px; }
@@ -154,6 +223,12 @@
 </head>
 <body>
 
+<!-- Splash Screen Animation -->
+<div id="splash-screen">
+    <div class="splash-title">KHATA</div>
+    <div class="splash-tagline">Concept by Rajesh</div>
+</div>
+
 <div class="container">
     <!-- Header -->
     <div class="app-header">
@@ -205,14 +280,23 @@
 </div>
 
 <script>
-    let state = JSON.parse(localStorage.getItem('ledgerAppV5')) || {
+    // Hide Splash Screen after 2.2 seconds
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => splash.style.display = 'none', 600);
+        }, 2000);
+    });
+
+    let state = JSON.parse(localStorage.getItem('ledgerAppV6')) || {
         banks: [],
         persons: [],
         transactions: []
     };
 
     function saveData() {
-        localStorage.setItem('ledgerAppV5', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV6', JSON.stringify(state));
         render();
     }
 
@@ -226,6 +310,18 @@
         } else {
             document.querySelectorAll('.tab-btn')[1].classList.add('active');
             document.getElementById('personsView').classList.add('active');
+        }
+    }
+
+    function toggleCardBody(id) {
+        const bodyElem = document.getElementById(id);
+        const btnElem = document.getElementById('btn_' + id);
+        if (bodyElem.classList.contains('open')) {
+            bodyElem.classList.remove('open');
+            btnElem.innerText = '🔽 Open Entry & History';
+        } else {
+            bodyElem.classList.add('open');
+            btnElem.innerText = '🔼 Hide Details';
         }
     }
 
@@ -292,7 +388,6 @@
         saveData();
     }
 
-    // Dropdown Change Handler to detect "+ Create New" selection
     function handlePersonDropdown(bankId) {
         const selectElem = document.getElementById(`person_select_${bankId}`);
         if (selectElem.value === 'CREATE_NEW') {
@@ -301,10 +396,9 @@
                 const newPersonId = 'p_' + Date.now();
                 state.persons.push({ id: newPersonId, name: newName.trim() });
                 saveData();
-                // Automatically select the newly created person
                 document.getElementById(`person_select_${bankId}`).value = newPersonId;
             } else {
-                selectElem.value = ""; // Reset if cancelled
+                selectElem.value = "";
             }
         }
     }
@@ -318,10 +412,9 @@
                 const newBankId = 'b_' + Date.now();
                 state.banks.push({ id: newBankId, name: newName.trim(), balance: parseFloat(newBankBal) || 0 });
                 saveData();
-                // Automatically select the newly created bank
                 document.getElementById(`bank_select_${personId}`).value = newBankId;
             } else {
-                selectElem.value = ""; // Reset if cancelled
+                selectElem.value = "";
             }
         }
     }
@@ -403,26 +496,31 @@
                         </div>
                         <span class="card-balance">₹${bank.balance.toLocaleString('en-IN')}</span>
                     </div>
-                    <div class="form-group">
-                        <label>Select Person/Head</label>
-                        <select id="person_select_${bank.id}" onchange="handlePersonDropdown('${bank.id}')">
-                            <option value="">-- Select Person --</option>
-                            ${personOptions}
-                        </select>
+
+                    <button class="toggle-btn" id="btn_body_bank_${bank.id}" onclick="toggleCardBody('body_bank_${bank.id}')">🔽 Open Entry & History</button>
+
+                    <div class="card-body" id="body_bank_${bank.id}">
+                        <div class="form-group">
+                            <label>Select Person/Head</label>
+                            <select id="person_select_${bank.id}" onchange="handlePersonDropdown('${bank.id}')">
+                                <option value="">-- Select Person --</option>
+                                ${personOptions}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input type="number" id="amount_bank_${bank.id}" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Description / Note</label>
+                            <input type="text" id="desc_bank_${bank.id}" placeholder="e.g., Dinner expenses, rent...">
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn-in" onclick="handleBankTrans('${bank.id}', 'IN')">+ IN (Received)</button>
+                            <button class="btn-out" onclick="handleBankTrans('${bank.id}', 'OUT')">- OUT (Paid)</button>
+                        </div>
+                        ${renderHistoryTable(bankTrans, 'personName')}
                     </div>
-                    <div class="form-group">
-                        <label>Amount</label>
-                        <input type="number" id="amount_bank_${bank.id}" placeholder="0.00">
-                    </div>
-                    <div class="form-group">
-                        <label>Description / Note</label>
-                        <input type="text" id="desc_bank_${bank.id}" placeholder="e.g., Dinner expenses, rent...">
-                    </div>
-                    <div class="btn-group">
-                        <button class="btn-in" onclick="handleBankTrans('${bank.id}', 'IN')">+ IN (Received)</button>
-                        <button class="btn-out" onclick="handleBankTrans('${bank.id}', 'OUT')">- OUT (Paid)</button>
-                    </div>
-                    ${renderHistoryTable(bankTrans, 'personName')}
                 `;
                 banksList.appendChild(card);
             });
@@ -462,26 +560,31 @@
                             ${personBalance >= 0 ? 'To Get: ₹' + personBalance.toLocaleString('en-IN') : 'To Pay: ₹' + Math.abs(personBalance).toLocaleString('en-IN')}
                         </span>
                     </div>
-                    <div class="form-group">
-                        <label>Select Bank Account</label>
-                        <select id="bank_select_${person.id}" onchange="handleBankDropdown('${person.id}')">
-                            <option value="">-- Select Bank --</option>
-                            ${bankOptions}
-                        </select>
+
+                    <button class="toggle-btn" id="btn_body_person_${person.id}" onclick="toggleCardBody('body_person_${person.id}')">🔽 Open Entry & History</button>
+
+                    <div class="card-body" id="body_person_${person.id}">
+                        <div class="form-group">
+                            <label>Select Bank Account</label>
+                            <select id="bank_select_${person.id}" onchange="handleBankDropdown('${person.id}')">
+                                <option value="">-- Select Bank --</option>
+                                ${bankOptions}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input type="number" id="amount_person_${person.id}" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Description / Note</label>
+                            <input type="text" id="desc_person_${person.id}" placeholder="e.g., Given for petrol, loan...">
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn-in" onclick="handlePersonTrans('${person.id}', 'IN')">+ IN (Received)</button>
+                            <button class="btn-out" onclick="handlePersonTrans('${person.id}', 'OUT')">- OUT (Paid)</button>
+                        </div>
+                        ${renderHistoryTable(personTrans, 'bankName')}
                     </div>
-                    <div class="form-group">
-                        <label>Amount</label>
-                        <input type="number" id="amount_person_${person.id}" placeholder="0.00">
-                    </div>
-                    <div class="form-group">
-                        <label>Description / Note</label>
-                        <input type="text" id="desc_person_${person.id}" placeholder="e.g., Given for petrol, loan...">
-                    </div>
-                    <div class="btn-group">
-                        <button class="btn-in" onclick="handlePersonTrans('${person.id}', 'IN')">+ IN (Received)</button>
-                        <button class="btn-out" onclick="handlePersonTrans('${person.id}', 'OUT')">- OUT (Paid)</button>
-                    </div>
-                    ${renderHistoryTable(personTrans, 'bankName')}
                 `;
                 personsList.appendChild(card);
             });
