@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Khata - Personal Ledger & Bank Manager</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --bg-color: #f8fafc;
@@ -66,7 +65,7 @@
             color: var(--text-main);
         }
 
-        /* Clean Khatabook Style Dashboard */
+        /* Summary Dashboard */
         .dashboard-banner {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -158,9 +157,15 @@
         .app-footer { text-align: center; margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--border-color); font-size: 13px; font-weight: 600; color: var(--text-muted); }
         .app-footer span { color: #1e3a8a; }
 
-        .pdf-header-watermark { display: none; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 10px; }
-        .pdf-watermark-text { font-size: 24px; font-weight: 800; color: #1e3a8a; }
-        .pdf-watermark-sub { font-size: 12px; color: #64748b; font-weight: 600; }
+        /* Print Style for Reliable PDF Export */
+        @media print {
+            body * { visibility: hidden; }
+            .print-area, .print-area * { visibility: visible; }
+            .print-area { position: absolute; left: 0; top: 0; width: 100%; color: #000 !important; background: #fff !important; }
+            .filter-wrapper, .btn-sm, .action-btns, .theme-toggle, .nav-tabs, .add-box, .toggle-btn { display: none !important; }
+            .pdf-watermark-header { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 10px; }
+        }
+        .pdf-watermark-header { display: none; }
     </style>
 </head>
 <body>
@@ -243,12 +248,14 @@
     window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
-            splash.style.opacity = '0';
-            setTimeout(() => splash.style.display = 'none', 600);
+            if (splash) {
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.display = 'none', 600);
+            }
         }, 1800);
     });
 
-    let state = JSON.parse(localStorage.getItem('ledgerAppV8')) || {
+    let state = JSON.parse(localStorage.getItem('ledgerAppV9')) || {
         banks: [],
         persons: [],
         transactions: [],
@@ -264,7 +271,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('ledgerAppV8', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV9', JSON.stringify(state));
         render();
     }
 
@@ -315,7 +322,6 @@
         bank.name = newName.trim() || bank.name;
         bank.openingBalance = parseFloat(newOpBal);
         
-        // Recalculate current bank balance
         recalculateBankBalance(bank.id);
         state.transactions.forEach(t => { if(t.bankId === bankId) t.bankName = bank.name; });
         saveData();
@@ -452,50 +458,36 @@
         saveData();
     }
 
-    // Export CSV / Excel
+    // Reliable Excel (CSV) Export via Blob URL
     function exportToCSV(entityName, transactions) {
-        let csvContent = "data:text/csv;charset=utf-8,Date,Details,Type,Amount,Note\n";
+        if(!transactions || transactions.length === 0) return alert('No transactions to export!');
+        let csvContent = "\uFEFFDate,Details,Type,Amount (INR),Note\n";
         transactions.forEach(t => {
-            csvContent += `${t.date},"${t.personName} / ${t.bankName}",${t.type},${t.amount},"${t.description}"\n`;
+            csvContent += `"${t.date}","${t.personName} / ${t.bankName}","${t.type}","${t.amount}","${t.description}"\n`;
         });
-        const encodedUri = encodeURI(csvContent);
+        
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `${entityName}_Ledger_Report.csv`);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `${entityName.replace(/\s+/g, '_')}_Statement.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     }
 
-    // Export PDF
-    function exportToPDF(elementId, titleName) {
-        const element = document.getElementById(elementId).cloneNode(true);
-        element.querySelectorAll('.btn-sm, .action-btns, .filter-wrapper').forEach(el => el.remove());
+    // Native PDF Export via Browser Print Feature (Works Offline & in Android Webviews)
+    function exportToPDF(containerId, titleName) {
+        const targetElement = document.getElementById(containerId);
+        if (!targetElement) return alert('No data to export!');
 
-        const pdfWrapper = document.createElement('div');
-        pdfWrapper.style.padding = '20px';
-        pdfWrapper.style.color = '#000';
-        pdfWrapper.style.background = '#fff';
+        document.querySelectorAll('.print-area').forEach(el => el.classList.remove('print-area'));
+        
+        // Add printable class
+        targetElement.classList.add('print-area');
 
-        pdfWrapper.innerHTML = `
-            <div class="pdf-header-watermark" style="display:block;">
-                <div class="pdf-watermark-text">KHATA</div>
-                <div class="pdf-watermark-sub">Concept by Rajesh | Personal Ledger Statement</div>
-                <h2 style="margin-top:10px; font-size:16px;">Statement for: ${titleName}</h2>
-                <hr style="margin:10px 0; border: 0.5px solid #e2e8f0;">
-            </div>
-        `;
-        pdfWrapper.appendChild(element);
-
-        const opt = {
-            margin:       0.5,
-            filename:     `${titleName}_Statement.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-
-        html2pdf().set(opt).from(pdfWrapper).save();
+        // Trigger print window (Save as PDF)
+        window.print();
     }
 
     function render() {
@@ -539,7 +531,12 @@
 
                 const card = document.createElement('div');
                 card.className = 'card';
+                card.id = `card_bank_${bank.id}`;
                 card.innerHTML = `
+                    <div class="pdf-watermark-header">
+                        <h2 style="font-size:22px; color:#1e3a8a;">KHATA</h2>
+                        <p style="font-size:12px; color:#64748b;">Concept by Rajesh | Statement for ${bank.name}</p>
+                    </div>
                     <div class="card-header">
                         <div>
                             <span class="card-title">🏦 ${bank.name}</span>
@@ -587,7 +584,7 @@
                             <span style="font-size:12px; font-weight:700; color:var(--text-muted);">HISTORY</span>
                             <div>
                                 <button class="btn-export" onclick="exportToCSV('${bank.name}', state.transactions.filter(t => t.bankId === '${bank.id}'))">Excel</button>
-                                <button class="btn-export" onclick="exportToPDF('table_bank_${bank.id}', '${bank.name}')">PDF</button>
+                                <button class="btn-export" onclick="exportToPDF('card_bank_${bank.id}', '${bank.name}')">PDF</button>
                             </div>
                         </div>
 
@@ -619,7 +616,12 @@
 
                 const card = document.createElement('div');
                 card.className = 'card';
+                card.id = `card_person_${person.id}`;
                 card.innerHTML = `
+                    <div class="pdf-watermark-header">
+                        <h2 style="font-size:22px; color:#1e3a8a;">KHATA</h2>
+                        <p style="font-size:12px; color:#64748b;">Concept by Rajesh | Statement for ${person.name}</p>
+                    </div>
                     <div class="card-header">
                         <div>
                             <span class="card-title">👤 ${person.name}</span>
@@ -660,7 +662,7 @@
                             <span style="font-size:12px; font-weight:700; color:var(--text-muted);">HISTORY</span>
                             <div>
                                 <button class="btn-export" onclick="exportToCSV('${person.name}', state.transactions.filter(t => t.personId === '${person.id}'))">Excel</button>
-                                <button class="btn-export" onclick="exportToPDF('table_person_${person.id}', '${person.name}')">PDF</button>
+                                <button class="btn-export" onclick="exportToPDF('card_person_${person.id}', '${person.name}')">PDF</button>
                             </div>
                         </div>
 
