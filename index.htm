@@ -18,7 +18,7 @@
             --out-color: #ef4444;
             --out-bg: #fef2f2;
             --accent-blue: #3b82f6;
-            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+            --primary-gradient: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             --input-bg: #f8fafc;
         }
 
@@ -34,7 +34,7 @@
         }
 
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding: 20px 10px 40px 10px; transition: background-color 0.3s, color 0.3s; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 15px 10px 40px 10px; transition: background-color 0.3s, color 0.3s; }
         .container { max-width: 680px; margin: 0 auto; }
 
         /* Splash Screen */
@@ -52,36 +52,44 @@
             opacity: 0; transform: scale(0.5);
         }
         .splash-tagline {
-            margin-top: 10px; font-size: 15px; font-weight: 600; color: #4f46e5; letter-spacing: 1px;
+            margin-top: 10px; font-size: 15px; font-weight: 600; color: #1e3a8a; letter-spacing: 1px;
             animation: fadeIn 0.8s ease 0.4s forwards; opacity: 0;
         }
         @keyframes popIn { to { opacity: 1; transform: scale(1); } }
         @keyframes fadeIn { to { opacity: 1; } }
 
-        /* Header & Top Bar */
+        /* Top Bar */
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .theme-toggle {
             background: var(--card-bg); border: 1px solid var(--border-color);
             padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600;
             color: var(--text-main);
         }
-        .app-header {
-            background: var(--primary-gradient); color: white; padding: 20px; border-radius: 16px;
-            margin-bottom: 20px; box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.3); text-align: center;
-        }
-        .app-header h1 { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
-        .app-header p { font-size: 13px; opacity: 0.85; }
 
-        /* Dashboard Overview Cards */
-        .analytics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .stat-card {
-            background: var(--card-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 12px;
-            text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        /* Clean Khatabook Style Dashboard */
+        .dashboard-banner {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         }
-        .stat-card span { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
-        .stat-card h3 { font-size: 15px; font-weight: 700; margin-top: 4px; }
 
-        /* Navigation Switcher */
+        .main-balance-box {
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed var(--border-color);
+            margin-bottom: 12px;
+        }
+        .main-balance-box span { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+        .main-balance-box h2 { font-size: 28px; font-weight: 800; color: #1e3a8a; margin-top: 2px; }
+
+        .sub-analytics { display: flex; justify-content: space-around; text-align: center; }
+        .sub-box span { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+        .sub-box h4 { font-size: 16px; font-weight: 700; margin-top: 2px; }
+
+        /* Tabs */
         .nav-tabs { display: flex; background: var(--card-bg); border: 1px solid var(--border-color); padding: 4px; border-radius: 12px; margin-bottom: 20px; }
         .tab-btn {
             flex: 1; padding: 10px; text-align: center; font-weight: 600; font-size: 14px;
@@ -91,14 +99,20 @@
         .view-panel { display: none; }
         .view-panel.active { display: block; }
 
-        /* Cards & Forms */
+        /* Cards */
         .add-box, .card {
-            background: var(--card-bg); border: 1px solid var(--border-color); padding: 18px;
-            border-radius: 14px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px;
+            border-radius: 14px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
         }
-        .card-header { display: flex; justify-content: space-between; align-items: center; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
         .card-title { font-size: 17px; font-weight: 700; color: var(--text-main); }
-        .card-balance { font-size: 16px; font-weight: 700; }
+        .card-balance { font-size: 16px; font-weight: 700; text-align: right; }
+
+        .bank-mini-stats {
+            display: flex; gap: 10px; margin-top: 8px; font-size: 11px; color: var(--text-muted); font-weight: 600;
+            background: var(--input-bg); padding: 6px 10px; border-radius: 6px;
+        }
+
         .toggle-btn {
             background: var(--input-bg); color: var(--accent-blue); border: 1px solid var(--border-color);
             padding: 8px 12px; font-size: 12px; font-weight: 600; border-radius: 8px; cursor: pointer;
@@ -120,8 +134,8 @@
         button:hover { opacity: 0.9; }
         .btn-in { background: var(--in-color); color: white; flex: 1; }
         .btn-out { background: var(--out-color); color: white; flex: 1; }
-        .btn-primary { background: #4f46e5; color: white; width: 100%; }
-        .btn-export { background: #0284c7; color: white; padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+        .btn-primary { background: #1e3a8a; color: white; width: 100%; }
+        .btn-export { background: #0284c7; color: white; padding: 4px 8px; font-size: 11px; border-radius: 6px; }
 
         .action-btns { display: flex; gap: 6px; margin-top: 4px; }
         .btn-sm { padding: 3px 8px; font-size: 11px; border-radius: 6px; }
@@ -142,11 +156,10 @@
         .empty-msg { font-size: 13px; color: var(--text-muted); text-align: center; padding: 15px 0; }
 
         .app-footer { text-align: center; margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--border-color); font-size: 13px; font-weight: 600; color: var(--text-muted); }
-        .app-footer span { color: #4f46e5; }
+        .app-footer span { color: #1e3a8a; }
 
-        /* PDF Watermark Style */
-        .pdf-header-watermark { display: none; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #4f46e5; padding-bottom: 10px; }
-        .pdf-watermark-text { font-size: 24px; font-weight: 800; color: #4f46e5; }
+        .pdf-header-watermark { display: none; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 10px; }
+        .pdf-watermark-text { font-size: 24px; font-weight: 800; color: #1e3a8a; }
         .pdf-watermark-sub { font-size: 12px; color: #64748b; font-weight: 600; }
     </style>
 </head>
@@ -160,29 +173,25 @@
 
 <div class="container">
     <div class="top-bar">
-        <span style="font-size: 12px; font-weight: 700; color: var(--text-muted);">KHATA DASHBOARD</span>
+        <span style="font-size: 13px; font-weight: 800; color: #1e3a8a;">📖 KHATA</span>
         <button class="theme-toggle" onclick="toggleDarkMode()">🌙 / ☀️ Mode</button>
     </div>
 
-    <!-- Header -->
-    <div class="app-header">
-        <h1>Khata</h1>
-        <p>Personal Ledger & Bank Accounts Manager</p>
-    </div>
-
-    <!-- Live Analytics Dashboard -->
-    <div class="analytics-grid">
-        <div class="stat-card">
-            <span>Net Balance</span>
-            <h3 id="dashTotalBalance" style="color: var(--accent-blue);">₹0</h3>
+    <!-- Clear Summary Dashboard -->
+    <div class="dashboard-banner">
+        <div class="main-balance-box">
+            <span>Total Available Bank Balance</span>
+            <h2 id="dashTotalBalance">₹0</h2>
         </div>
-        <div class="stat-card">
-            <span>Total IN</span>
-            <h3 id="dashTotalIn" style="color: var(--in-color);">₹0</h3>
-        </div>
-        <div class="stat-card">
-            <span>Total OUT</span>
-            <h3 id="dashTotalOut" style="color: var(--out-color);">₹0</h3>
+        <div class="sub-analytics">
+            <div class="sub-box">
+                <span>You Will Get (लेना है)</span>
+                <h4 id="dashTotalGet" style="color: var(--in-color);">₹0</h4>
+            </div>
+            <div class="sub-box" style="border-left: 1px solid var(--border-color); padding-left: 15px;">
+                <span>You Will Give (देना है)</span>
+                <h4 id="dashTotalGive" style="color: var(--out-color);">₹0</h4>
+            </div>
         </div>
     </div>
 
@@ -205,7 +214,7 @@
             <button class="btn-primary" onclick="addBank()">Add Bank Account</button>
         </div>
 
-        <h3 style="font-size: 15px; margin-bottom: 12px; color: var(--text-muted);">BANK ACCOUNTS</h3>
+        <h3 style="font-size: 14px; margin-bottom: 10px; color: var(--text-muted); font-weight: 700;">YOUR BANKS</h3>
         <div id="banksList"></div>
     </div>
 
@@ -219,7 +228,7 @@
             <button class="btn-primary" onclick="addPerson()">Add Person</button>
         </div>
 
-        <h3 style="font-size: 15px; margin-bottom: 12px; color: var(--text-muted);">PERSONS / HEADS</h3>
+        <h3 style="font-size: 14px; margin-bottom: 10px; color: var(--text-muted); font-weight: 700;">PERSONS / HEADS</h3>
         <div id="personsList"></div>
     </div>
 
@@ -239,7 +248,7 @@
         }, 1800);
     });
 
-    let state = JSON.parse(localStorage.getItem('ledgerAppV7')) || {
+    let state = JSON.parse(localStorage.getItem('ledgerAppV8')) || {
         banks: [],
         persons: [],
         transactions: [],
@@ -255,7 +264,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('ledgerAppV7', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV8', JSON.stringify(state));
         render();
     }
 
@@ -286,10 +295,10 @@
 
     function addBank() {
         const name = document.getElementById('newBankName').value.trim();
-        const balance = parseFloat(document.getElementById('newBankBalance').value) || 0;
+        const openingBalance = parseFloat(document.getElementById('newBankBalance').value) || 0;
         if(!name) return alert('Please enter Bank Name');
         
-        state.banks.push({ id: 'b_' + Date.now(), name, balance });
+        state.banks.push({ id: 'b_' + Date.now(), name, openingBalance, balance: openingBalance });
         document.getElementById('newBankName').value = '';
         document.getElementById('newBankBalance').value = '';
         saveData();
@@ -300,13 +309,29 @@
         if(!bank) return;
         const newName = prompt("Update Bank Name:", bank.name);
         if(newName === null) return;
-        const newBalance = prompt("Update Current Balance (₹):", bank.balance);
-        if(newBalance === null || isNaN(parseFloat(newBalance))) return;
+        const newOpBal = prompt("Update Opening Balance (₹):", bank.openingBalance || bank.balance);
+        if(newOpBal === null || isNaN(parseFloat(newOpBal))) return;
 
         bank.name = newName.trim() || bank.name;
-        bank.balance = parseFloat(newBalance);
+        bank.openingBalance = parseFloat(newOpBal);
+        
+        // Recalculate current bank balance
+        recalculateBankBalance(bank.id);
         state.transactions.forEach(t => { if(t.bankId === bankId) t.bankName = bank.name; });
         saveData();
+    }
+
+    function recalculateBankBalance(bankId) {
+        const bank = state.banks.find(b => b.id === bankId);
+        if(!bank) return;
+        let bal = bank.openingBalance || 0;
+        state.transactions.forEach(t => {
+            if(t.bankId === bankId) {
+                if(t.type === 'IN') bal += t.amount;
+                if(t.type === 'OUT') bal -= t.amount;
+            }
+        });
+        bank.balance = bal;
     }
 
     function deleteBank(bankId) {
@@ -363,7 +388,8 @@
             if (newName && newName.trim()) {
                 const newBankBal = prompt("Enter Opening Balance (₹):", "0");
                 const newBankId = 'b_' + Date.now();
-                state.banks.push({ id: newBankId, name: newName.trim(), balance: parseFloat(newBankBal) || 0 });
+                const opBal = parseFloat(newBankBal) || 0;
+                state.banks.push({ id: newBankId, name: newName.trim(), openingBalance: opBal, balance: opBal });
                 saveData();
                 document.getElementById(`bank_select_${personId}`).value = newBankId;
             } else selectElem.value = "";
@@ -380,9 +406,6 @@
         const person = state.persons.find(p => p.id === personId);
         if(!bank || !person) return alert('Please select both Bank and Person');
 
-        if(type === 'IN') bank.balance += amount;
-        else bank.balance -= amount;
-
         state.transactions.unshift({
             id: 't_' + Date.now(),
             bankId: bank.id,
@@ -395,6 +418,7 @@
             date: new Date().toLocaleDateString('en-IN')
         });
 
+        recalculateBankBalance(bank.id);
         saveData();
     }
 
@@ -409,19 +433,10 @@
         const newDesc = prompt("Edit Description / Note:", t.description);
         if(newDesc === null) return;
 
-        const bank = state.banks.find(b => b.id === t.bankId);
-        if(bank) {
-            // Revert old transaction effect
-            if(t.type === 'IN') bank.balance -= t.amount;
-            else bank.balance += t.amount;
-
-            // Apply new transaction effect
-            if(t.type === 'IN') bank.balance += newAmount;
-            else bank.balance -= newAmount;
-        }
-
         t.amount = newAmount;
         t.description = newDesc.trim() || 'No description';
+
+        recalculateBankBalance(t.bankId);
         saveData();
     }
 
@@ -430,14 +445,10 @@
         const transIndex = state.transactions.findIndex(t => t.id === transId);
         if(transIndex === -1) return;
 
-        const t = state.transactions[transIndex];
-        const bank = state.banks.find(b => b.id === t.bankId);
-        if(bank) {
-            if(t.type === 'IN') bank.balance -= t.amount;
-            else bank.balance += t.amount;
-        }
-
+        const bankId = state.transactions[transIndex].bankId;
         state.transactions.splice(transIndex, 1);
+        
+        recalculateBankBalance(bankId);
         saveData();
     }
 
@@ -456,11 +467,9 @@
         document.body.removeChild(link);
     }
 
-    // Export PDF with Watermark
+    // Export PDF
     function exportToPDF(elementId, titleName) {
         const element = document.getElementById(elementId).cloneNode(true);
-        
-        // Remove Action columns / buttons for PDF
         element.querySelectorAll('.btn-sm, .action-btns, .filter-wrapper').forEach(el => el.remove());
 
         const pdfWrapper = document.createElement('div');
@@ -491,16 +500,27 @@
 
     function render() {
         // --- Calculate Dashboard Overview ---
-        let totalNet = 0, totalIn = 0, totalOut = 0;
-        state.banks.forEach(b => totalNet += b.balance);
-        state.transactions.forEach(t => {
-            if(t.type === 'IN') totalIn += t.amount;
-            if(t.type === 'OUT') totalOut += t.amount;
+        let totalNet = 0;
+        state.banks.forEach(b => {
+            recalculateBankBalance(b.id);
+            totalNet += b.balance;
+        });
+
+        let totalGet = 0, totalGive = 0;
+        state.persons.forEach(person => {
+            const personTrans = state.transactions.filter(t => t.personId === person.id);
+            let pBal = 0;
+            personTrans.forEach(t => {
+                if(t.type === 'OUT') pBal += t.amount;
+                if(t.type === 'IN') pBal -= t.amount;
+            });
+            if(pBal > 0) totalGet += pBal;
+            if(pBal < 0) totalGive += Math.abs(pBal);
         });
 
         document.getElementById('dashTotalBalance').innerText = '₹' + totalNet.toLocaleString('en-IN');
-        document.getElementById('dashTotalIn').innerText = '₹' + totalIn.toLocaleString('en-IN');
-        document.getElementById('dashTotalOut').innerText = '₹' + totalOut.toLocaleString('en-IN');
+        document.getElementById('dashTotalGet').innerText = '₹' + totalGet.toLocaleString('en-IN');
+        document.getElementById('dashTotalGive').innerText = '₹' + totalGive.toLocaleString('en-IN');
 
         // --- Render Accounts View ---
         const banksList = document.getElementById('banksList');
@@ -511,9 +531,11 @@
         } else {
             state.banks.forEach(bank => {
                 let personOptions = state.persons.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-                personOptions += `<option value="CREATE_NEW" style="font-weight: bold; color: #4f46e5;">+ Create New Person</option>`;
+                personOptions += `<option value="CREATE_NEW" style="font-weight: bold; color: #1e3a8a;">+ Create New Person</option>`;
                 
                 const bankTrans = state.transactions.filter(t => t.bankId === bank.id);
+                let bIn = 0, bOut = 0;
+                bankTrans.forEach(t => { if(t.type==='IN') bIn+=t.amount; else bOut+=t.amount; });
 
                 const card = document.createElement('div');
                 card.className = 'card';
@@ -526,7 +548,16 @@
                                 <button class="btn-sm btn-del" onclick="deleteBank('${bank.id}')">Delete</button>
                             </div>
                         </div>
-                        <span class="card-balance">₹${bank.balance.toLocaleString('en-IN')}</span>
+                        <div>
+                            <div class="card-balance">₹${bank.balance.toLocaleString('en-IN')}</div>
+                            <div style="font-size: 11px; color: var(--text-muted); text-align:right;">Current Bal</div>
+                        </div>
+                    </div>
+
+                    <div class="bank-mini-stats">
+                        <span>Op. Bal: ₹${(bank.openingBalance || 0).toLocaleString('en-IN')}</span> |
+                        <span style="color:var(--in-color);">IN: ₹${bIn.toLocaleString('en-IN')}</span> |
+                        <span style="color:var(--out-color);">OUT: ₹${bOut.toLocaleString('en-IN')}</span>
                     </div>
 
                     <button class="toggle-btn" id="btn_body_bank_${bank.id}" onclick="toggleCardBody('body_bank_${bank.id}')">🔽 Open Entry & History</button>
@@ -576,7 +607,7 @@
         } else {
             state.persons.forEach(person => {
                 let bankOptions = state.banks.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
-                bankOptions += `<option value="CREATE_NEW" style="font-weight: bold; color: #4f46e5;">+ Create New Bank Account</option>`;
+                bankOptions += `<option value="CREATE_NEW" style="font-weight: bold; color: #1e3a8a;">+ Create New Bank Account</option>`;
                 
                 const personTrans = state.transactions.filter(t => t.personId === person.id);
 
