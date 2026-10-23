@@ -41,17 +41,13 @@
 
         /* Splash Screen */
         #splash-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #ffffff;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s ease;
         }
         .splash-title {
             font-size: 44px; font-weight: 900; color: #000000; letter-spacing: 3px;
-            animation: popIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            opacity: 0; transform: scale(0.6);
+            animation: popIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; transform: scale(0.6);
         }
         .splash-tagline {
             margin-top: 8px; font-size: 14px; font-weight: 700; color: #1e3a8a; letter-spacing: 1px;
@@ -80,18 +76,13 @@
 
         /* Banner Dashboard */
         .dashboard-banner {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--card-radius);
-            padding: 16px;
-            margin-bottom: 16px;
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: var(--card-radius); padding: 16px; margin-bottom: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
         .main-balance-box {
-            text-align: center;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed var(--border-color);
-            margin-bottom: 10px;
+            text-align: center; padding-bottom: 10px;
+            border-bottom: 1px dashed var(--border-color); margin-bottom: 10px;
         }
         .main-balance-box span { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         .main-balance-box h2 { font-size: 28px; font-weight: 800; color: var(--accent-blue); margin-top: 2px; }
@@ -115,8 +106,9 @@
         .add-box, .card {
             background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px;
             border-radius: var(--card-radius); margin-bottom: 14px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
-            position: relative; overflow: hidden;
+            position: relative; overflow: hidden; transition: all 0.3s ease;
         }
+        .add-box.hidden-on-search { display: none !important; }
         
         .card.strip-in { border-left: 5px solid var(--in-color); }
         .card.strip-out { border-left: 5px solid var(--out-color); }
@@ -260,7 +252,7 @@
 
     <!-- Instant Search Bar -->
     <div class="search-box-wrapper">
-        <input type="text" id="globalSearch" class="search-input" placeholder="🔎 Search Bank or Person Name..." onkeyup="filterCards()">
+        <input type="text" id="globalSearch" class="search-input" placeholder="🔎 Search Bank or Person Name..." onfocus="onSearchFocus()" onblur="onSearchBlur()" onkeyup="filterCards()">
     </div>
 
     <!-- Summary Dashboard -->
@@ -290,7 +282,7 @@
 
     <!-- ================= ACCOUNTS VIEW ================= -->
     <div id="accountsView" class="view-panel active">
-        <div class="add-box">
+        <div class="add-box" id="addBankBox">
             <h4 style="font-size: 14px; margin-bottom: 8px; font-weight: 800;">Add New Bank Account</h4>
             <div class="form-group">
                 <input type="text" id="newBankName" placeholder="Bank Name (e.g., Bank of Baroda)">
@@ -307,7 +299,7 @@
 
     <!-- ================= PERSONS VIEW ================= -->
     <div id="personsView" class="view-panel">
-        <div class="add-box">
+        <div class="add-box" id="addPersonBox">
             <h4 style="font-size: 14px; margin-bottom: 8px; font-weight: 800;">Add New Person / Head</h4>
             <div class="form-group">
                 <input type="text" id="newPersonName" placeholder="Person / Head Name (e.g., Ashutosh)">
@@ -360,7 +352,7 @@
         }, 1600);
     });
 
-    let state = JSON.parse(localStorage.getItem('ledgerAppV11')) || {
+    let state = JSON.parse(localStorage.getItem('ledgerAppV12')) || {
         banks: [],
         persons: [],
         transactions: [],
@@ -376,7 +368,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('ledgerAppV11', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV12', JSON.stringify(state));
         render();
     }
 
@@ -413,6 +405,24 @@
 
     function closeModal() {
         document.getElementById('entryModal').style.display = 'none';
+    }
+
+    // Search focus/blur handling to hide creation boxes
+    function onSearchFocus() {
+        const addBank = document.getElementById('addBankBox');
+        const addPerson = document.getElementById('addPersonBox');
+        if(addBank) addBank.classList.add('hidden-on-search');
+        if(addPerson) addPerson.classList.add('hidden-on-search');
+    }
+
+    function onSearchBlur() {
+        const query = document.getElementById('globalSearch').value.trim();
+        if(!query) {
+            const addBank = document.getElementById('addBankBox');
+            const addPerson = document.getElementById('addPersonBox');
+            if(addBank) addBank.classList.remove('hidden-on-search');
+            if(addPerson) addPerson.classList.remove('hidden-on-search');
+        }
     }
 
     function filterCards() {
@@ -498,6 +508,47 @@
         saveData();
     }
 
+    // Dropdown create handlers inside modal
+    function handleModalPersonDropdown() {
+        const selectElem = document.getElementById('modal_select_person');
+        if (selectElem && selectElem.value === 'CREATE_NEW') {
+            const newName = prompt("Enter new Person / Head Name:");
+            if (newName && newName.trim()) {
+                const newPersonId = 'p_' + Date.now();
+                state.persons.push({ id: newPersonId, name: newName.trim() });
+                saveData();
+                // Refresh modal content dynamically with updated person list
+                const activeEntityId = selectElem.getAttribute('data-entity-id');
+                const activeAction = selectElem.getAttribute('data-action');
+                quickEntryModal(activeEntityId, 'BANK', activeAction);
+                document.getElementById('modal_select_person').value = newPersonId;
+            } else {
+                selectElem.value = "";
+            }
+        }
+    }
+
+    function handleModalBankDropdown() {
+        const selectElem = document.getElementById('modal_select_bank');
+        if (selectElem && selectElem.value === 'CREATE_NEW') {
+            const newName = prompt("Enter new Bank Account Name:");
+            if (newName && newName.trim()) {
+                const newBankBal = prompt("Enter Opening Balance (₹):", "0");
+                const newBankId = 'b_' + Date.now();
+                const opBal = parseFloat(newBankBal) || 0;
+                state.banks.push({ id: newBankId, name: newName.trim(), openingBalance: opBal, balance: opBal });
+                saveData();
+                // Refresh modal content dynamically with updated bank list
+                const activeEntityId = selectElem.getAttribute('data-entity-id');
+                const activeAction = selectElem.getAttribute('data-action');
+                quickEntryModal(activeEntityId, 'PERSON', activeAction);
+                document.getElementById('modal_select_bank').value = newBankId;
+            } else {
+                selectElem.value = "";
+            }
+        }
+    }
+
     function setQuickDate(targetInputId, type, btnElement) {
         const parent = btnElement.parentElement;
         parent.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
@@ -523,10 +574,12 @@
             const bank = state.banks.find(b => b.id === entityId);
             entityName = bank ? bank.name : "";
             let personOpts = state.persons.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+            personOpts += `<option value="CREATE_NEW" style="font-weight: bold; color: var(--accent-blue);">+ Create New Person</option>`;
+            
             dropdownHtml = `
                 <div class="form-group">
                     <label>Select Person/Head</label>
-                    <select id="modal_select_person">
+                    <select id="modal_select_person" data-entity-id="${entityId}" data-action="${actionType}" onchange="handleModalPersonDropdown()">
                         <option value="">-- Select Person --</option>
                         ${personOpts}
                     </select>
@@ -536,10 +589,12 @@
             const person = state.persons.find(p => p.id === entityId);
             entityName = person ? person.name : "";
             let bankOpts = state.banks.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
+            bankOpts += `<option value="CREATE_NEW" style="font-weight: bold; color: var(--accent-blue);">+ Create New Bank Account</option>`;
+            
             dropdownHtml = `
                 <div class="form-group">
                     <label>Select Bank Account</label>
-                    <select id="modal_select_bank">
+                    <select id="modal_select_bank" data-entity-id="${entityId}" data-action="${actionType}" onchange="handleModalBankDropdown()">
                         <option value="">-- Select Bank --</option>
                         ${bankOpts}
                     </select>
