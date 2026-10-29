@@ -21,7 +21,7 @@
             --expense-bg: #fffbeb;
             --input-bg: #f8fafc;
             --bottom-nav-bg: #ffffff;
-            --card-radius: 16px;
+            --card-radius: 14px;
         }
 
         body.dark-mode {
@@ -38,7 +38,7 @@
         }
 
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding: 12px 12px 85px 12px; transition: background-color 0.3s, color 0.3s; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 12px 12px 80px 12px; transition: background-color 0.3s, color 0.3s; }
         .container { max-width: 600px; margin: 0 auto; }
 
         /* Splash Screen */
@@ -69,9 +69,9 @@
             color: var(--text-main); box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
 
-        .search-box-wrapper { margin-bottom: 14px; }
+        .search-box-wrapper { margin-bottom: 12px; }
         .search-input {
-            width: 100%; padding: 12px 16px; font-size: 13px; font-weight: 600;
+            width: 100%; padding: 10px 14px; font-size: 13px; font-weight: 600;
             border: 1px solid var(--border-color); border-radius: 12px;
             background: var(--card-bg); color: var(--text-main); outline: none;
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
@@ -80,85 +80,85 @@
         /* Banner Dashboard */
         .dashboard-banner {
             background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: var(--card-radius); padding: 18px; margin-bottom: 16px;
+            border-radius: var(--card-radius); padding: 14px; margin-bottom: 14px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.02);
         }
         .main-balance-box {
-            text-align: center; padding-bottom: 12px;
-            border-bottom: 1px dashed var(--border-color); margin-bottom: 12px;
+            text-align: center; padding-bottom: 10px;
+            border-bottom: 1px dashed var(--border-color); margin-bottom: 10px;
         }
-        .main-balance-box span { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .main-balance-box h2 { font-size: 28px; font-weight: 800; color: var(--accent-blue); margin-top: 4px; }
+        .main-balance-box span { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .main-balance-box h2 { font-size: 26px; font-weight: 800; color: var(--accent-blue); margin-top: 2px; }
 
         .visual-bar-container {
-            height: 8px; width: 100%; background: var(--input-bg); border-radius: 4px;
-            overflow: hidden; display: flex; margin-bottom: 12px; border: 1px solid var(--border-color);
+            height: 6px; width: 100%; background: var(--input-bg); border-radius: 3px;
+            overflow: hidden; display: flex; margin-bottom: 10px; border: 1px solid var(--border-color);
         }
         .bar-get { background: var(--in-color); transition: width 0.3s; }
         .bar-give { background: var(--out-color); transition: width 0.3s; }
 
         .sub-analytics { display: flex; justify-content: space-around; text-align: center; }
         .sub-box { flex: 1; }
-        .sub-box span { font-size: 10px; font-weight: 700; color: var(--text-muted); }
-        .sub-box h4 { font-size: 13px; font-weight: 800; margin-top: 2px; }
+        .sub-box span { font-size: 9px; font-weight: 700; color: var(--text-muted); }
+        .sub-box h4 { font-size: 12px; font-weight: 800; margin-top: 2px; }
 
         .view-panel { display: none; }
         .view-panel.active { display: block; }
 
-        /* Action Buttons */
-        .section-add-container { margin-bottom: 16px; }
-        .section-add-btn {
-            width: 100%; padding: 13px; background: var(--card-bg); border: 1px dashed var(--accent-blue);
-            color: var(--accent-blue); font-size: 13px; font-weight: 800; border-radius: 14px; cursor: pointer;
-            text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: all 0.2s;
+        /* Universal Add Container */
+        .universal-add-container { margin-bottom: 14px; }
+        .universal-add-btn {
+            width: 100%; padding: 12px; background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); 
+            color: white; font-size: 13px; font-weight: 800; border-radius: 12px; cursor: pointer;
+            text-align: center; border: none; box-shadow: 0 4px 12px rgba(37,99,235,0.2); transition: all 0.2s;
         }
-        .section-add-btn:active { transform: scale(0.98); }
+        .universal-add-btn:active { transform: scale(0.98); }
 
-        /* Cards & Styling */
+        /* Compact Cards Styling */
         .card {
-            background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px;
-            border-radius: var(--card-radius); margin-bottom: 14px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+            background: var(--card-bg); border: 1px solid var(--border-color); padding: 12px 14px;
+            border-radius: var(--card-radius); margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
             position: relative; overflow: hidden;
         }
         
-        .card.strip-in { border-left: 5px solid var(--in-color); }
-        .card.strip-out { border-left: 5px solid var(--out-color); }
-        .card.strip-expense { border-left: 5px solid var(--expense-color); }
-        .card.strip-neutral { border-left: 5px solid var(--accent-blue); }
+        .card.strip-in { border-left: 4px solid var(--in-color); }
+        .card.strip-out { border-left: 4px solid var(--out-color); }
+        .card.strip-expense { border-left: 4px solid var(--expense-color); }
+        .card.strip-neutral { border-left: 4px solid var(--accent-blue); }
 
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
-        .card-title { font-size: 16px; font-weight: 800; color: var(--text-main); }
-        .card-balance { font-size: 16px; font-weight: 800; text-align: right; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; }
+        .card-title { font-size: 14px; font-weight: 800; color: var(--text-main); }
+        .card-balance { font-size: 14px; font-weight: 800; text-align: right; }
 
         .pill-indicator {
-            display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; margin-top: 4px;
+            display: inline-block; padding: 2px 6px; border-radius: 8px; font-size: 9px; font-weight: 700; margin-top: 2px;
         }
         .pill-get { background: var(--in-bg); color: var(--in-color); }
         .pill-give { background: var(--out-bg); color: var(--out-color); }
         .pill-expense { background: var(--expense-bg); color: var(--expense-color); }
 
         .bank-mini-stats {
-            display: flex; gap: 8px; margin-top: 10px; font-size: 11px; color: var(--text-muted); font-weight: 700;
-            background: var(--input-bg); padding: 8px 12px; border-radius: 10px;
+            display: flex; gap: 6px; margin-top: 8px; font-size: 10px; color: var(--text-muted); font-weight: 700;
+            background: var(--input-bg); padding: 6px 10px; border-radius: 8px;
         }
 
         /* Quick Action Buttons */
-        .quick-actions { display: flex; gap: 8px; margin-top: 12px; }
-        .btn-quick-in { background: var(--in-color); color: white; border: none; padding: 9px 12px; font-size: 12px; font-weight: 700; border-radius: 10px; flex: 1; cursor: pointer; }
-        .btn-quick-out { background: var(--out-color); color: white; border: none; padding: 9px 12px; font-size: 12px; font-weight: 700; border-radius: 10px; flex: 1; cursor: pointer; }
+        .quick-actions { display: flex; gap: 6px; margin-top: 10px; }
+        .btn-quick-in { background: var(--in-color); color: white; border: none; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 8px; flex: 1; cursor: pointer; }
+        .btn-quick-out { background: var(--out-color); color: white; border: none; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 8px; flex: 1; cursor: pointer; }
 
         .toggle-btn {
             background: var(--input-bg); color: var(--accent-blue); border: 1px solid var(--border-color);
-            padding: 9px 12px; font-size: 11px; font-weight: 700; border-radius: 10px; cursor: pointer;
-            margin-top: 10px; width: 100%; text-align: center;
+            padding: 7px 10px; font-size: 10px; font-weight: 700; border-radius: 8px; cursor: pointer;
+            margin-top: 8px; width: 100%; text-align: center;
         }
-        .card-body { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border-color); }
+        .card-body { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-color); }
         .card-body.open { display: block; }
 
-        .form-group { margin-bottom: 12px; }
-        label { display: block; font-size: 10px; margin-bottom: 4px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group { margin-bottom: 10px; }
+        label { display: block; font-size: 10px; margin-bottom: 3px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         input, select {
-            width: 100%; padding: 11px 14px; font-size: 13px; border: 1px solid var(--border-color);
+            width: 100%; padding: 10px 12px; font-size: 13px; border: 1px solid var(--border-color);
             border-radius: 10px; outline: none; background-color: var(--input-bg); color: var(--text-main); font-weight: 600;
         }
 
@@ -169,66 +169,66 @@
             display: none; justify-content: center; align-items: center; z-index: 9000; padding: 16px;
         }
         .modal-card {
-            background: var(--card-bg); width: 100%; max-width: 440px; border-radius: 20px;
-            padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; border: 1px solid var(--border-color);
+            background: var(--card-bg); width: 100%; max-width: 420px; border-radius: 18px;
+            padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; border: 1px solid var(--border-color);
         }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .modal-title { font-size: 16px; font-weight: 800; color: var(--text-main); }
-        .close-modal { font-size: 20px; font-weight: 800; border: none; background: none; color: var(--text-muted); cursor: pointer; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .modal-title { font-size: 15px; font-weight: 800; color: var(--text-main); }
+        .close-modal { font-size: 18px; font-weight: 800; border: none; background: none; color: var(--text-muted); cursor: pointer; }
 
         /* Date Quick Chips */
         .date-chips { display: flex; gap: 6px; margin-top: 6px; }
         .chip {
-            padding: 5px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;
+            padding: 4px 10px; font-size: 10px; font-weight: 700; border-radius: 6px;
             background: var(--input-bg); border: 1px solid var(--border-color); cursor: pointer; color: var(--text-muted);
         }
         .chip.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
 
         /* Quick Filter Pills */
-        .pill-filters { display: flex; gap: 6px; overflow-x: auto; margin-top: 12px; padding-bottom: 4px; }
+        .pill-filters { display: flex; gap: 6px; overflow-x: auto; margin-top: 10px; padding-bottom: 4px; }
         .filter-pill {
-            background: var(--input-bg); border: 1px solid var(--border-color); padding: 6px 12px; font-size: 11px;
-            font-weight: 700; border-radius: 16px; cursor: pointer; color: var(--text-muted); white-space: nowrap;
+            background: var(--input-bg); border: 1px solid var(--border-color); padding: 5px 10px; font-size: 10px;
+            font-weight: 700; border-radius: 14px; cursor: pointer; color: var(--text-muted); white-space: nowrap;
         }
         .filter-pill.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
 
         /* Buttons */
-        button { padding: 11px 14px; font-size: 12px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        button { padding: 10px 12px; font-size: 12px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
         .btn-in { background: var(--in-color); color: white; flex: 1; }
         .btn-out { background: var(--out-color); color: white; flex: 1; }
-        .btn-primary { background: #1e3a8a; color: white; width: 100%; padding: 12px; font-size: 13px; }
+        .btn-primary { background: #1e3a8a; color: white; width: 100%; padding: 11px; font-size: 13px; }
         body.dark-mode .btn-primary { background: var(--accent-blue); }
-        .btn-export { background: #0284c7; color: white; padding: 5px 10px; font-size: 10px; border-radius: 6px; }
+        .btn-export { background: #0284c7; color: white; padding: 4px 8px; font-size: 9px; border-radius: 6px; }
 
-        .action-btns { display: flex; gap: 4px; margin-top: 6px; }
-        .btn-sm { padding: 4px 8px; font-size: 10px; border-radius: 6px; }
+        .action-btns { display: flex; gap: 4px; margin-top: 4px; }
+        .btn-sm { padding: 3px 6px; font-size: 9px; border-radius: 5px; }
         .btn-edit { background: #f59e0b; color: white; }
         .btn-del { background: #ef4444; color: white; }
 
         /* History Table */
-        .table-wrapper { overflow-x: auto; margin-top: 10px; border-radius: 10px; border: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; }
-        th { background: var(--input-bg); color: var(--text-muted); font-weight: 700; padding: 9px 10px; border-bottom: 1px solid var(--border-color); }
-        td { padding: 9px 10px; border-bottom: 1px solid var(--border-color); color: var(--text-main); font-weight: 600; }
-        .badge-in { background: var(--in-bg); color: var(--in-color); padding: 2px 6px; border-radius: 10px; font-weight: 700; }
-        .badge-out { background: var(--out-bg); color: var(--out-color); padding: 2px 6px; border-radius: 10px; font-weight: 700; }
-        .empty-msg { font-size: 12px; color: var(--text-muted); text-align: center; padding: 14px 0; font-weight: 600; }
+        .table-wrapper { overflow-x: auto; margin-top: 8px; border-radius: 8px; border: 1px solid var(--border-color); }
+        table { width: 100%; border-collapse: collapse; font-size: 10px; text-align: left; }
+        th { background: var(--input-bg); color: var(--text-muted); font-weight: 700; padding: 8px; border-bottom: 1px solid var(--border-color); }
+        td { padding: 8px; border-bottom: 1px solid var(--border-color); color: var(--text-main); font-weight: 600; }
+        .badge-in { background: var(--in-bg); color: var(--in-color); padding: 2px 5px; border-radius: 8px; font-weight: 700; }
+        .badge-out { background: var(--out-bg); color: var(--out-color); padding: 2px 5px; border-radius: 8px; font-weight: 700; }
+        .empty-msg { font-size: 11px; color: var(--text-muted); text-align: center; padding: 10px 0; font-weight: 600; }
 
         /* Fixed Bottom Navigation Bar */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bottom-nav-bg);
             border-top: 1px solid var(--border-color); display: flex; justify-content: space-around;
-            align-items: center; padding: 8px 0; z-index: 1000; box-shadow: 0 -4px 15px rgba(0,0,0,0.04);
+            align-items: center; padding: 6px 0; z-index: 1000; box-shadow: 0 -4px 15px rgba(0,0,0,0.04);
         }
         .nav-item {
-            display: flex; flex-direction: column; align-items: center; font-size: 11px; font-weight: 700;
+            display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 700;
             color: var(--text-muted); text-decoration: none; cursor: pointer; flex: 1; border: none; background: none;
         }
         .nav-item.active { color: var(--accent-blue); }
-        .nav-icon { font-size: 18px; margin-bottom: 2px; }
+        .nav-icon { font-size: 16px; margin-bottom: 1px; }
 
         /* Footer */
-        .app-footer { text-align: center; margin-top: 24px; padding-bottom: 10px; font-size: 12px; font-weight: 700; color: var(--text-muted); }
+        .app-footer { text-align: center; margin-top: 20px; padding-bottom: 10px; font-size: 11px; font-weight: 700; color: var(--text-muted); }
         .app-footer span { color: var(--accent-blue); }
 
         /* A4 Printable Layout */
@@ -240,7 +240,7 @@
                 position: absolute; left: 0; top: 0; width: 100%;
                 color: #000 !important; background: #fff !important; padding: 0 !important;
             }
-            .bottom-nav, .btn-sm, .action-btns, .top-controls, .section-add-container, .toggle-btn, .quick-actions, .pill-filters, .modal-overlay, .search-box-wrapper { display: none !important; }
+            .bottom-nav, .btn-sm, .action-btns, .top-controls, .universal-add-container, .toggle-btn, .quick-actions, .pill-filters, .modal-overlay, .search-box-wrapper { display: none !important; }
             .pdf-watermark-header { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 10px; }
             .table-wrapper { border: 1px solid #000 !important; }
             th, td { border-bottom: 1px solid #000 !important; color: #000 !important; }
@@ -298,23 +298,20 @@
         </div>
     </div>
 
+    <!-- Universal Action Hub -->
+    <div class="universal-add-container" id="universalAddCont">
+        <button class="universal-add-btn" onclick="openUniversalCreateModal()">➕ <span id="lblCreateBtn">Create New Account / Head</span></button>
+    </div>
+
     <!-- ================= ACCOUNTS VIEW (Banks) ================= -->
     <div id="accountsView" class="view-panel active">
-        <div class="section-add-container" id="addBankCont">
-            <button class="section-add-btn" onclick="openCreateAccountModal()">➕ <span id="lblAddBank">Add Bank Account</span></button>
-        </div>
-
-        <h3 id="lblBankHeader" style="font-size: 13px; margin-bottom: 8px; color: var(--text-muted); font-weight: 800;">BANK ACCOUNTS</h3>
+        <h3 id="lblBankHeader" style="font-size: 12px; margin-bottom: 8px; color: var(--text-muted); font-weight: 800;">BANK & CASH ACCOUNTS</h3>
         <div id="banksList"></div>
     </div>
 
     <!-- ================= PARTIES & EXPENSES VIEW ================= -->
     <div id="personsView" class="view-panel">
-        <div class="section-add-container" id="addPartyCont">
-            <button class="section-add-btn" onclick="openCreatePartyModal()">➕ <span id="lblAddParty">Add Customer / Supplier / Expense Head</span></button>
-        </div>
-
-        <h3 id="lblClientHeader" style="font-size: 13px; margin-bottom: 8px; color: var(--text-muted); font-weight: 800;">CUSTOMERS, SUPPLIERS & EXPENSES</h3>
+        <h3 id="lblClientHeader" style="font-size: 12px; margin-bottom: 8px; color: var(--text-muted); font-weight: 800;">CUSTOMERS, SUPPLIERS & EXPENSES</h3>
         <div id="personsList"></div>
     </div>
 
@@ -358,7 +355,7 @@
         }, 1400);
     });
 
-    let state = JSON.parse(localStorage.getItem('ledgerAppV17')) || {
+    let state = JSON.parse(localStorage.getItem('ledgerAppV18')) || {
         banks: [],
         persons: [],
         transactions: [],
@@ -380,7 +377,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('ledgerAppV17', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV18', JSON.stringify(state));
         render();
         updateLanguageLabels();
     }
@@ -388,13 +385,12 @@
     function updateLanguageLabels() {
         const isHi = state.lang === 'HI';
         document.getElementById('langToggleBtn').innerText = isHi ? '🌐 English' : '🌐 हिंदी';
-        document.getElementById('lblTotalBal').innerText = isHi ? 'कुल उपलब्ध बैंक बैलेंस' : 'Total Available Bank Balance';
+        document.getElementById('lblTotalBal').innerText = isHi ? 'कुल उपलब्ध बैलेंस' : 'Total Available Balance';
         document.getElementById('lblGet').innerText = isHi ? 'लेना है (Get)' : 'You Will Get (Get)';
         document.getElementById('lblGive').innerText = isHi ? 'देना है (Give)' : 'You Will Give (Give)';
         document.getElementById('lblExp').innerText = isHi ? 'कुल खर्चा (Expense)' : 'Total Expense (Expense)';
-        document.getElementById('lblAddBank').innerText = isHi ? 'नया बैंक खाता जोड़ें' : 'Add Bank Account';
-        document.getElementById('lblAddParty').innerText = isHi ? 'कस्टमर, सप्लायर या खर्चा हेड जोड़ें' : 'Add Customer / Supplier / Expense Head';
-        document.getElementById('lblBankHeader').innerText = isHi ? 'बैंक खाते' : 'BANK ACCOUNTS';
+        document.getElementById('lblCreateBtn').innerText = isHi ? 'नया खाता या हेड बनाएं (+ Create)' : 'Create New Account / Head (+ Create)';
+        document.getElementById('lblBankHeader').innerText = isHi ? 'बैंक और कैश खाते' : 'BANK & CASH ACCOUNTS';
         document.getElementById('lblClientHeader').innerText = isHi ? 'कस्टमर, सप्लायर और खर्चे' : 'CUSTOMERS, SUPPLIERS & EXPENSES';
         document.getElementById('navLblAcc').innerText = isHi ? 'खाते' : 'Accounts';
         document.getElementById('navLblParties').innerText = isHi ? 'पार्टी और खर्चे' : 'Parties & Exp';
@@ -425,13 +421,15 @@
     }
 
     function onSearchFocus() {
-        document.querySelectorAll('.section-add-container').forEach(el => el.style.display = 'none');
+        const cont = document.getElementById('universalAddCont');
+        if(cont) cont.style.display = 'none';
     }
 
     function onSearchBlur() {
         const query = document.getElementById('globalSearch').value.trim();
         if(!query) {
-            document.querySelectorAll('.section-add-container').forEach(el => el.style.display = 'block');
+            const cont = document.getElementById('universalAddCont');
+            if(cont) cont.style.display = 'block';
         }
     }
 
@@ -444,66 +442,58 @@
         });
     }
 
-    // --- CREATE BANK ACCOUNT ---
-    function openCreateAccountModal() {
+    // --- UNIVERSAL CREATE MODAL (Sequential Flow: Name -> Type -> Op Bal) ---
+    function openUniversalCreateModal() {
         const isHi = state.lang === 'HI';
         const html = `
             <div class="form-group">
-                <label>${isHi ? 'बैंक खाता नाम (Bank Name)' : 'Bank Account Name'}</label>
-                <input type="text" id="newAccName" placeholder="${isHi ? 'जैसे: SBI, HDFC...' : 'e.g., SBI, HDFC...'}">
-            </div>
-            <div class="form-group">
-                <label>${isHi ? 'ओपनिंग बैलेंस (₹)' : 'Opening Balance (₹)'}</label>
-                <input type="number" id="newAccOpBal" value="0">
-            </div>
-            <button class="btn-primary" style="margin-top:10px;" onclick="submitCreateAccount()">${isHi ? 'सुरक्षित करें (Save)' : 'Save Account'}</button>
-        `;
-        openModal(isHi ? 'नया बैंक खाता जोड़ें' : 'Add Bank Account', html);
-    }
-
-    function submitCreateAccount() {
-        const name = document.getElementById('newAccName').value.trim();
-        const opBal = parseFloat(document.getElementById('newAccOpBal').value) || 0;
-        if(!name) return alert('Please enter bank name');
-
-        state.banks.push({ id: 'b_' + Date.now(), name, openingBalance: opBal, balance: opBal });
-        closeModal();
-        saveData();
-    }
-
-    // --- CREATE PARTY / EXPENSE (Sequential Flow: Name First, Then Type) ---
-    function openCreatePartyModal() {
-        const isHi = state.lang === 'HI';
-        const html = `
-            <div class="form-group">
-                <label>${isHi ? 'हेड या पार्टी का नाम (Name)' : 'Account / Head Name'}</label>
-                <input type="text" id="newPartyName" placeholder="${isHi ? 'जैसे: Rahul, Petrol, Rent...' : 'e.g., Rahul, Petrol, Rent...'}" autofocus>
+                <label>${isHi ? 'हेड या खाता नाम (Name)' : 'Account / Head Name'}</label>
+                <input type="text" id="uniName" placeholder="${isHi ? 'जैसे: SBI, Rahul, Petrol...' : 'e.g., SBI, Rahul, Petrol...'}" autofocus>
             </div>
             <div class="form-group">
                 <label>${isHi ? 'अकाउंट टाइप चुनें (Account Type)' : 'Select Account Type'}</label>
-                <select id="newPartyType">
+                <select id="uniType" onchange="onUniTypeChange()">
                     <option value="BANK">🏦 ${isHi ? 'बैंक खाता (Bank Account)' : 'Bank Account'}</option>
                     <option value="CASH">💵 ${isHi ? 'कैश इन हैंड (Cash in Hand)' : 'Cash in Hand'}</option>
-                    <option value="CUSTOMER">🤝 ${isHi ? 'कस्टमर / उधार लेने वाला (Customer / Debtor - Get)' : 'Customer / Debtor (To Get)'}</option>
-                    <option value="SUPPLIER">👥 ${isHi ? 'सप्लायर / उधार देने वाला (Supplier / Creditor - Give)' : 'Supplier / Creditor (To Give)'}</option>
-                    <option value="EXPENSE">🛒 ${isHi ? 'खर्चा हेड (Expense Head - Own Use, Rent, etc.)' : 'Expense Head (Own Use, Rent, Petrol)'}</option>
+                    <option value="CUSTOMER">🤝 ${isHi ? 'कस्टमर / उधार लेने वाला (Customer / Debtor)' : 'Customer / Debtor (To Get)'}</option>
+                    <option value="SUPPLIER">👥 ${isHi ? 'सप्लायर / उधार देने वाला (Supplier / Creditor)' : 'Supplier / Creditor (To Give)'}</option>
+                    <option value="EXPENSE">🛒 ${isHi ? 'खर्चा हेड (Expense Head - Rent, Petrol)' : 'Expense Head (Own Use, Rent, Petrol)'}</option>
                 </select>
             </div>
-            <button class="btn-primary" style="margin-top:10px;" onclick="submitCreateParty()">${isHi ? 'सुरक्षित करें (Save)' : 'Save Head'}</button>
+            <div class="form-group" id="uniOpBalGroup">
+                <label>${isHi ? 'ओपनिंग बैलेंस (₹)' : 'Opening Balance (₹)'}</label>
+                <input type="number" id="uniOpBal" value="0">
+            </div>
+            <button class="btn-primary" style="margin-top:8px;" onclick="submitUniversalCreate()">${isHi ? 'सुरक्षित करें (Save)' : 'Save Head'}</button>
         `;
-        openModal(isHi ? 'नया हेड या पार्टी बनाएं' : 'Create New Head / Party', html);
+        openModal(isHi ? 'नया खाता या हेड बनाएं' : 'Create New Account / Head', html);
     }
 
-    function submitCreateParty() {
-        const name = document.getElementById('newPartyName').value.trim();
-        const type = document.getElementById('newPartyType').value;
+    function onUniTypeChange() {
+        const val = document.getElementById('uniType').value;
+        const group = document.getElementById('uniOpBalGroup');
+        group.style.display = (val === 'BANK' || val === 'CASH') ? 'block' : 'none';
+    }
+
+    function submitUniversalCreate() {
+        const name = document.getElementById('uniName').value.trim();
+        const type = document.getElementById('uniType').value;
         if(!name) return alert('Please enter name');
 
         if(type === 'BANK' || type === 'CASH') {
-            state.banks.push({ id: 'b_' + Date.now(), name: `${name} (${type === 'BANK' ? 'Bank' : 'Cash'})`, openingBalance: 0, balance: 0 });
+            const opBal = parseFloat(document.getElementById('uniOpBal').value) || 0;
+            state.banks.push({ 
+                id: 'b_' + Date.now(), 
+                name: `${name} (${type === 'BANK' ? 'Bank' : 'Cash'})`, 
+                openingBalance: opBal, 
+                balance: opBal,
+                isCash: type === 'CASH'
+            });
+            switchTab('accounts');
         } else {
             let mappedType = (type === 'SUPPLIER') ? 'SUPPLIER' : ((type === 'CUSTOMER') ? 'CUSTOMER' : 'EXPENSE');
             state.persons.push({ id: 'p_' + Date.now(), name, type: mappedType });
+            switchTab('persons');
         }
 
         closeModal();
@@ -513,7 +503,7 @@
     function editBank(bankId) {
         const bank = state.banks.find(b => b.id === bankId);
         if(!bank) return;
-        const newName = prompt("Update Bank Name:", bank.name);
+        const newName = prompt("Update Name:", bank.name);
         if(newName === null) return;
         const newOpBal = prompt("Update Opening Balance (₹):", bank.openingBalance || bank.balance);
         if(newOpBal === null || isNaN(parseFloat(newOpBal))) return;
@@ -540,7 +530,7 @@
     }
 
     function deleteBank(bankId) {
-        if(!confirm("Delete this Bank Account?")) return;
+        if(!confirm("Delete this account?")) return;
         state.banks = state.banks.filter(b => b.id !== bankId);
         state.transactions = state.transactions.filter(t => t.bankId !== bankId);
         saveData();
@@ -607,9 +597,9 @@
             
             dropdownHtml = `
                 <div class="form-group">
-                    <label>${isHi ? 'बैंक खाता चुनें' : 'Select Bank Account'}</label>
+                    <label>${isHi ? 'खाता चुनें (Account)' : 'Select Account'}</label>
                     <select id="modal_select_bank">
-                        <option value="">-- Select Bank --</option>
+                        <option value="">-- Select Account --</option>
                         ${bankOpts}
                     </select>
                 </div>
@@ -634,7 +624,7 @@
                     <span class="chip" onclick="setQuickDate('modal_date', 'YESTERDAY', this)">${isHi ? 'बीता कल' : 'Yesterday'}</span>
                 </div>
             </div>
-            <button class="${actionType === 'IN' ? 'btn-in' : 'btn-out'}" style="width:100%; margin-top:10px;" onclick="submitModalTrans('${entityId}', '${entityType}', '${actionType}')">
+            <button class="${actionType === 'IN' ? 'btn-in' : 'btn-out'}" style="width:100%; margin-top:8px;" onclick="submitModalTrans('${entityId}', '${entityType}', '${actionType}')">
                 ${isHi ? 'एंट्री सेव करें' : 'Save Entry'}
             </button>
         `;
@@ -826,13 +816,13 @@
             document.getElementById('barGive').style.width = '50%';
         }
 
-        // --- Render Accounts (Banks) ---
+        // --- Render Accounts ---
         const banksList = document.getElementById('banksList');
         banksList.innerHTML = '';
         const isHi = state.lang === 'HI';
 
         if (state.banks.length === 0) {
-            banksList.innerHTML = `<p class="empty-msg">${isHi ? 'कोई बैंक खाता नहीं जोड़ा गया है।' : 'No bank accounts added yet.'}</p>`;
+            banksList.innerHTML = `<p class="empty-msg">${isHi ? 'कोई खाता नहीं जोड़ा गया है।' : 'No accounts added yet.'}</p>`;
         } else {
             state.banks.forEach(bank => {
                 const bankTrans = state.transactions.filter(t => t.bankId === bank.id);
@@ -850,15 +840,15 @@
                     </div>
                     <div class="card-header">
                         <div>
-                            <span class="card-title">🏦 ${bank.name}</span>
+                            <span class="card-title">${bank.name.includes('Cash') ? '💵' : '🏦'} ${bank.name}</span>
                             <div class="action-btns">
-                                <button class="btn-sm btn-edit" onclick="editBank('${bank.id}')">${isHi ? 'संपादित करें' : 'Edit'}</button>
+                                <button class="btn-sm btn-edit" onclick="editBank('${bank.id}')">${isHi ? 'संपादित' : 'Edit'}</button>
                                 <button class="btn-sm btn-del" onclick="deleteBank('${bank.id}')">${isHi ? 'हटाएं' : 'Delete'}</button>
                             </div>
                         </div>
                         <div>
                             <div class="card-balance">₹${bank.balance.toLocaleString('en-IN')}</div>
-                            <div style="font-size: 10px; color: var(--text-muted); text-align:right; font-weight:700;">${isHi ? 'वर्तमान शेष' : 'Current Bal'}</div>
+                            <div style="font-size: 9px; color: var(--text-muted); text-align:right; font-weight:700;">${isHi ? 'शेष' : 'Bal'}</div>
                         </div>
                     </div>
 
@@ -873,11 +863,11 @@
                         <button class="btn-quick-out" onclick="quickEntryModal('${bank.id}', 'BANK', 'OUT')">- OUT</button>
                     </div>
 
-                    <button class="toggle-btn" id="btn_body_bank_${bank.id}" onclick="toggleCardBody('body_bank_${bank.id}')">${isHi ? '🔽 इतिहास और एंट्री खोलें' : '🔽 Open Entry & History'}</button>
+                    <button class="toggle-btn" id="btn_body_bank_${bank.id}" onclick="toggleCardBody('body_bank_${bank.id}')">${isHi ? '🔽 इतिहास देखें' : '🔽 Open History'}</button>
 
                     <div class="card-body" id="body_bank_${bank.id}">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <span style="font-size:11px; font-weight:800; color:var(--text-muted);">STATEMENT</span>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span style="font-size:10px; font-weight:800; color:var(--text-muted);">STATEMENT</span>
                             <div>
                                 <button class="btn-export" onclick="exportToCSV('${bank.name}', state.transactions.filter(t => t.bankId === '${bank.id}'))">Excel</button>
                                 <button class="btn-export" onclick="exportToPDF('card_bank_${bank.id}')">PDF</button>
@@ -896,7 +886,7 @@
         personsList.innerHTML = '';
 
         if (state.persons.length === 0) {
-            personsList.innerHTML = `<p class="empty-msg">${isHi ? 'कोई कस्टमर या खर्चा हेड नहीं है।' : 'No parties or expense heads added yet.'}</p>`;
+            personsList.innerHTML = `<p class="empty-msg">${isHi ? 'कोई पार्टी या खर्चा हेड नहीं है।' : 'No parties or expense heads added yet.'}</p>`;
         } else {
             state.persons.forEach(person => {
                 const personTrans = state.transactions.filter(t => t.personId === person.id);
@@ -912,7 +902,7 @@
 
                 if (person.type === 'EXPENSE') {
                     cardClass = 'strip-expense';
-                    indicatorHtml = `<span class="pill-indicator pill-expense">${isHi ? 'खर्चा हेड' : 'Expense Head'}</span>`;
+                    indicatorHtml = `<span class="pill-indicator pill-expense">${isHi ? 'खर्चा हेड' : 'Expense'}</span>`;
                 }
 
                 const card = document.createElement('div');
@@ -927,7 +917,7 @@
                     <div class="card-header">
                         <div>
                             <span class="card-title">👤 ${person.name}</span>
-                            <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-top:2px;">Type: ${person.type}</div>
+                            <div style="font-size: 9px; color: var(--text-muted); font-weight: 700; margin-top:1px;">Type: ${person.type}</div>
                             <div class="action-btns">
                                 <button class="btn-sm btn-edit" onclick="editPerson('${person.id}')">${isHi ? 'संपादित' : 'Edit'}</button>
                                 <button class="btn-sm btn-del" onclick="deletePerson('${person.id}')">${isHi ? 'हटाएं' : 'Delete'}</button>
@@ -946,11 +936,11 @@
                         <button class="btn-quick-out" onclick="quickEntryModal('${person.id}', 'PERSON', 'OUT')">- OUT</button>
                     </div>
 
-                    <button class="toggle-btn" id="btn_body_person_${person.id}" onclick="toggleCardBody('body_person_${person.id}')">${isHi ? '🔽 इतिहास और एंट्री खोलें' : '🔽 Open Entry & History'}</button>
+                    <button class="toggle-btn" id="btn_body_person_${person.id}" onclick="toggleCardBody('body_person_${person.id}')">${isHi ? '🔽 इतिहास देखें' : '🔽 Open History'}</button>
 
                     <div class="card-body" id="body_person_${person.id}">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <span style="font-size:11px; font-weight:800; color:var(--text-muted);">STATEMENT</span>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span style="font-size:10px; font-weight:800; color:var(--text-muted);">STATEMENT</span>
                             <div>
                                 <button class="btn-export" onclick="exportToCSV('${person.name}', state.transactions.filter(t => t.personId === '${person.id}'))">Excel</button>
                                 <button class="btn-export" onclick="exportToPDF('card_person_${person.id}')">PDF</button>
@@ -973,7 +963,7 @@
             <tr data-type="${t.type}" data-date="${t.date}">
                 <td>
                     <strong>${t[relatedField]}</strong><br>
-                    <span style="font-size: 10px; color: var(--text-muted);">${t.description}</span>
+                    <span style="font-size: 9px; color: var(--text-muted);">${t.description}</span>
                 </td>
                 <td><span class="${t.type === 'IN' ? 'badge-in' : 'badge-out'}">${t.type}</span></td>
                 <td><strong>₹${t.amount.toLocaleString('en-IN')}</strong></td>
