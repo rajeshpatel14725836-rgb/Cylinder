@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f1f5f9;
+            --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
@@ -17,10 +17,11 @@
             --out-color: #ef4444;
             --out-bg: #fef2f2;
             --accent-blue: #2563eb;
-            --primary-gradient: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            --expense-color: #d97706;
+            --expense-bg: #fffbeb;
             --input-bg: #f8fafc;
             --bottom-nav-bg: #ffffff;
-            --card-radius: 18px;
+            --card-radius: 16px;
         }
 
         body.dark-mode {
@@ -31,12 +32,13 @@
             --border-color: #334155;
             --in-bg: rgba(16, 185, 129, 0.15);
             --out-bg: rgba(239, 68, 68, 0.15);
+            --expense-bg: rgba(217, 119, 6, 0.15);
             --input-bg: #0f172a;
             --bottom-nav-bg: #1e293b;
         }
 
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding: 12px 12px 90px 12px; transition: background-color 0.3s, color 0.3s; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 12px 12px 85px 12px; transition: background-color 0.3s, color 0.3s; }
         .container { max-width: 600px; margin: 0 auto; }
 
         /* Splash Screen */
@@ -57,7 +59,7 @@
         @keyframes fadeIn { to { opacity: 1; } }
 
         /* Top Bar & Instant Search */
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .brand-logo { font-size: 16px; font-weight: 800; color: #1e3a8a; display: flex; align-items: center; gap: 6px; }
         body.dark-mode .brand-logo { color: #60a5fa; }
         .theme-toggle {
@@ -66,9 +68,9 @@
             color: var(--text-main); box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
 
-        .search-box-wrapper { margin-bottom: 12px; }
+        .search-box-wrapper { margin-bottom: 14px; }
         .search-input {
-            width: 100%; padding: 10px 14px; font-size: 13px; font-weight: 600;
+            width: 100%; padding: 12px 16px; font-size: 13px; font-weight: 600;
             border: 1px solid var(--border-color); border-radius: 12px;
             background: var(--card-bg); color: var(--text-main); outline: none;
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
@@ -77,15 +79,15 @@
         /* Banner Dashboard */
         .dashboard-banner {
             background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: var(--card-radius); padding: 16px; margin-bottom: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border-radius: var(--card-radius); padding: 18px; margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
         }
         .main-balance-box {
-            text-align: center; padding-bottom: 10px;
-            border-bottom: 1px dashed var(--border-color); margin-bottom: 10px;
+            text-align: center; padding-bottom: 12px;
+            border-bottom: 1px dashed var(--border-color); margin-bottom: 12px;
         }
         .main-balance-box span { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .main-balance-box h2 { font-size: 28px; font-weight: 800; color: var(--accent-blue); margin-top: 2px; }
+        .main-balance-box h2 { font-size: 28px; font-weight: 800; color: var(--accent-blue); margin-top: 4px; }
 
         /* Visual Progress Bar */
         .visual-bar-container {
@@ -96,22 +98,44 @@
         .bar-give { background: var(--out-color); transition: width 0.3s; }
 
         .sub-analytics { display: flex; justify-content: space-around; text-align: center; }
-        .sub-box span { font-size: 11px; font-weight: 700; color: var(--text-muted); }
-        .sub-box h4 { font-size: 15px; font-weight: 800; margin-top: 2px; }
+        .sub-box { flex: 1; }
+        .sub-box span { font-size: 10px; font-weight: 700; color: var(--text-muted); }
+        .sub-box h4 { font-size: 14px; font-weight: 800; margin-top: 2px; }
 
         .view-panel { display: none; }
         .view-panel.active { display: block; }
 
+        /* Collapsible Add Box */
+        .add-box-container { margin-bottom: 16px; }
+        .add-toggle-btn {
+            width: 100%; padding: 12px; background: var(--card-bg); border: 1px dashed var(--accent-blue);
+            color: var(--accent-blue); font-size: 13px; font-weight: 800; border-radius: 12px; cursor: pointer;
+            text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: all 0.2s;
+        }
+        .add-toggle-btn:active { transform: scale(0.98); }
+        .add-box {
+            background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px;
+            border-radius: var(--card-radius); margin-top: 8px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+            display: none;
+        }
+        .add-box.open { display: block; animation: fadeInDown 0.3s ease; }
+        .add-box.hidden-on-search { display: none !important; }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* Cards & Styling */
-        .add-box, .card {
+        .card {
             background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px;
             border-radius: var(--card-radius); margin-bottom: 14px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
-            position: relative; overflow: hidden; transition: all 0.3s ease;
+            position: relative; overflow: hidden;
         }
-        .add-box.hidden-on-search { display: none !important; }
         
         .card.strip-in { border-left: 5px solid var(--in-color); }
         .card.strip-out { border-left: 5px solid var(--out-color); }
+        .card.strip-expense { border-left: 5px solid var(--expense-color); }
         .card.strip-neutral { border-left: 5px solid var(--accent-blue); }
 
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
@@ -123,29 +147,30 @@
         }
         .pill-get { background: var(--in-bg); color: var(--in-color); }
         .pill-give { background: var(--out-bg); color: var(--out-color); }
+        .pill-expense { background: var(--expense-bg); color: var(--expense-color); }
 
         .bank-mini-stats {
             display: flex; gap: 8px; margin-top: 10px; font-size: 11px; color: var(--text-muted); font-weight: 700;
-            background: var(--input-bg); padding: 6px 10px; border-radius: 8px;
+            background: var(--input-bg); padding: 8px 12px; border-radius: 10px;
         }
 
         /* Direct Quick Action Buttons */
         .quick-actions { display: flex; gap: 8px; margin-top: 12px; }
-        .btn-quick-in { background: var(--in-color); color: white; border: none; padding: 8px 12px; font-size: 12px; font-weight: 700; border-radius: 10px; flex: 1; cursor: pointer; }
-        .btn-quick-out { background: var(--out-color); color: white; border: none; padding: 8px 12px; font-size: 12px; font-weight: 700; border-radius: 10px; flex: 1; cursor: pointer; }
+        .btn-quick-in { background: var(--in-color); color: white; border: none; padding: 9px 12px; font-size: 12px; font-weight: 700; border-radius: 10px; flex: 1; cursor: pointer; }
+        .btn-quick-out { background: var(--out-color); color: white; border: none; padding: 9px 12px; font-size: 12px; font-weight: 700; border-radius: 10px; flex: 1; cursor: pointer; }
 
         .toggle-btn {
             background: var(--input-bg); color: var(--accent-blue); border: 1px solid var(--border-color);
-            padding: 8px 12px; font-size: 11px; font-weight: 700; border-radius: 10px; cursor: pointer;
+            padding: 9px 12px; font-size: 11px; font-weight: 700; border-radius: 10px; cursor: pointer;
             margin-top: 10px; width: 100%; text-align: center;
         }
         .card-body { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border-color); }
         .card-body.open { display: block; }
 
-        .form-group { margin-bottom: 10px; }
+        .form-group { margin-bottom: 12px; }
         label { display: block; font-size: 10px; margin-bottom: 4px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         input, select {
-            width: 100%; padding: 10px 12px; font-size: 13px; border: 1px solid var(--border-color);
+            width: 100%; padding: 11px 14px; font-size: 13px; border: 1px solid var(--border-color);
             border-radius: 10px; outline: none; background-color: var(--input-bg); color: var(--text-main); font-weight: 600;
         }
 
@@ -166,41 +191,41 @@
         /* Date Quick Chips */
         .date-chips { display: flex; gap: 6px; margin-top: 6px; }
         .chip {
-            padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 8px;
+            padding: 5px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;
             background: var(--input-bg); border: 1px solid var(--border-color); cursor: pointer; color: var(--text-muted);
         }
         .chip.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
 
         /* Quick Filter Pills */
-        .pill-filters { display: flex; gap: 6px; overflow-x: auto; margin-top: 10px; padding-bottom: 4px; }
+        .pill-filters { display: flex; gap: 6px; overflow-x: auto; margin-top: 12px; padding-bottom: 4px; }
         .filter-pill {
-            background: var(--input-bg); border: 1px solid var(--border-color); padding: 5px 10px; font-size: 11px;
+            background: var(--input-bg); border: 1px solid var(--border-color); padding: 6px 12px; font-size: 11px;
             font-weight: 700; border-radius: 16px; cursor: pointer; color: var(--text-muted); white-space: nowrap;
         }
         .filter-pill.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
 
         /* Buttons */
         .btn-group { display: flex; gap: 8px; margin-top: 10px; }
-        button { padding: 10px 14px; font-size: 12px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        button { padding: 11px 14px; font-size: 12px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
         .btn-in { background: var(--in-color); color: white; flex: 1; }
         .btn-out { background: var(--out-color); color: white; flex: 1; }
-        .btn-primary { background: #1e3a8a; color: white; width: 100%; }
+        .btn-primary { background: #1e3a8a; color: white; width: 100%; padding: 12px; font-size: 13px; }
         body.dark-mode .btn-primary { background: var(--accent-blue); }
-        .btn-export { background: #0284c7; color: white; padding: 4px 8px; font-size: 10px; border-radius: 6px; }
+        .btn-export { background: #0284c7; color: white; padding: 5px 10px; font-size: 10px; border-radius: 6px; }
 
-        .action-btns { display: flex; gap: 4px; margin-top: 4px; }
-        .btn-sm { padding: 3px 8px; font-size: 10px; border-radius: 6px; }
+        .action-btns { display: flex; gap: 4px; margin-top: 6px; }
+        .btn-sm { padding: 4px 8px; font-size: 10px; border-radius: 6px; }
         .btn-edit { background: #f59e0b; color: white; }
         .btn-del { background: #ef4444; color: white; }
 
         /* History Table */
         .table-wrapper { overflow-x: auto; margin-top: 10px; border-radius: 10px; border: 1px solid var(--border-color); }
         table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; }
-        th { background: var(--input-bg); color: var(--text-muted); font-weight: 700; padding: 8px 10px; border-bottom: 1px solid var(--border-color); }
-        td { padding: 8px 10px; border-bottom: 1px solid var(--border-color); color: var(--text-main); font-weight: 600; }
+        th { background: var(--input-bg); color: var(--text-muted); font-weight: 700; padding: 9px 10px; border-bottom: 1px solid var(--border-color); }
+        td { padding: 9px 10px; border-bottom: 1px solid var(--border-color); color: var(--text-main); font-weight: 600; }
         .badge-in { background: var(--in-bg); color: var(--in-color); padding: 2px 6px; border-radius: 10px; font-weight: 700; }
         .badge-out { background: var(--out-bg); color: var(--out-color); padding: 2px 6px; border-radius: 10px; font-weight: 700; }
-        .empty-msg { font-size: 12px; color: var(--text-muted); text-align: center; padding: 12px 0; font-weight: 600; }
+        .empty-msg { font-size: 12px; color: var(--text-muted); text-align: center; padding: 14px 0; font-weight: 600; }
 
         /* Fixed Bottom Navigation Bar */
         .bottom-nav {
@@ -216,7 +241,7 @@
         .nav-icon { font-size: 18px; margin-bottom: 2px; }
 
         /* Footer */
-        .app-footer { text-align: center; margin-top: 20px; padding-top: 10px; font-size: 12px; font-weight: 700; color: var(--text-muted); }
+        .app-footer { text-align: center; margin-top: 24px; padding-bottom: 10px; font-size: 12px; font-weight: 700; color: var(--text-muted); }
         .app-footer span { color: var(--accent-blue); }
 
         /* A4 Printable Layout */
@@ -228,7 +253,7 @@
                 position: absolute; left: 0; top: 0; width: 100%;
                 color: #000 !important; background: #fff !important; padding: 0 !important;
             }
-            .bottom-nav, .btn-sm, .action-btns, .theme-toggle, .add-box, .toggle-btn, .quick-actions, .pill-filters, .modal-overlay, .search-box-wrapper { display: none !important; }
+            .bottom-nav, .btn-sm, .action-btns, .theme-toggle, .add-box-container, .toggle-btn, .quick-actions, .pill-filters, .modal-overlay, .search-box-wrapper { display: none !important; }
             .pdf-watermark-header { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 10px; }
             .table-wrapper { border: 1px solid #000 !important; }
             th, td { border-bottom: 1px solid #000 !important; color: #000 !important; }
@@ -270,44 +295,59 @@
 
         <div class="sub-analytics">
             <div class="sub-box">
-                <span>You Will Get (लेना है)</span>
+                <span>You Will Get (लेना)</span>
                 <h4 id="dashTotalGet" style="color: var(--in-color);">₹0</h4>
             </div>
-            <div class="sub-box" style="border-left: 1px solid var(--border-color); padding-left: 10px;">
-                <span>You Will Give (देना है)</span>
+            <div class="sub-box" style="border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); padding: 0 4px;">
+                <span>You Will Give (देना)</span>
                 <h4 id="dashTotalGive" style="color: var(--out-color);">₹0</h4>
+            </div>
+            <div class="sub-box">
+                <span>Total Expense (खर्चा)</span>
+                <h4 id="dashTotalExpense" style="color: var(--expense-color);">₹0</h4>
             </div>
         </div>
     </div>
 
     <!-- ================= ACCOUNTS VIEW ================= -->
     <div id="accountsView" class="view-panel active">
-        <div class="add-box" id="addBankBox">
-            <h4 style="font-size: 14px; margin-bottom: 8px; font-weight: 800;">Add New Bank Account</h4>
-            <div class="form-group">
-                <input type="text" id="newBankName" placeholder="Bank Name (e.g., Bank of Baroda)">
+        <div class="add-box-container" id="addBankContainer">
+            <button class="add-toggle-btn" onclick="toggleAddBox('addBankBox')">➕ Add New Bank Account</button>
+            <div class="add-box" id="addBankBox">
+                <div class="form-group">
+                    <input type="text" id="newBankName" placeholder="Bank Name (e.g., Bank of Baroda)">
+                </div>
+                <div class="form-group">
+                    <input type="number" id="newBankBalance" placeholder="Opening Balance (₹)">
+                </div>
+                <button class="btn-primary" onclick="addBank()">Save Bank Account</button>
             </div>
-            <div class="form-group">
-                <input type="number" id="newBankBalance" placeholder="Opening Balance (₹)">
-            </div>
-            <button class="btn-primary" onclick="addBank()">Add Bank Account</button>
         </div>
 
-        <h3 style="font-size: 13px; margin-bottom: 8px; color: var(--text-muted); font-weight: 800;">YOUR BANKS</h3>
+        <h3 style="font-size: 13px; margin-bottom: 10px; color: var(--text-muted); font-weight: 800;">YOUR BANKS</h3>
         <div id="banksList"></div>
     </div>
 
     <!-- ================= PERSONS VIEW ================= -->
     <div id="personsView" class="view-panel">
-        <div class="add-box" id="addPersonBox">
-            <h4 style="font-size: 14px; margin-bottom: 8px; font-weight: 800;">Add New Person / Head</h4>
-            <div class="form-group">
-                <input type="text" id="newPersonName" placeholder="Person / Head Name (e.g., Ashutosh)">
+        <div class="add-box-container" id="addPersonContainer">
+            <button class="add-toggle-btn" onclick="toggleAddBox('addPersonBox')">➕ Add New Person / Head</button>
+            <div class="add-box" id="addPersonBox">
+                <div class="form-group">
+                    <input type="text" id="newPersonName" placeholder="Person / Head Name (e.g., Ashutosh, Petrol)">
+                </div>
+                <div class="form-group">
+                    <label>Account Nature Type</label>
+                    <select id="newPersonType">
+                        <option value="PARTY">Party / Udhaar (Customer, Supplier)</option>
+                        <option value="EXPENSE">Expense / Kharcha (Own Use, Petrol, etc.)</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="addPerson()">Save Person / Head</button>
             </div>
-            <button class="btn-primary" onclick="addPerson()">Add Person</button>
         </div>
 
-        <h3 style="font-size: 13px; margin-bottom: 8px; color: var(--text-muted); font-weight: 800;">PERSONS / HEADS</h3>
+        <h3 style="font-size: 13px; margin-bottom: 10px; color: var(--text-muted); font-weight: 800;">PERSONS / HEADS</h3>
         <div id="personsList"></div>
     </div>
 
@@ -352,7 +392,7 @@
         }, 1600);
     });
 
-    let state = JSON.parse(localStorage.getItem('ledgerAppV12')) || {
+    let state = JSON.parse(localStorage.getItem('ledgerAppV14')) || {
         banks: [],
         persons: [],
         transactions: [],
@@ -368,7 +408,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('ledgerAppV12', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV14', JSON.stringify(state));
         render();
     }
 
@@ -383,6 +423,11 @@
             document.getElementById('nav_persons').classList.add('active');
             document.getElementById('personsView').classList.add('active');
         }
+    }
+
+    function toggleAddBox(boxId) {
+        const box = document.getElementById(boxId);
+        box.classList.toggle('open');
     }
 
     function toggleCardBody(id) {
@@ -407,21 +452,20 @@
         document.getElementById('entryModal').style.display = 'none';
     }
 
-    // Search focus/blur handling to hide creation boxes
     function onSearchFocus() {
-        const addBank = document.getElementById('addBankBox');
-        const addPerson = document.getElementById('addPersonBox');
-        if(addBank) addBank.classList.add('hidden-on-search');
-        if(addPerson) addPerson.classList.add('hidden-on-search');
+        const addBankCont = document.getElementById('addBankContainer');
+        const addPersonCont = document.getElementById('addPersonContainer');
+        if(addBankCont) addBankCont.classList.add('hidden-on-search');
+        if(addPersonCont) addPersonCont.classList.add('hidden-on-search');
     }
 
     function onSearchBlur() {
         const query = document.getElementById('globalSearch').value.trim();
         if(!query) {
-            const addBank = document.getElementById('addBankBox');
-            const addPerson = document.getElementById('addPersonBox');
-            if(addBank) addBank.classList.remove('hidden-on-search');
-            if(addPerson) addPerson.classList.remove('hidden-on-search');
+            const addBankCont = document.getElementById('addBankContainer');
+            const addPersonCont = document.getElementById('addPersonContainer');
+            if(addBankCont) addBankCont.classList.remove('hidden-on-search');
+            if(addPersonCont) addPersonCont.classList.remove('hidden-on-search');
         }
     }
 
@@ -442,6 +486,7 @@
         state.banks.push({ id: 'b_' + Date.now(), name, openingBalance, balance: openingBalance });
         document.getElementById('newBankName').value = '';
         document.getElementById('newBankBalance').value = '';
+        document.getElementById('addBankBox').classList.remove('open');
         saveData();
     }
 
@@ -483,17 +528,19 @@
 
     function addPerson() {
         const name = document.getElementById('newPersonName').value.trim();
-        if(!name) return alert('Please enter Person Name');
+        const type = document.getElementById('newPersonType').value;
+        if(!name) return alert('Please enter Person / Head Name');
         
-        state.persons.push({ id: 'p_' + Date.now(), name });
+        state.persons.push({ id: 'p_' + Date.now(), name, type });
         document.getElementById('newPersonName').value = '';
+        document.getElementById('addPersonBox').classList.remove('open');
         saveData();
     }
 
     function editPerson(personId) {
         const person = state.persons.find(p => p.id === personId);
         if(!person) return;
-        const newName = prompt("Update Person Name:", person.name);
+        const newName = prompt("Update Name:", person.name);
         if(!newName || !newName.trim()) return;
 
         person.name = newName.trim();
@@ -502,22 +549,22 @@
     }
 
     function deletePerson(personId) {
-        if(!confirm("Are you sure you want to delete this Person?")) return;
+        if(!confirm("Are you sure you want to delete this Head?")) return;
         state.persons = state.persons.filter(p => p.id !== personId);
         state.transactions = state.transactions.filter(t => t.personId !== personId);
         saveData();
     }
 
-    // Dropdown create handlers inside modal
     function handleModalPersonDropdown() {
         const selectElem = document.getElementById('modal_select_person');
         if (selectElem && selectElem.value === 'CREATE_NEW') {
             const newName = prompt("Enter new Person / Head Name:");
             if (newName && newName.trim()) {
+                const newType = prompt("Type 'P' for Party/Udhaar or 'E' for Expense:", "P");
+                const pType = (newType && newType.toUpperCase() === 'E') ? 'EXPENSE' : 'PARTY';
                 const newPersonId = 'p_' + Date.now();
-                state.persons.push({ id: newPersonId, name: newName.trim() });
+                state.persons.push({ id: newPersonId, name: newName.trim(), type: pType });
                 saveData();
-                // Refresh modal content dynamically with updated person list
                 const activeEntityId = selectElem.getAttribute('data-entity-id');
                 const activeAction = selectElem.getAttribute('data-action');
                 quickEntryModal(activeEntityId, 'BANK', activeAction);
@@ -538,7 +585,6 @@
                 const opBal = parseFloat(newBankBal) || 0;
                 state.banks.push({ id: newBankId, name: newName.trim(), openingBalance: opBal, balance: opBal });
                 saveData();
-                // Refresh modal content dynamically with updated bank list
                 const activeEntityId = selectElem.getAttribute('data-entity-id');
                 const activeAction = selectElem.getAttribute('data-action');
                 quickEntryModal(activeEntityId, 'PERSON', activeAction);
@@ -573,14 +619,14 @@
         if(entityType === 'BANK') {
             const bank = state.banks.find(b => b.id === entityId);
             entityName = bank ? bank.name : "";
-            let personOpts = state.persons.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-            personOpts += `<option value="CREATE_NEW" style="font-weight: bold; color: var(--accent-blue);">+ Create New Person</option>`;
+            let personOpts = state.persons.map(p => `<option value="${p.id}">${p.name} (${p.type === 'EXPENSE' ? 'Expense' : 'Party'})</option>`).join('');
+            personOpts += `<option value="CREATE_NEW" style="font-weight: bold; color: var(--accent-blue);">+ Create New Person/Head</option>`;
             
             dropdownHtml = `
                 <div class="form-group">
                     <label>Select Person/Head</label>
                     <select id="modal_select_person" data-entity-id="${entityId}" data-action="${actionType}" onchange="handleModalPersonDropdown()">
-                        <option value="">-- Select Person --</option>
+                        <option value="">-- Select Person/Head --</option>
                         ${personOpts}
                     </select>
                 </div>
@@ -643,7 +689,7 @@
         }
 
         if(!amount || amount <= 0) return alert('Please enter valid amount');
-        if(!bankId || !personId) return alert('Please select both Bank and Person');
+        if(!bankId || !personId) return alert('Please select both Bank and Person/Head');
 
         const bank = state.banks.find(b => b.id === bankId);
         const person = state.persons.find(p => p.id === personId);
@@ -717,7 +763,6 @@
         document.body.removeChild(link);
     }
 
-    // Direct A4 Printable PDF Clean Save
     function exportToPDF(containerId) {
         const targetElement = document.getElementById(containerId);
         if (!targetElement) return alert('No data to export!');
@@ -754,14 +799,13 @@
     }
 
     function render() {
-        // --- Calculate Dashboard ---
         let totalNet = 0;
         state.banks.forEach(b => {
             recalculateBankBalance(b.id);
             totalNet += b.balance;
         });
 
-        let totalGet = 0, totalGive = 0;
+        let totalGet = 0, totalGive = 0, totalExpense = 0;
         state.persons.forEach(person => {
             const personTrans = state.transactions.filter(t => t.personId === person.id);
             let pBal = 0;
@@ -769,15 +813,26 @@
                 if(t.type === 'OUT') pBal += t.amount;
                 if(t.type === 'IN') pBal -= t.amount;
             });
-            if(pBal > 0) totalGet += pBal;
-            if(pBal < 0) totalGive += Math.abs(pBal);
+
+            if (person.type === 'EXPENSE') {
+                // For expense heads, total absolute outgoing is total expense incurred
+                let expSum = 0;
+                personTrans.forEach(t => {
+                    if(t.type === 'OUT') expSum += t.amount;
+                    if(t.type === 'IN') expSum -= t.amount;
+                });
+                if(expSum > 0) totalExpense += expSum;
+            } else {
+                if(pBal > 0) totalGet += pBal;
+                if(pBal < 0) totalGive += Math.abs(pBal);
+            }
         });
 
         document.getElementById('dashTotalBalance').innerText = '₹' + totalNet.toLocaleString('en-IN');
         document.getElementById('dashTotalGet').innerText = '₹' + totalGet.toLocaleString('en-IN');
         document.getElementById('dashTotalGive').innerText = '₹' + totalGive.toLocaleString('en-IN');
+        document.getElementById('dashTotalExpense').innerText = '₹' + totalExpense.toLocaleString('en-IN');
 
-        // Visual Progress Bar Logic
         const totalSum = totalGet + totalGive;
         if(totalSum > 0) {
             document.getElementById('barGet').style.width = ((totalGet / totalSum) * 100) + '%';
@@ -851,12 +906,12 @@
             });
         }
 
-        // --- Render Persons View ---
+        // --- Render Persons / Heads View ---
         const personsList = document.getElementById('personsList');
         personsList.innerHTML = '';
 
         if (state.persons.length === 0) {
-            personsList.innerHTML = '<p class="empty-msg">No persons added yet.</p>';
+            personsList.innerHTML = '<p class="empty-msg">No persons or expense heads added yet.</p>';
         } else {
             state.persons.forEach(person => {
                 const personTrans = state.transactions.filter(t => t.personId === person.id);
@@ -867,8 +922,16 @@
                     if(t.type === 'IN') personBalance -= t.amount;
                 });
 
+                let cardClass = personBalance >= 0 ? 'strip-in' : 'strip-out';
+                let indicatorHtml = `<span class="pill-indicator ${personBalance >= 0 ? 'pill-get' : 'pill-give'}">${personBalance >= 0 ? 'To Get' : 'To Give'}</span>`;
+
+                if (person.type === 'EXPENSE') {
+                    cardClass = 'strip-expense';
+                    indicatorHtml = `<span class="pill-indicator pill-expense">Expense Head</span>`;
+                }
+
                 const card = document.createElement('div');
-                card.className = `card ${personBalance >= 0 ? 'strip-in' : 'strip-out'}`;
+                card.className = `card ${cardClass}`;
                 card.id = `card_person_${person.id}`;
                 card.innerHTML = `
                     <div class="pdf-watermark-header">
@@ -879,18 +942,17 @@
                     <div class="card-header">
                         <div>
                             <span class="card-title">👤 ${person.name}</span>
+                            <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-top:2px;">Type: ${person.type === 'EXPENSE' ? 'Expense / Kharcha' : 'Party / Udhaar'}</div>
                             <div class="action-btns">
                                 <button class="btn-sm btn-edit" onclick="editPerson('${person.id}')">Edit</button>
                                 <button class="btn-sm btn-del" onclick="deletePerson('${person.id}')">Delete</button>
                             </div>
                         </div>
                         <div style="text-align:right;">
-                            <span class="card-balance" style="color: ${personBalance >= 0 ? 'var(--in-color)' : 'var(--out-color)'}">
-                                ${personBalance >= 0 ? '₹' + personBalance.toLocaleString('en-IN') : '₹' + Math.abs(personBalance).toLocaleString('en-IN')}
+                            <span class="card-balance" style="color: ${person.type === 'EXPENSE' ? 'var(--expense-color)' : (personBalance >= 0 ? 'var(--in-color)' : 'var(--out-color)')}">
+                                ₹${Math.abs(personBalance).toLocaleString('en-IN')}
                             </span><br>
-                            <span class="pill-indicator ${personBalance >= 0 ? 'pill-get' : 'pill-give'}">
-                                ${personBalance >= 0 ? 'To Get' : 'To Give'}
-                            </span>
+                            ${indicatorHtml}
                         </div>
                     </div>
 
