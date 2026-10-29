@@ -355,7 +355,7 @@
         }, 1400);
     });
 
-    let state = JSON.parse(localStorage.getItem('ledgerAppV18')) || {
+    let state = JSON.parse(localStorage.getItem('ledgerAppV19')) || {
         banks: [],
         persons: [],
         transactions: [],
@@ -377,7 +377,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('ledgerAppV18', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV19', JSON.stringify(state));
         render();
         updateLanguageLabels();
     }
@@ -442,7 +442,7 @@
         });
     }
 
-    // --- UNIVERSAL CREATE MODAL (Sequential Flow: Name -> Type -> Op Bal) ---
+    // --- UNIVERSAL CREATE MODAL ---
     function openUniversalCreateModal() {
         const isHi = state.lang === 'HI';
         const html = `
@@ -498,6 +498,51 @@
 
         closeModal();
         saveData();
+    }
+
+    // --- QUICK IN/OUT ENTRY WITH "+ CREATE NEW" IN DROPDOWN ---
+    function onDropdownChange(selectElem, entityId, entityType, actionType) {
+        if(selectElem.value === 'CREATE_NEW') {
+            selectElem.value = "";
+            openQuickCreateFromModal(entityId, entityType, actionType);
+        }
+    }
+
+    function openQuickCreateFromModal(entityId, entityType, actionType) {
+        const isHi = state.lang === 'HI';
+        const html = `
+            <div class="form-group">
+                <label>${isHi ? 'नया नाम (Name)' : 'New Name'}</label>
+                <input type="text" id="quickNewName" placeholder="${isHi ? 'नाम दर्ज करें...' : 'Enter name...'}" autofocus>
+            </div>
+            <div class="form-group">
+                <label>${isHi ? 'अकाउंट टाइप' : 'Account Type'}</label>
+                <select id="quickNewType">
+                    <option value="CUSTOMER">🤝 ${isHi ? 'कस्टमर (Customer)' : 'Customer'}</option>
+                    <option value="SUPPLIER">👥 ${isHi ? 'सप्लायर (Supplier)' : 'Supplier'}</option>
+                    <option value="EXPENSE">🛒 ${isHi ? 'खर्चा (Expense)' : 'Expense'}</option>
+                </select>
+            </div>
+            <button class="btn-primary" style="margin-top:8px;" onclick="submitQuickCreateFromModal('${entityId}', '${entityType}', '${actionType}')">${isHi ? 'बनाकर चुनें' : 'Create & Select'}</button>
+        `;
+        openModal(isHi ? 'नया हेड जोड़ें' : 'Add New Head', html);
+    }
+
+    function submitQuickCreateFromModal(entityId, entityType, actionType) {
+        const name = document.getElementById('quickNewName').value.trim();
+        const type = document.getElementById('quickNewType').value;
+        if(!name) return alert('Please enter name');
+
+        const newId = 'p_' + Date.now();
+        state.persons.push({ id: newId, name, type });
+        saveData();
+
+        // Wapas entry modal par wapas jayein aur naye wale ko select kar lein
+        quickEntryModal(entityId, entityType, actionType);
+        setTimeout(() => {
+            const sel = document.getElementById('modal_select_person');
+            if(sel) sel.value = newId;
+        }, 50);
     }
 
     function editBank(bankId) {
@@ -584,8 +629,9 @@
             dropdownHtml = `
                 <div class="form-group">
                     <label>${isHi ? 'पार्टी या खर्चा चुनें' : 'Select Party / Expense'}</label>
-                    <select id="modal_select_person">
+                    <select id="modal_select_person" onchange="onDropdownChange(this, '${entityId}', '${entityType}', '${actionType}')">
                         <option value="">-- Select --</option>
+                        <option value="CREATE_NEW" style="color:var(--accent-blue); font-weight:800;">➕ ${isHi ? '+ नया हेड बनाएं (Create New)' : '+ Create New Party/Expense'}</option>
                         ${personOpts}
                     </select>
                 </div>
