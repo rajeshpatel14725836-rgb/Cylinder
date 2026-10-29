@@ -105,11 +105,11 @@
         .view-panel { display: none; }
         .view-panel.active { display: block; }
 
-        /* Section Add Buttons */
+        /* Action Buttons */
         .section-add-container { margin-bottom: 16px; }
         .section-add-btn {
-            width: 100%; padding: 12px; background: var(--card-bg); border: 1px dashed var(--accent-blue);
-            color: var(--accent-blue); font-size: 13px; font-weight: 800; border-radius: 12px; cursor: pointer;
+            width: 100%; padding: 13px; background: var(--card-bg); border: 1px dashed var(--accent-blue);
+            color: var(--accent-blue); font-size: 13px; font-weight: 800; border-radius: 14px; cursor: pointer;
             text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: all 0.2s;
         }
         .section-add-btn:active { transform: scale(0.98); }
@@ -273,7 +273,7 @@
     <!-- Summary Dashboard -->
     <div class="dashboard-banner">
         <div class="main-balance-box">
-            <span id="lblTotalBal">Total Available Balance (Cash + Bank)</span>
+            <span id="lblTotalBal">Total Available Balance</span>
             <h2 id="dashTotalBalance">₹0</h2>
         </div>
         
@@ -298,21 +298,14 @@
         </div>
     </div>
 
-    <!-- ================= ACCOUNTS VIEW (Cash & Banks Separate) ================= -->
+    <!-- ================= ACCOUNTS VIEW (Banks) ================= -->
     <div id="accountsView" class="view-panel active">
         <div class="section-add-container" id="addBankCont">
-            <button class="section-add-btn" onclick="openCreateAccountModal('BANK')">➕ <span id="lblAddBank">Add Bank Account</span></button>
+            <button class="section-add-btn" onclick="openCreateAccountModal()">➕ <span id="lblAddBank">Add Bank Account</span></button>
         </div>
 
         <h3 id="lblBankHeader" style="font-size: 13px; margin-bottom: 8px; color: var(--text-muted); font-weight: 800;">BANK ACCOUNTS</h3>
         <div id="banksList"></div>
-
-        <div class="section-add-container" id="addCashCont" style="margin-top: 16px;">
-            <button class="section-add-btn" onclick="openCreateAccountModal('CASH')">➕ <span id="lblAddCash">Add Cash in Hand Account</span></button>
-        </div>
-
-        <h3 id="lblCashHeader" style="font-size: 13px; margin-bottom: 8px; color: var(--text-muted); font-weight: 800;">CASH IN HAND</h3>
-        <div id="cashList"></div>
     </div>
 
     <!-- ================= PARTIES & EXPENSES VIEW ================= -->
@@ -365,9 +358,8 @@
         }, 1400);
     });
 
-    let state = JSON.parse(localStorage.getItem('ledgerAppV16')) || {
+    let state = JSON.parse(localStorage.getItem('ledgerAppV17')) || {
         banks: [],
-        cashAccounts: [],
         persons: [],
         transactions: [],
         darkMode: false,
@@ -388,7 +380,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('ledgerAppV16', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV17', JSON.stringify(state));
         render();
         updateLanguageLabels();
     }
@@ -396,19 +388,17 @@
     function updateLanguageLabels() {
         const isHi = state.lang === 'HI';
         document.getElementById('langToggleBtn').innerText = isHi ? '🌐 English' : '🌐 हिंदी';
-        document.getElementById('lblTotalBal').innerText = isHi ? 'कुल उपलब्ध शेष (कैश + बैंक)' : 'Total Available Balance (Cash + Bank)';
+        document.getElementById('lblTotalBal').innerText = isHi ? 'कुल उपलब्ध बैंक बैलेंस' : 'Total Available Bank Balance';
         document.getElementById('lblGet').innerText = isHi ? 'लेना है (Get)' : 'You Will Get (Get)';
         document.getElementById('lblGive').innerText = isHi ? 'देना है (Give)' : 'You Will Give (Give)';
         document.getElementById('lblExp').innerText = isHi ? 'कुल खर्चा (Expense)' : 'Total Expense (Expense)';
         document.getElementById('lblAddBank').innerText = isHi ? 'नया बैंक खाता जोड़ें' : 'Add Bank Account';
-        document.getElementById('lblAddCash').innerText = isHi ? 'नया कैश इन हैंड जोड़ें' : 'Add Cash in Hand Account';
         document.getElementById('lblAddParty').innerText = isHi ? 'कस्टमर, सप्लायर या खर्चा हेड जोड़ें' : 'Add Customer / Supplier / Expense Head';
         document.getElementById('lblBankHeader').innerText = isHi ? 'बैंक खाते' : 'BANK ACCOUNTS';
-        document.getElementById('lblCashHeader').innerText = isHi ? 'कैश इन हैंड' : 'CASH IN HAND';
         document.getElementById('lblClientHeader').innerText = isHi ? 'कस्टमर, सप्लायर और खर्चे' : 'CUSTOMERS, SUPPLIERS & EXPENSES';
         document.getElementById('navLblAcc').innerText = isHi ? 'खाते' : 'Accounts';
         document.getElementById('navLblParties').innerText = isHi ? 'पार्टी और खर्चे' : 'Parties & Exp';
-        document.getElementById('globalSearch').placeholder = isHi ? '🔎 बैंक, कैश या पार्टी खोजें...' : '🔎 Search Account, Customer or Expense...';
+        document.getElementById('globalSearch').placeholder = isHi ? '🔎 बैंक, कस्टमर या खर्चा खोजें...' : '🔎 Search Account, Customer or Expense...';
     }
 
     function switchTab(tab) {
@@ -454,59 +444,54 @@
         });
     }
 
-    // --- CREATE ACCOUNTS (BANK & CASH SEPARATE) ---
-    function openCreateAccountModal(accType) {
+    // --- CREATE BANK ACCOUNT ---
+    function openCreateAccountModal() {
         const isHi = state.lang === 'HI';
-        const isBank = accType === 'BANK';
-        const titleText = isBank ? (isHi ? 'नया बैंक खाता जोड़ें' : 'Add Bank Account') : (isHi ? 'नया कैश इन हैंड जोड़ें' : 'Add Cash in Hand');
-        
         const html = `
             <div class="form-group">
-                <label>${isBank ? (isHi ? 'बैंक का नाम (Bank Name)' : 'Bank Name') : (isHi ? 'कैश अकाउंट का नाम (Cash Account Name)' : 'Cash Account Name')}</label>
-                <input type="text" id="newAccName" placeholder="${isBank ? 'e.g., SBI, HDFC...' : 'e.g., Shop Cash, Pocket Cash...'}">
+                <label>${isHi ? 'बैंक खाता नाम (Bank Name)' : 'Bank Account Name'}</label>
+                <input type="text" id="newAccName" placeholder="${isHi ? 'जैसे: SBI, HDFC...' : 'e.g., SBI, HDFC...'}">
             </div>
             <div class="form-group">
                 <label>${isHi ? 'ओपनिंग बैलेंस (₹)' : 'Opening Balance (₹)'}</label>
                 <input type="number" id="newAccOpBal" value="0">
             </div>
-            <button class="btn-primary" style="margin-top:10px;" onclick="submitCreateAccount('${accType}')">${isHi ? 'सुरक्षित करें (Save)' : 'Save Account'}</button>
+            <button class="btn-primary" style="margin-top:10px;" onclick="submitCreateAccount()">${isHi ? 'सुरक्षित करें (Save)' : 'Save Account'}</button>
         `;
-        openModal(titleText, html);
+        openModal(isHi ? 'नया बैंक खाता जोड़ें' : 'Add Bank Account', html);
     }
 
-    function submitCreateAccount(accType) {
+    function submitCreateAccount() {
         const name = document.getElementById('newAccName').value.trim();
         const opBal = parseFloat(document.getElementById('newAccOpBal').value) || 0;
-        if(!name) return alert('Please enter name');
+        if(!name) return alert('Please enter bank name');
 
-        if(accType === 'BANK') {
-            state.banks.push({ id: 'b_' + Date.now(), name, openingBalance: opBal, balance: opBal, type: 'BANK' });
-        } else {
-            state.cashAccounts.push({ id: 'c_' + Date.now(), name, openingBalance: opBal, balance: opBal, type: 'CASH' });
-        }
-
+        state.banks.push({ id: 'b_' + Date.now(), name, openingBalance: opBal, balance: opBal });
         closeModal();
         saveData();
     }
 
-    // --- CREATE PARTY / EXPENSE ---
+    // --- CREATE PARTY / EXPENSE (Sequential Flow: Name First, Then Type) ---
     function openCreatePartyModal() {
         const isHi = state.lang === 'HI';
         const html = `
             <div class="form-group">
-                <label>${isHi ? 'हेड या पार्टी का प्रकार' : 'Account Nature Type'}</label>
-                <select id="newPartyType">
-                    <option value="PARTY">🤝 ${isHi ? 'कस्टमर / सप्लायर (Customer / Supplier - Udhaar)' : 'Customer / Supplier (Udhaar / Party)'}</option>
-                    <option value="EXPENSE">🛒 ${isHi ? 'खर्चा हेड (Expense / Own Use / Rent)' : 'Expense Head (Own Use, Petrol, Rent)'}</option>
-                </select>
+                <label>${isHi ? 'हेड या पार्टी का नाम (Name)' : 'Account / Head Name'}</label>
+                <input type="text" id="newPartyName" placeholder="${isHi ? 'जैसे: Rahul, Petrol, Rent...' : 'e.g., Rahul, Petrol, Rent...'}" autofocus>
             </div>
             <div class="form-group">
-                <label>${isHi ? 'नाम (Name)' : 'Name'}</label>
-                <input type="text" id="newPartyName" placeholder="${isHi ? 'जैसे: Rahul, Petrol...' : 'e.g., Rahul, Petrol...'}">
+                <label>${isHi ? 'अकाउंट टाइप चुनें (Account Type)' : 'Select Account Type'}</label>
+                <select id="newPartyType">
+                    <option value="BANK">🏦 ${isHi ? 'बैंक खाता (Bank Account)' : 'Bank Account'}</option>
+                    <option value="CASH">💵 ${isHi ? 'कैश इन हैंड (Cash in Hand)' : 'Cash in Hand'}</option>
+                    <option value="CUSTOMER">🤝 ${isHi ? 'कस्टमर / उधार लेने वाला (Customer / Debtor - Get)' : 'Customer / Debtor (To Get)'}</option>
+                    <option value="SUPPLIER">👥 ${isHi ? 'सप्लायर / उधार देने वाला (Supplier / Creditor - Give)' : 'Supplier / Creditor (To Give)'}</option>
+                    <option value="EXPENSE">🛒 ${isHi ? 'खर्चा हेड (Expense Head - Own Use, Rent, etc.)' : 'Expense Head (Own Use, Rent, Petrol)'}</option>
+                </select>
             </div>
-            <button class="btn-primary" style="margin-top:10px;" onclick="submitCreateParty()">${isHi ? 'सुरक्षित करें (Save)' : 'Save'}</button>
+            <button class="btn-primary" style="margin-top:10px;" onclick="submitCreateParty()">${isHi ? 'सुरक्षित करें (Save)' : 'Save Head'}</button>
         `;
-        openModal(isHi ? 'कस्टमर / सप्लायर / खर्चा जोड़ें' : 'Add Customer / Supplier / Expense', html);
+        openModal(isHi ? 'नया हेड या पार्टी बनाएं' : 'Create New Head / Party', html);
     }
 
     function submitCreateParty() {
@@ -514,50 +499,50 @@
         const type = document.getElementById('newPartyType').value;
         if(!name) return alert('Please enter name');
 
-        state.persons.push({ id: 'p_' + Date.now(), name, type });
+        if(type === 'BANK' || type === 'CASH') {
+            state.banks.push({ id: 'b_' + Date.now(), name: `${name} (${type === 'BANK' ? 'Bank' : 'Cash'})`, openingBalance: 0, balance: 0 });
+        } else {
+            let mappedType = (type === 'SUPPLIER') ? 'SUPPLIER' : ((type === 'CUSTOMER') ? 'CUSTOMER' : 'EXPENSE');
+            state.persons.push({ id: 'p_' + Date.now(), name, type: mappedType });
+        }
+
         closeModal();
         saveData();
     }
 
-    function editAccount(accId, isCash) {
-        const list = isCash ? state.cashAccounts : state.banks;
-        const acc = list.find(a => a.id === accId);
-        if(!acc) return;
-        const newName = prompt("Update Name:", acc.name);
+    function editBank(bankId) {
+        const bank = state.banks.find(b => b.id === bankId);
+        if(!bank) return;
+        const newName = prompt("Update Bank Name:", bank.name);
         if(newName === null) return;
-        const newOpBal = prompt("Update Opening Balance (₹):", acc.openingBalance || acc.balance);
+        const newOpBal = prompt("Update Opening Balance (₹):", bank.openingBalance || bank.balance);
         if(newOpBal === null || isNaN(parseFloat(newOpBal))) return;
 
-        acc.name = newName.trim() || acc.name;
-        acc.openingBalance = parseFloat(newOpBal);
+        bank.name = newName.trim() || bank.name;
+        bank.openingBalance = parseFloat(newOpBal);
         
-        recalculateAccountBalance(acc.id, isCash);
-        state.transactions.forEach(t => { if(t.bankId === accId) t.bankName = acc.name; });
+        recalculateBankBalance(bank.id);
+        state.transactions.forEach(t => { if(t.bankId === bankId) t.bankName = bank.name; });
         saveData();
     }
 
-    function recalculateAccountBalance(accId, isCash) {
-        const list = isCash ? state.cashAccounts : state.banks;
-        const acc = list.find(a => a.id === accId);
-        if(!acc) return;
-        let bal = acc.openingBalance || 0;
+    function recalculateBankBalance(bankId) {
+        const bank = state.banks.find(b => b.id === bankId);
+        if(!bank) return;
+        let bal = bank.openingBalance || 0;
         state.transactions.forEach(t => {
-            if(t.bankId === accId) {
+            if(t.bankId === bankId) {
                 if(t.type === 'IN') bal += t.amount;
                 if(t.type === 'OUT') bal -= t.amount;
             }
         });
-        acc.balance = bal;
+        bank.balance = bal;
     }
 
-    function deleteAccount(accId, isCash) {
-        if(!confirm("Delete this account?")) return;
-        if(isCash) {
-            state.cashAccounts = state.cashAccounts.filter(c => c.id !== accId);
-        } else {
-            state.banks = state.banks.filter(b => b.id !== accId);
-        }
-        state.transactions = state.transactions.filter(t => t.bankId !== accId);
+    function deleteBank(bankId) {
+        if(!confirm("Delete this Bank Account?")) return;
+        state.banks = state.banks.filter(b => b.id !== bankId);
+        state.transactions = state.transactions.filter(t => t.bankId !== bankId);
         saveData();
     }
 
@@ -601,14 +586,14 @@
         let dropdownHtml = "";
         const isHi = state.lang === 'HI';
 
-        if(entityType === 'ACCOUNT') {
-            const acc = [...state.banks, ...state.cashAccounts].find(a => a.id === entityId);
-            entityName = acc ? acc.name : "";
-            let personOpts = state.persons.map(p => `<option value="${p.id}">${p.name} (${p.type === 'EXPENSE' ? 'Expense' : 'Customer'})</option>`).join('');
+        if(entityType === 'BANK') {
+            const bank = state.banks.find(b => b.id === entityId);
+            entityName = bank ? bank.name : "";
+            let personOpts = state.persons.map(p => `<option value="${p.id}">${p.name} (${p.type})</option>`).join('');
             
             dropdownHtml = `
                 <div class="form-group">
-                    <label>${isHi ? 'कस्टमर या खर्चा चुनें' : 'Select Customer / Expense'}</label>
+                    <label>${isHi ? 'पार्टी या खर्चा चुनें' : 'Select Party / Expense'}</label>
                     <select id="modal_select_person">
                         <option value="">-- Select --</option>
                         ${personOpts}
@@ -618,15 +603,14 @@
         } else {
             const person = state.persons.find(p => p.id === entityId);
             entityName = person ? person.name : "";
-            let allAccs = [...state.banks, ...state.cashAccounts];
-            let accOpts = allAccs.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+            let bankOpts = state.banks.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
             
             dropdownHtml = `
                 <div class="form-group">
-                    <label>${isHi ? 'बैंक या कैश खाता चुनें' : 'Select Bank / Cash Account'}</label>
+                    <label>${isHi ? 'बैंक खाता चुनें' : 'Select Bank Account'}</label>
                     <select id="modal_select_bank">
-                        <option value="">-- Select Account --</option>
-                        ${accOpts}
+                        <option value="">-- Select Bank --</option>
+                        ${bankOpts}
                     </select>
                 </div>
             `;
@@ -640,7 +624,7 @@
             </div>
             <div class="form-group">
                 <label>${isHi ? 'विवरण / नोट (Description)' : 'Description / Note'}</label>
-                <input type="text" id="modal_desc" placeholder="e.g., Petrol, Bill, Cash...">
+                <input type="text" id="modal_desc" placeholder="e.g., Cash given, Bill paid...">
             </div>
             <div class="form-group">
                 <label>${isHi ? 'तारीख (Date)' : 'Date'}</label>
@@ -664,7 +648,7 @@
         const customDate = document.getElementById('modal_date').value;
 
         let bankId = "", personId = "";
-        if(entityType === 'ACCOUNT') {
+        if(entityType === 'BANK') {
             bankId = entityId;
             personId = document.getElementById('modal_select_person').value;
         } else {
@@ -675,10 +659,8 @@
         if(!amount || amount <= 0) return alert('Please enter valid amount');
         if(!bankId || !personId) return alert('Please select required account/head');
 
-        const allAccs = [...state.banks, ...state.cashAccounts];
-        const bank = allAccs.find(a => a.id === bankId);
+        const bank = state.banks.find(b => b.id === bankId);
         const person = state.persons.find(p => p.id === personId);
-        const isCashAcc = state.cashAccounts.some(c => c.id === bankId);
 
         let formattedDate = new Date().toLocaleDateString('en-IN');
         if(customDate) {
@@ -697,7 +679,7 @@
             date: formattedDate
         });
 
-        recalculateAccountBalance(bank.id, isCashAcc);
+        recalculateBankBalance(bank.id);
         closeModal();
         saveData();
     }
@@ -716,8 +698,7 @@
         t.amount = newAmount;
         t.description = newDesc.trim() || 'No description';
 
-        const isCashAcc = state.cashAccounts.some(c => c.id === t.bankId);
-        recalculateAccountBalance(t.bankId, isCashAcc);
+        recalculateBankBalance(t.bankId);
         saveData();
     }
 
@@ -729,8 +710,7 @@
         const bankId = state.transactions[transIndex].bankId;
         state.transactions.splice(transIndex, 1);
         
-        const isCashAcc = state.cashAccounts.some(c => c.id === bankId);
-        recalculateAccountBalance(bankId, isCashAcc);
+        recalculateBankBalance(bankId);
         saveData();
     }
 
@@ -803,12 +783,8 @@
 
         let totalNet = 0;
         state.banks.forEach(b => {
-            recalculateAccountBalance(b.id, false);
+            recalculateBankBalance(b.id);
             totalNet += b.balance;
-        });
-        state.cashAccounts.forEach(c => {
-            recalculateAccountBalance(c.id, true);
-            totalNet += c.balance;
         });
 
         let totalGet = 0, totalGive = 0, totalExpense = 0;
@@ -827,6 +803,9 @@
                     if(t.type === 'IN') expSum -= t.amount;
                 });
                 if(expSum > 0) totalExpense += expSum;
+            } else if (person.type === 'SUPPLIER') {
+                if(pBal > 0) totalGive += pBal;
+                if(pBal < 0) totalGet += Math.abs(pBal);
             } else {
                 if(pBal > 0) totalGet += pBal;
                 if(pBal < 0) totalGive += Math.abs(pBal);
@@ -847,17 +826,77 @@
             document.getElementById('barGive').style.width = '50%';
         }
 
-        // --- Render Banks & Cash ---
-        renderAccountList('banksList', state.banks, false);
-        renderAccountList('cashList', state.cashAccounts, true);
-
-        // --- Render Clients & Expenses ---
-        const personsList = document.getElementById('personsList');
-        personsList.innerHTML = '';
+        // --- Render Accounts (Banks) ---
+        const banksList = document.getElementById('banksList');
+        banksList.innerHTML = '';
         const isHi = state.lang === 'HI';
 
+        if (state.banks.length === 0) {
+            banksList.innerHTML = `<p class="empty-msg">${isHi ? 'कोई बैंक खाता नहीं जोड़ा गया है।' : 'No bank accounts added yet.'}</p>`;
+        } else {
+            state.banks.forEach(bank => {
+                const bankTrans = state.transactions.filter(t => t.bankId === bank.id);
+                let bIn = 0, bOut = 0;
+                bankTrans.forEach(t => { if(t.type==='IN') bIn+=t.amount; else bOut+=t.amount; });
+
+                const card = document.createElement('div');
+                card.className = 'card strip-neutral';
+                card.id = `card_bank_${bank.id}`;
+                card.innerHTML = `
+                    <div class="pdf-watermark-header">
+                        <h2 style="font-size:24px; color:#1e3a8a; font-weight:800;">KHATA</h2>
+                        <p style="font-size:12px; color:#64748b;">Concept by Rajesh | Statement for ${bank.name}</p>
+                        <p style="font-size:11px; color:#64748b;">Generated Date: ${new Date().toLocaleDateString('en-IN')}</p>
+                    </div>
+                    <div class="card-header">
+                        <div>
+                            <span class="card-title">🏦 ${bank.name}</span>
+                            <div class="action-btns">
+                                <button class="btn-sm btn-edit" onclick="editBank('${bank.id}')">${isHi ? 'संपादित करें' : 'Edit'}</button>
+                                <button class="btn-sm btn-del" onclick="deleteBank('${bank.id}')">${isHi ? 'हटाएं' : 'Delete'}</button>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="card-balance">₹${bank.balance.toLocaleString('en-IN')}</div>
+                            <div style="font-size: 10px; color: var(--text-muted); text-align:right; font-weight:700;">${isHi ? 'वर्तमान शेष' : 'Current Bal'}</div>
+                        </div>
+                    </div>
+
+                    <div class="bank-mini-stats">
+                        <span>Op: ₹${(bank.openingBalance || 0).toLocaleString('en-IN')}</span> |
+                        <span style="color:var(--in-color);">IN: ₹${bIn.toLocaleString('en-IN')}</span> |
+                        <span style="color:var(--out-color);">OUT: ₹${bOut.toLocaleString('en-IN')}</span>
+                    </div>
+
+                    <div class="quick-actions">
+                        <button class="btn-quick-in" onclick="quickEntryModal('${bank.id}', 'BANK', 'IN')">+ IN</button>
+                        <button class="btn-quick-out" onclick="quickEntryModal('${bank.id}', 'BANK', 'OUT')">- OUT</button>
+                    </div>
+
+                    <button class="toggle-btn" id="btn_body_bank_${bank.id}" onclick="toggleCardBody('body_bank_${bank.id}')">${isHi ? '🔽 इतिहास और एंट्री खोलें' : '🔽 Open Entry & History'}</button>
+
+                    <div class="card-body" id="body_bank_${bank.id}">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <span style="font-size:11px; font-weight:800; color:var(--text-muted);">STATEMENT</span>
+                            <div>
+                                <button class="btn-export" onclick="exportToCSV('${bank.name}', state.transactions.filter(t => t.bankId === '${bank.id}'))">Excel</button>
+                                <button class="btn-export" onclick="exportToPDF('card_bank_${bank.id}')">PDF</button>
+                            </div>
+                        </div>
+
+                        ${renderHistoryTable(bankTrans, 'personName', `table_bank_${bank.id}`)}
+                    </div>
+                `;
+                banksList.appendChild(card);
+            });
+        }
+
+        // --- Render Parties & Expenses ---
+        const personsList = document.getElementById('personsList');
+        personsList.innerHTML = '';
+
         if (state.persons.length === 0) {
-            personsList.innerHTML = `<p class="empty-msg">${isHi ? 'कोई कस्टमर या खर्चा हेड नहीं है।' : 'No customers or expense heads added yet.'}</p>`;
+            personsList.innerHTML = `<p class="empty-msg">${isHi ? 'कोई कस्टमर या खर्चा हेड नहीं है।' : 'No parties or expense heads added yet.'}</p>`;
         } else {
             state.persons.forEach(person => {
                 const personTrans = state.transactions.filter(t => t.personId === person.id);
@@ -888,7 +927,7 @@
                     <div class="card-header">
                         <div>
                             <span class="card-title">👤 ${person.name}</span>
-                            <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-top:2px;">Type: ${person.type === 'EXPENSE' ? (isHi ? 'खर्चा (Expense)' : 'Expense') : (isHi ? 'कस्टमर (Customer)' : 'Customer / Supplier')}</div>
+                            <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-top:2px;">Type: ${person.type}</div>
                             <div class="action-btns">
                                 <button class="btn-sm btn-edit" onclick="editPerson('${person.id}')">${isHi ? 'संपादित' : 'Edit'}</button>
                                 <button class="btn-sm btn-del" onclick="deletePerson('${person.id}')">${isHi ? 'हटाएं' : 'Delete'}</button>
@@ -924,73 +963,6 @@
                 personsList.appendChild(card);
             });
         }
-    }
-
-    function renderAccountList(containerId, listData, isCash) {
-        const container = document.getElementById(containerId);
-        container.innerHTML = '';
-        const isHi = state.lang === 'HI';
-
-        if (listData.length === 0) {
-            container.innerHTML = `<p class="empty-msg">${isHi ? 'कोई खाता नहीं जोड़ा गया है।' : 'No accounts added yet.'}</p>`;
-            return;
-        }
-
-        listData.forEach(acc => {
-            const accTrans = state.transactions.filter(t => t.bankId === acc.id);
-            let bIn = 0, bOut = 0;
-            accTrans.forEach(t => { if(t.type==='IN') bIn+=t.amount; else bOut+=t.amount; });
-
-            const card = document.createElement('div');
-            card.className = 'card strip-neutral';
-            card.id = `card_acc_${acc.id}`;
-            card.innerHTML = `
-                <div class="pdf-watermark-header">
-                    <h2 style="font-size:24px; color:#1e3a8a; font-weight:800;">KHATA</h2>
-                    <p style="font-size:12px; color:#64748b;">Concept by Rajesh | Statement for ${acc.name}</p>
-                    <p style="font-size:11px; color:#64748b;">Generated Date: ${new Date().toLocaleDateString('en-IN')}</p>
-                </div>
-                <div class="card-header">
-                    <div>
-                        <span class="card-title">${isCash ? '💵' : '🏦'} ${acc.name}</span>
-                        <div class="action-btns">
-                            <button class="btn-sm btn-edit" onclick="editAccount('${acc.id}', ${isCash})">${isHi ? 'संपादित' : 'Edit'}</button>
-                            <button class="btn-sm btn-del" onclick="deleteAccount('${acc.id}', ${isCash})">${isHi ? 'हटाएं' : 'Delete'}</button>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="card-balance">₹${acc.balance.toLocaleString('en-IN')}</div>
-                        <div style="font-size: 10px; color: var(--text-muted); text-align:right; font-weight:700;">${isHi ? 'वर्तमान शेष' : 'Current Bal'}</div>
-                    </div>
-                </div>
-
-                <div class="bank-mini-stats">
-                    <span>Op: ₹${(acc.openingBalance || 0).toLocaleString('en-IN')}</span> |
-                    <span style="color:var(--in-color);">IN: ₹${bIn.toLocaleString('en-IN')}</span> |
-                    <span style="color:var(--out-color);">OUT: ₹${bOut.toLocaleString('en-IN')}</span>
-                </div>
-
-                <div class="quick-actions">
-                    <button class="btn-quick-in" onclick="quickEntryModal('${acc.id}', 'ACCOUNT', 'IN')">+ IN</button>
-                    <button class="btn-quick-out" onclick="quickEntryModal('${acc.id}', 'ACCOUNT', 'OUT')">- OUT</button>
-                </div>
-
-                <button class="toggle-btn" id="btn_body_acc_${acc.id}" onclick="toggleCardBody('body_acc_${acc.id}')">${isHi ? '🔽 इतिहास और एंट्री खोलें' : '🔽 Open Entry & History'}</button>
-
-                <div class="card-body" id="body_acc_${acc.id}">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <span style="font-size:11px; font-weight:800; color:var(--text-muted);">STATEMENT</span>
-                        <div>
-                            <button class="btn-export" onclick="exportToCSV('${acc.name}', state.transactions.filter(t => t.bankId === '${acc.id}'))">Excel</button>
-                            <button class="btn-export" onclick="exportToPDF('card_acc_${acc.id}')">PDF</button>
-                        </div>
-                    </div>
-
-                    ${renderHistoryTable(accTrans, 'personName', `table_acc_${acc.id}`)}
-                </div>
-            `;
-            container.appendChild(card);
-        });
     }
 
     function renderHistoryTable(transactions, relatedField, containerId) {
