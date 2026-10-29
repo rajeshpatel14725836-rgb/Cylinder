@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Khata - Personal Ledger & Bank Manager</title>
+    <title>Khata - Professional Ledger & FinTech Manager</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -58,13 +58,14 @@
         @keyframes popIn { to { opacity: 1; transform: scale(1); } }
         @keyframes fadeIn { to { opacity: 1; } }
 
-        /* Top Bar & Instant Search */
+        /* Top Bar & Toggles */
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .brand-logo { font-size: 16px; font-weight: 800; color: #1e3a8a; display: flex; align-items: center; gap: 6px; }
         body.dark-mode .brand-logo { color: #60a5fa; }
-        .theme-toggle {
+        .top-controls { display: flex; gap: 6px; }
+        .toggle-chip {
             background: var(--card-bg); border: 1px solid var(--border-color);
-            padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 700;
+            padding: 6px 10px; border-radius: 20px; cursor: pointer; font-size: 11px; font-weight: 700;
             color: var(--text-main); box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
 
@@ -89,7 +90,6 @@
         .main-balance-box span { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         .main-balance-box h2 { font-size: 28px; font-weight: 800; color: var(--accent-blue); margin-top: 4px; }
 
-        /* Visual Progress Bar */
         .visual-bar-container {
             height: 8px; width: 100%; background: var(--input-bg); border-radius: 4px;
             overflow: hidden; display: flex; margin-bottom: 12px; border: 1px solid var(--border-color);
@@ -105,26 +105,14 @@
         .view-panel { display: none; }
         .view-panel.active { display: block; }
 
-        /* Collapsible Add Box */
-        .add-box-container { margin-bottom: 16px; }
-        .add-toggle-btn {
-            width: 100%; padding: 12px; background: var(--card-bg); border: 1px dashed var(--accent-blue);
-            color: var(--accent-blue); font-size: 13px; font-weight: 800; border-radius: 12px; cursor: pointer;
-            text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: all 0.2s;
+        /* Universal Add Container */
+        .universal-add-container { margin-bottom: 16px; }
+        .universal-add-btn {
+            width: 100%; padding: 14px; background: var(--primary-gradient, linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)); 
+            color: white; font-size: 14px; font-weight: 800; border-radius: 14px; cursor: pointer;
+            text-align: center; border: none; box-shadow: 0 4px 12px rgba(37,99,235,0.2); transition: all 0.2s;
         }
-        .add-toggle-btn:active { transform: scale(0.98); }
-        .add-box {
-            background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px;
-            border-radius: var(--card-radius); margin-top: 8px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
-            display: none;
-        }
-        .add-box.open { display: block; animation: fadeInDown 0.3s ease; }
-        .add-box.hidden-on-search { display: none !important; }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .universal-add-btn:active { transform: scale(0.98); }
 
         /* Cards & Styling */
         .card {
@@ -154,7 +142,7 @@
             background: var(--input-bg); padding: 8px 12px; border-radius: 10px;
         }
 
-        /* Direct Quick Action Buttons */
+        /* Quick Action Buttons */
         .quick-actions { display: flex; gap: 8px; margin-top: 12px; }
         .btn-quick-in { background: var(--in-color); color: white; border: none; padding: 9px 12px; font-size: 12px; font-weight: 700; border-radius: 10px; flex: 1; cursor: pointer; }
         .btn-quick-out { background: var(--out-color); color: white; border: none; padding: 9px 12px; font-size: 12px; font-weight: 700; border-radius: 10px; flex: 1; cursor: pointer; }
@@ -205,7 +193,6 @@
         .filter-pill.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
 
         /* Buttons */
-        .btn-group { display: flex; gap: 8px; margin-top: 10px; }
         button { padding: 11px 14px; font-size: 12px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
         .btn-in { background: var(--in-color); color: white; flex: 1; }
         .btn-out { background: var(--out-color); color: white; flex: 1; }
@@ -253,7 +240,7 @@
                 position: absolute; left: 0; top: 0; width: 100%;
                 color: #000 !important; background: #fff !important; padding: 0 !important;
             }
-            .bottom-nav, .btn-sm, .action-btns, .theme-toggle, .add-box-container, .toggle-btn, .quick-actions, .pill-filters, .modal-overlay, .search-box-wrapper { display: none !important; }
+            .bottom-nav, .btn-sm, .action-btns, .top-controls, .universal-add-container, .toggle-btn, .quick-actions, .pill-filters, .modal-overlay, .search-box-wrapper { display: none !important; }
             .pdf-watermark-header { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 10px; }
             .table-wrapper { border: 1px solid #000 !important; }
             th, td { border-bottom: 1px solid #000 !important; color: #000 !important; }
@@ -272,22 +259,24 @@
 <div class="container">
     <div class="top-bar">
         <span class="brand-logo">📖 KHATA</span>
-        <button class="theme-toggle" onclick="toggleDarkMode()">🌙 / ☀️ Mode</button>
+        <div class="top-controls">
+            <button class="toggle-chip" id="langToggleBtn" onclick="toggleLanguage()">🌐 हिंदी</button>
+            <button class="toggle-chip" onclick="toggleDarkMode()">🌙 / ☀️</button>
+        </div>
     </div>
 
     <!-- Instant Search Bar -->
     <div class="search-box-wrapper">
-        <input type="text" id="globalSearch" class="search-input" placeholder="🔎 Search Bank or Person Name..." onfocus="onSearchFocus()" onblur="onSearchBlur()" onkeyup="filterCards()">
+        <input type="text" id="globalSearch" class="search-input" placeholder="🔎 Search Account, Customer or Expense..." onfocus="onSearchFocus()" onblur="onSearchBlur()" onkeyup="filterCards()">
     </div>
 
     <!-- Summary Dashboard -->
     <div class="dashboard-banner">
         <div class="main-balance-box">
-            <span>Total Available Bank Balance</span>
+            <span id="lblTotalBal">Total Available Balance</span>
             <h2 id="dashTotalBalance">₹0</h2>
         </div>
         
-        <!-- Visual Progress Bar -->
         <div class="visual-bar-container">
             <div id="barGet" class="bar-get" style="width: 50%;"></div>
             <div id="barGive" class="bar-give" style="width: 50%;"></div>
@@ -295,59 +284,34 @@
 
         <div class="sub-analytics">
             <div class="sub-box">
-                <span>You Will Get (लेना)</span>
+                <span id="lblGet">You Will Get (लेना)</span>
                 <h4 id="dashTotalGet" style="color: var(--in-color);">₹0</h4>
             </div>
             <div class="sub-box" style="border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); padding: 0 4px;">
-                <span>You Will Give (देना)</span>
+                <span id="lblGive">You Will Give (देना)</span>
                 <h4 id="dashTotalGive" style="color: var(--out-color);">₹0</h4>
             </div>
             <div class="sub-box">
-                <span>Total Expense (खर्चा)</span>
+                <span id="lblExp">Total Expense (खर्चा)</span>
                 <h4 id="dashTotalExpense" style="color: var(--expense-color);">₹0</h4>
             </div>
         </div>
     </div>
 
+    <!-- Universal Action Hub -->
+    <div class="universal-add-container" id="universalAddCont">
+        <button class="universal-add-btn" onclick="openUniversalCreateModal()">➕ <span id="lblCreateBtn">Create New Account / Head</span></button>
+    </div>
+
     <!-- ================= ACCOUNTS VIEW ================= -->
     <div id="accountsView" class="view-panel active">
-        <div class="add-box-container" id="addBankContainer">
-            <button class="add-toggle-btn" onclick="toggleAddBox('addBankBox')">➕ Add New Bank Account</button>
-            <div class="add-box" id="addBankBox">
-                <div class="form-group">
-                    <input type="text" id="newBankName" placeholder="Bank Name (e.g., Bank of Baroda)">
-                </div>
-                <div class="form-group">
-                    <input type="number" id="newBankBalance" placeholder="Opening Balance (₹)">
-                </div>
-                <button class="btn-primary" onclick="addBank()">Save Bank Account</button>
-            </div>
-        </div>
-
-        <h3 style="font-size: 13px; margin-bottom: 10px; color: var(--text-muted); font-weight: 800;">YOUR BANKS</h3>
+        <h3 id="lblBankHeader" style="font-size: 13px; margin-bottom: 10px; color: var(--text-muted); font-weight: 800;">BANK & CASH ACCOUNTS</h3>
         <div id="banksList"></div>
     </div>
 
-    <!-- ================= PERSONS VIEW ================= -->
+    <!-- ================= CLIENTS & EXPENSES VIEW ================= -->
     <div id="personsView" class="view-panel">
-        <div class="add-box-container" id="addPersonContainer">
-            <button class="add-toggle-btn" onclick="toggleAddBox('addPersonBox')">➕ Add New Person / Head</button>
-            <div class="add-box" id="addPersonBox">
-                <div class="form-group">
-                    <input type="text" id="newPersonName" placeholder="Person / Head Name (e.g., Ashutosh, Petrol)">
-                </div>
-                <div class="form-group">
-                    <label>Account Nature Type</label>
-                    <select id="newPersonType">
-                        <option value="PARTY">Party / Udhaar (Customer, Supplier)</option>
-                        <option value="EXPENSE">Expense / Kharcha (Own Use, Petrol, etc.)</option>
-                    </select>
-                </div>
-                <button class="btn-primary" onclick="addPerson()">Save Person / Head</button>
-            </div>
-        </div>
-
-        <h3 style="font-size: 13px; margin-bottom: 10px; color: var(--text-muted); font-weight: 800;">PERSONS / HEADS</h3>
+        <h3 id="lblClientHeader" style="font-size: 13px; margin-bottom: 10px; color: var(--text-muted); font-weight: 800;">CUSTOMERS, SUPPLIERS & EXPENSES</h3>
         <div id="personsList"></div>
     </div>
 
@@ -357,11 +321,11 @@
     </div>
 </div>
 
-<!-- Quick Entry Modal Popup -->
+<!-- Modal Popup -->
 <div id="entryModal" class="modal-overlay">
     <div class="modal-card">
         <div class="modal-header">
-            <span class="modal-title" id="modalTitle">Add Transaction</span>
+            <span class="modal-title" id="modalTitle">Action</span>
             <button class="close-modal" onclick="closeModal()">✕</button>
         </div>
         <div id="modalFormContent"></div>
@@ -372,16 +336,15 @@
 <div class="bottom-nav">
     <button class="nav-item active" id="nav_accounts" onclick="switchTab('accounts')">
         <span class="nav-icon">🏦</span>
-        <span>Accounts</span>
+        <span id="navLblAcc">Accounts</span>
     </button>
     <button class="nav-item" id="nav_persons" onclick="switchTab('persons')">
-        <span class="nav-icon">👤</span>
-        <span>Persons</span>
+        <span class="nav-icon">👥</span>
+        <span id="navLblParties">Clients & Exp</span>
     </button>
 </div>
 
 <script>
-    // Splash Screen
     window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
@@ -389,14 +352,15 @@
                 splash.style.opacity = '0';
                 setTimeout(() => splash.style.display = 'none', 500);
             }
-        }, 1600);
+        }, 1400);
     });
 
-    let state = JSON.parse(localStorage.getItem('ledgerAppV14')) || {
+    let state = JSON.parse(localStorage.getItem('ledgerAppV15')) || {
         banks: [],
         persons: [],
         transactions: [],
-        darkMode: false
+        darkMode: false,
+        lang: 'EN'
     };
 
     if (state.darkMode) document.body.classList.add('dark-mode');
@@ -407,9 +371,30 @@
         saveData();
     }
 
+    function toggleLanguage() {
+        state.lang = state.lang === 'EN' ? 'HI' : 'EN';
+        saveData();
+    }
+
     function saveData() {
-        localStorage.setItem('ledgerAppV14', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV15', JSON.stringify(state));
         render();
+        updateLanguageLabels();
+    }
+
+    function updateLanguageLabels() {
+        const isHi = state.lang === 'HI';
+        document.getElementById('langToggleBtn').innerText = isHi ? '🌐 English' : '🌐 हिंदी';
+        document.getElementById('lblTotalBal').innerText = isHi ? 'कुल उपलब्ध बैंक बैलेंस' : 'Total Available Balance';
+        document.getElementById('lblGet').innerText = isHi ? 'लेना है (Get)' : 'You Will Get (Get)';
+        document.getElementById('lblGive').innerText = isHi ? 'देना है (Give)' : 'You Will Give (Give)';
+        document.getElementById('lblExp').innerText = isHi ? 'कुल खर्चा (Expense)' : 'Total Expense (Expense)';
+        document.getElementById('lblCreateBtn').innerText = isHi ? 'नया खाता या हेड बनाएँ (+ Create)' : 'Create New Account / Head (+ Create)';
+        document.getElementById('lblBankHeader').innerText = isHi ? 'बैंक और कैश खाते' : 'BANK & CASH ACCOUNTS';
+        document.getElementById('lblClientHeader').innerText = isHi ? 'कस्टमर, सप्लायर और खर्चे' : 'CUSTOMERS, SUPPLIERS & EXPENSES';
+        document.getElementById('navLblAcc').innerText = isHi ? 'खाते' : 'Accounts';
+        document.getElementById('navLblParties').innerText = isHi ? 'पार्टी और खर्चे' : 'Clients & Exp';
+        document.getElementById('globalSearch').placeholder = isHi ? '🔎 बैंक, कस्टमर या खर्चा खोजें...' : '🔎 Search Account, Customer or Expense...';
     }
 
     function switchTab(tab) {
@@ -425,23 +410,6 @@
         }
     }
 
-    function toggleAddBox(boxId) {
-        const box = document.getElementById(boxId);
-        box.classList.toggle('open');
-    }
-
-    function toggleCardBody(id) {
-        const bodyElem = document.getElementById(id);
-        const btnElem = document.getElementById('btn_' + id);
-        if (bodyElem.classList.contains('open')) {
-            bodyElem.classList.remove('open');
-            btnElem.innerText = '🔽 Open Entry & History';
-        } else {
-            bodyElem.classList.add('open');
-            btnElem.innerText = '🔼 Hide Details';
-        }
-    }
-
     function openModal(title, htmlContent) {
         document.getElementById('modalTitle').innerText = title;
         document.getElementById('modalFormContent').innerHTML = htmlContent;
@@ -453,19 +421,15 @@
     }
 
     function onSearchFocus() {
-        const addBankCont = document.getElementById('addBankContainer');
-        const addPersonCont = document.getElementById('addPersonContainer');
-        if(addBankCont) addBankCont.classList.add('hidden-on-search');
-        if(addPersonCont) addPersonCont.classList.add('hidden-on-search');
+        const cont = document.getElementById('universalAddCont');
+        if(cont) cont.style.display = 'none';
     }
 
     function onSearchBlur() {
         const query = document.getElementById('globalSearch').value.trim();
         if(!query) {
-            const addBankCont = document.getElementById('addBankContainer');
-            const addPersonCont = document.getElementById('addPersonContainer');
-            if(addBankCont) addBankCont.classList.remove('hidden-on-search');
-            if(addPersonCont) addPersonCont.classList.remove('hidden-on-search');
+            const cont = document.getElementById('universalAddCont');
+            if(cont) cont.style.display = 'block';
         }
     }
 
@@ -478,15 +442,55 @@
         });
     }
 
-    function addBank() {
-        const name = document.getElementById('newBankName').value.trim();
-        const openingBalance = parseFloat(document.getElementById('newBankBalance').value) || 0;
-        if(!name) return alert('Please enter Bank Name');
-        
-        state.banks.push({ id: 'b_' + Date.now(), name, openingBalance, balance: openingBalance });
-        document.getElementById('newBankName').value = '';
-        document.getElementById('newBankBalance').value = '';
-        document.getElementById('addBankBox').classList.remove('open');
+    // --- UNIVERSAL CREATE MODAL FLOW ---
+    function openUniversalCreateModal() {
+        const isHi = state.lang === 'HI';
+        const html = `
+            <div class="form-group">
+                <label>${isHi ? 'खाता प्रकार चुनें (Account Type)' : 'Select Account Type'}</label>
+                <select id="uniType" onchange="onUniTypeChange()">
+                    <option value="BANK">🏦 ${isHi ? 'बैंक खाता या कैश (Bank Account / Cash)' : 'Bank Account / Cash in Hand'}</option>
+                    <option value="PARTY">🤝 ${isHi ? 'कस्टमर / सप्लायर (Customer / Supplier - Udhaar)' : 'Customer / Supplier (Udhaar / Party)'}</option>
+                    <option value="EXPENSE">🛒 ${isHi ? 'खर्चा हेड (Expense / Own Use / Overhead)' : 'Expense Head (Own Use, Petrol, Rent)'}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>${isHi ? 'नाम (Name)' : 'Account / Head Name'}</label>
+                <input type="text" id="uniName" placeholder="${isHi ? 'जैसे: SBI, Ashutosh, Petrol...' : 'e.g., HDFC Bank, Rahul, Petrol...'}">
+            </div>
+            <div class="form-group" id="uniOpBalGroup">
+                <label>${isHi ? 'ओपनिंग बैलेंस (Opening Balance ₹)' : 'Opening Balance (₹)'}</label>
+                <input type="number" id="uniOpBal" value="0">
+            </div>
+            <button class="btn-primary" style="margin-top:10px;" onclick="submitUniversalCreate()">${isHi ? 'खाता सुरक्षित करें (Save)' : 'Save Account / Head'}</button>
+        `;
+        openModal(isHi ? 'नया खाता बनाएं (Universal Create)' : 'Create New Account / Head', html);
+    }
+
+    function onUniTypeChange() {
+        const val = document.getElementById('uniType').value;
+        const group = document.getElementById('uniOpBalGroup');
+        group.style.display = val === 'BANK' ? 'block' : 'none';
+    }
+
+    function submitUniversalCreate() {
+        const type = document.getElementById('uniType').value;
+        const name = document.getElementById('uniName').value.trim();
+        if(!name) return alert('Please enter name');
+
+        if(type === 'BANK') {
+            const opBal = parseFloat(document.getElementById('uniOpBal').value) || 0;
+            state.banks.push({ id: 'b_' + Date.now(), name, openingBalance: opBal, balance: opBal });
+            switchTab('accounts');
+        } else if(type === 'PARTY') {
+            state.persons.push({ id: 'p_' + Date.now(), name, type: 'PARTY' });
+            switchTab('persons');
+        } else {
+            state.persons.push({ id: 'p_' + Date.now(), name, type: 'EXPENSE' });
+            switchTab('persons');
+        }
+
+        closeModal();
         saveData();
     }
 
@@ -520,20 +524,9 @@
     }
 
     function deleteBank(bankId) {
-        if(!confirm("Are you sure you want to delete this Bank Account?")) return;
+        if(!confirm("Delete this Bank Account?")) return;
         state.banks = state.banks.filter(b => b.id !== bankId);
         state.transactions = state.transactions.filter(t => t.bankId !== bankId);
-        saveData();
-    }
-
-    function addPerson() {
-        const name = document.getElementById('newPersonName').value.trim();
-        const type = document.getElementById('newPersonType').value;
-        if(!name) return alert('Please enter Person / Head Name');
-        
-        state.persons.push({ id: 'p_' + Date.now(), name, type });
-        document.getElementById('newPersonName').value = '';
-        document.getElementById('addPersonBox').classList.remove('open');
         saveData();
     }
 
@@ -549,50 +542,10 @@
     }
 
     function deletePerson(personId) {
-        if(!confirm("Are you sure you want to delete this Head?")) return;
+        if(!confirm("Delete this Head?")) return;
         state.persons = state.persons.filter(p => p.id !== personId);
         state.transactions = state.transactions.filter(t => t.personId !== personId);
         saveData();
-    }
-
-    function handleModalPersonDropdown() {
-        const selectElem = document.getElementById('modal_select_person');
-        if (selectElem && selectElem.value === 'CREATE_NEW') {
-            const newName = prompt("Enter new Person / Head Name:");
-            if (newName && newName.trim()) {
-                const newType = prompt("Type 'P' for Party/Udhaar or 'E' for Expense:", "P");
-                const pType = (newType && newType.toUpperCase() === 'E') ? 'EXPENSE' : 'PARTY';
-                const newPersonId = 'p_' + Date.now();
-                state.persons.push({ id: newPersonId, name: newName.trim(), type: pType });
-                saveData();
-                const activeEntityId = selectElem.getAttribute('data-entity-id');
-                const activeAction = selectElem.getAttribute('data-action');
-                quickEntryModal(activeEntityId, 'BANK', activeAction);
-                document.getElementById('modal_select_person').value = newPersonId;
-            } else {
-                selectElem.value = "";
-            }
-        }
-    }
-
-    function handleModalBankDropdown() {
-        const selectElem = document.getElementById('modal_select_bank');
-        if (selectElem && selectElem.value === 'CREATE_NEW') {
-            const newName = prompt("Enter new Bank Account Name:");
-            if (newName && newName.trim()) {
-                const newBankBal = prompt("Enter Opening Balance (₹):", "0");
-                const newBankId = 'b_' + Date.now();
-                const opBal = parseFloat(newBankBal) || 0;
-                state.banks.push({ id: newBankId, name: newName.trim(), openingBalance: opBal, balance: opBal });
-                saveData();
-                const activeEntityId = selectElem.getAttribute('data-entity-id');
-                const activeAction = selectElem.getAttribute('data-action');
-                quickEntryModal(activeEntityId, 'PERSON', activeAction);
-                document.getElementById('modal_select_bank').value = newBankId;
-            } else {
-                selectElem.value = "";
-            }
-        }
     }
 
     function setQuickDate(targetInputId, type, btnElement) {
@@ -615,18 +568,18 @@
     function quickEntryModal(entityId, entityType, actionType) {
         let entityName = "";
         let dropdownHtml = "";
+        const isHi = state.lang === 'HI';
 
         if(entityType === 'BANK') {
             const bank = state.banks.find(b => b.id === entityId);
             entityName = bank ? bank.name : "";
-            let personOpts = state.persons.map(p => `<option value="${p.id}">${p.name} (${p.type === 'EXPENSE' ? 'Expense' : 'Party'})</option>`).join('');
-            personOpts += `<option value="CREATE_NEW" style="font-weight: bold; color: var(--accent-blue);">+ Create New Person/Head</option>`;
+            let personOpts = state.persons.map(p => `<option value="${p.id}">${p.name} (${p.type === 'EXPENSE' ? 'Expense' : 'Customer'})</option>`).join('');
             
             dropdownHtml = `
                 <div class="form-group">
-                    <label>Select Person/Head</label>
-                    <select id="modal_select_person" data-entity-id="${entityId}" data-action="${actionType}" onchange="handleModalPersonDropdown()">
-                        <option value="">-- Select Person/Head --</option>
+                    <label>${isHi ? 'कस्टमर या खर्चा चुनें' : 'Select Customer / Expense'}</label>
+                    <select id="modal_select_person">
+                        <option value="">-- Select --</option>
                         ${personOpts}
                     </select>
                 </div>
@@ -635,12 +588,11 @@
             const person = state.persons.find(p => p.id === entityId);
             entityName = person ? person.name : "";
             let bankOpts = state.banks.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
-            bankOpts += `<option value="CREATE_NEW" style="font-weight: bold; color: var(--accent-blue);">+ Create New Bank Account</option>`;
             
             dropdownHtml = `
                 <div class="form-group">
-                    <label>Select Bank Account</label>
-                    <select id="modal_select_bank" data-entity-id="${entityId}" data-action="${actionType}" onchange="handleModalBankDropdown()">
+                    <label>${isHi ? 'बैंक खाता चुनें' : 'Select Bank Account'}</label>
+                    <select id="modal_select_bank">
                         <option value="">-- Select Bank --</option>
                         ${bankOpts}
                     </select>
@@ -651,27 +603,27 @@
         const html = `
             ${dropdownHtml}
             <div class="form-group">
-                <label>Amount (₹)</label>
+                <label>${isHi ? 'रुपये (Amount ₹)' : 'Amount (₹)'}</label>
                 <input type="number" id="modal_amount" placeholder="0.00" autofocus>
             </div>
             <div class="form-group">
-                <label>Description / Note</label>
-                <input type="text" id="modal_desc" placeholder="e.g., Petrol, Rent, Cash...">
+                <label>${isHi ? 'विवरण / नोट (Description)' : 'Description / Note'}</label>
+                <input type="text" id="modal_desc" placeholder="e.g., Petrol, Bill, Cash...">
             </div>
             <div class="form-group">
-                <label>Date</label>
+                <label>${isHi ? 'तारीख (Date)' : 'Date'}</label>
                 <input type="date" id="modal_date" value="${getTodayInputFormat()}">
                 <div class="date-chips">
-                    <span class="chip active" onclick="setQuickDate('modal_date', 'TODAY', this)">Today</span>
-                    <span class="chip" onclick="setQuickDate('modal_date', 'YESTERDAY', this)">Yesterday</span>
+                    <span class="chip active" onclick="setQuickDate('modal_date', 'TODAY', this)">${isHi ? 'आज' : 'Today'}</span>
+                    <span class="chip" onclick="setQuickDate('modal_date', 'YESTERDAY', this)">${isHi ? 'बीता कल' : 'Yesterday'}</span>
                 </div>
             </div>
             <button class="${actionType === 'IN' ? 'btn-in' : 'btn-out'}" style="width:100%; margin-top:10px;" onclick="submitModalTrans('${entityId}', '${entityType}', '${actionType}')">
-                Save ${actionType} Entry
+                ${isHi ? 'एंट्री सेव करें' : 'Save Entry'}
             </button>
         `;
 
-        openModal(`${actionType === 'IN' ? '+ Receive Money (IN)' : '- Pay Money (OUT)'} - ${entityName}`, html);
+        openModal(`${actionType === 'IN' ? (isHi ? '+ राशि प्राप्त (IN)' : '+ Receive Money (IN)') : (isHi ? '- भुगतान (OUT)' : '- Pay Money (OUT)')} - ${entityName}`, html);
     }
 
     function submitModalTrans(entityId, entityType, actionType) {
@@ -689,7 +641,7 @@
         }
 
         if(!amount || amount <= 0) return alert('Please enter valid amount');
-        if(!bankId || !personId) return alert('Please select both Bank and Person/Head');
+        if(!bankId || !personId) return alert('Please select required account/head');
 
         const bank = state.banks.find(b => b.id === bankId);
         const person = state.persons.find(p => p.id === personId);
@@ -720,11 +672,11 @@
         const t = state.transactions.find(trans => trans.id === transId);
         if(!t) return;
 
-        const newAmountStr = prompt("Edit Transaction Amount (₹):", t.amount);
+        const newAmountStr = prompt("Edit Amount (₹):", t.amount);
         if(newAmountStr === null || isNaN(parseFloat(newAmountStr))) return;
         const newAmount = parseFloat(newAmountStr);
 
-        const newDesc = prompt("Edit Description / Note:", t.description);
+        const newDesc = prompt("Edit Description:", t.description);
         if(newDesc === null) return;
 
         t.amount = newAmount;
@@ -735,7 +687,7 @@
     }
 
     function deleteTransaction(transId) {
-        if(!confirm("Delete this transaction? Bank balance will be adjusted.")) return;
+        if(!confirm("Delete transaction?")) return;
         const transIndex = state.transactions.findIndex(t => t.id === transId);
         if(transIndex === -1) return;
 
@@ -747,7 +699,7 @@
     }
 
     function exportToCSV(entityName, transactions) {
-        if(!transactions || transactions.length === 0) return alert('No transactions to export!');
+        if(!transactions || transactions.length === 0) return alert('No transactions!');
         let csvContent = "\uFEFFDate,Details,Type,Amount (INR),Note\n";
         transactions.forEach(t => {
             csvContent += `"${t.date}","${t.personName} / ${t.bankName}","${t.type}","${t.amount}","${t.description}"\n`;
@@ -765,7 +717,7 @@
 
     function exportToPDF(containerId) {
         const targetElement = document.getElementById(containerId);
-        if (!targetElement) return alert('No data to export!');
+        if (!targetElement) return alert('No data!');
 
         document.querySelectorAll('.print-area').forEach(el => el.classList.remove('print-area'));
         targetElement.classList.add('print-area');
@@ -798,7 +750,21 @@
         return new Date().toISOString().split('T')[0];
     }
 
+    function toggleCardBody(id) {
+        const bodyElem = document.getElementById(id);
+        const btnElem = document.getElementById('btn_' + id);
+        if (bodyElem.classList.contains('open')) {
+            bodyElem.classList.remove('open');
+            btnElem.innerText = state.lang === 'HI' ? '🔽 इतिहास और एंट्री खोलें' : '🔽 Open Entry & History';
+        } else {
+            bodyElem.classList.add('open');
+            btnElem.innerText = state.lang === 'HI' ? '🔼 छिपाएँ' : '🔼 Hide Details';
+        }
+    }
+
     function render() {
+        updateLanguageLabels();
+
         let totalNet = 0;
         state.banks.forEach(b => {
             recalculateBankBalance(b.id);
@@ -815,7 +781,6 @@
             });
 
             if (person.type === 'EXPENSE') {
-                // For expense heads, total absolute outgoing is total expense incurred
                 let expSum = 0;
                 personTrans.forEach(t => {
                     if(t.type === 'OUT') expSum += t.amount;
@@ -842,12 +807,13 @@
             document.getElementById('barGive').style.width = '50%';
         }
 
-        // --- Render Accounts View ---
+        // --- Render Accounts ---
         const banksList = document.getElementById('banksList');
         banksList.innerHTML = '';
+        const isHi = state.lang === 'HI';
 
         if (state.banks.length === 0) {
-            banksList.innerHTML = '<p class="empty-msg">No bank accounts added yet.</p>';
+            banksList.innerHTML = `<p class="empty-msg">${isHi ? 'कोई बैंक खाता नहीं जोड़ा गया है।' : 'No bank accounts added yet.'}</p>`;
         } else {
             state.banks.forEach(bank => {
                 const bankTrans = state.transactions.filter(t => t.bankId === bank.id);
@@ -867,13 +833,13 @@
                         <div>
                             <span class="card-title">🏦 ${bank.name}</span>
                             <div class="action-btns">
-                                <button class="btn-sm btn-edit" onclick="editBank('${bank.id}')">Edit</button>
-                                <button class="btn-sm btn-del" onclick="deleteBank('${bank.id}')">Delete</button>
+                                <button class="btn-sm btn-edit" onclick="editBank('${bank.id}')">${isHi ? 'संपादित करें' : 'Edit'}</button>
+                                <button class="btn-sm btn-del" onclick="deleteBank('${bank.id}')">${isHi ? 'हटाएं' : 'Delete'}</button>
                             </div>
                         </div>
                         <div>
                             <div class="card-balance">₹${bank.balance.toLocaleString('en-IN')}</div>
-                            <div style="font-size: 10px; color: var(--text-muted); text-align:right; font-weight:700;">Current Bal</div>
+                            <div style="font-size: 10px; color: var(--text-muted); text-align:right; font-weight:700;">${isHi ? 'वर्तमान शेष' : 'Current Bal'}</div>
                         </div>
                     </div>
 
@@ -888,11 +854,11 @@
                         <button class="btn-quick-out" onclick="quickEntryModal('${bank.id}', 'BANK', 'OUT')">- OUT</button>
                     </div>
 
-                    <button class="toggle-btn" id="btn_body_bank_${bank.id}" onclick="toggleCardBody('body_bank_${bank.id}')">🔽 Open Entry & History</button>
+                    <button class="toggle-btn" id="btn_body_bank_${bank.id}" onclick="toggleCardBody('body_bank_${bank.id}')">${isHi ? '🔽 इतिहास और एंट्री खोलें' : '🔽 Open Entry & History'}</button>
 
                     <div class="card-body" id="body_bank_${bank.id}">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <span style="font-size:11px; font-weight:800; color:var(--text-muted);">HISTORY STATEMENT</span>
+                            <span style="font-size:11px; font-weight:800; color:var(--text-muted);">STATEMENT</span>
                             <div>
                                 <button class="btn-export" onclick="exportToCSV('${bank.name}', state.transactions.filter(t => t.bankId === '${bank.id}'))">Excel</button>
                                 <button class="btn-export" onclick="exportToPDF('card_bank_${bank.id}')">PDF</button>
@@ -906,12 +872,12 @@
             });
         }
 
-        // --- Render Persons / Heads View ---
+        // --- Render Clients & Expenses ---
         const personsList = document.getElementById('personsList');
         personsList.innerHTML = '';
 
         if (state.persons.length === 0) {
-            personsList.innerHTML = '<p class="empty-msg">No persons or expense heads added yet.</p>';
+            personsList.innerHTML = `<p class="empty-msg">${isHi ? 'कोई कस्टमर या खर्चा हेड नहीं है।' : 'No customers or expense heads added yet.'}</p>`;
         } else {
             state.persons.forEach(person => {
                 const personTrans = state.transactions.filter(t => t.personId === person.id);
@@ -923,11 +889,11 @@
                 });
 
                 let cardClass = personBalance >= 0 ? 'strip-in' : 'strip-out';
-                let indicatorHtml = `<span class="pill-indicator ${personBalance >= 0 ? 'pill-get' : 'pill-give'}">${personBalance >= 0 ? 'To Get' : 'To Give'}</span>`;
+                let indicatorHtml = `<span class="pill-indicator ${personBalance >= 0 ? 'pill-get' : 'pill-give'}">${personBalance >= 0 ? (isHi ? 'लेना है' : 'To Get') : (isHi ? 'देना है' : 'To Give')}</span>`;
 
                 if (person.type === 'EXPENSE') {
                     cardClass = 'strip-expense';
-                    indicatorHtml = `<span class="pill-indicator pill-expense">Expense Head</span>`;
+                    indicatorHtml = `<span class="pill-indicator pill-expense">${isHi ? 'खर्चा हेड' : 'Expense Head'}</span>`;
                 }
 
                 const card = document.createElement('div');
@@ -942,10 +908,10 @@
                     <div class="card-header">
                         <div>
                             <span class="card-title">👤 ${person.name}</span>
-                            <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-top:2px;">Type: ${person.type === 'EXPENSE' ? 'Expense / Kharcha' : 'Party / Udhaar'}</div>
+                            <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-top:2px;">Type: ${person.type === 'EXPENSE' ? (isHi ? 'खर्चा (Expense)' : 'Expense') : (isHi ? 'कस्टमर (Customer)' : 'Customer / Supplier')}</div>
                             <div class="action-btns">
-                                <button class="btn-sm btn-edit" onclick="editPerson('${person.id}')">Edit</button>
-                                <button class="btn-sm btn-del" onclick="deletePerson('${person.id}')">Delete</button>
+                                <button class="btn-sm btn-edit" onclick="editPerson('${person.id}')">${isHi ? 'संपादित' : 'Edit'}</button>
+                                <button class="btn-sm btn-del" onclick="deletePerson('${person.id}')">${isHi ? 'हटाएं' : 'Delete'}</button>
                             </div>
                         </div>
                         <div style="text-align:right;">
@@ -961,11 +927,11 @@
                         <button class="btn-quick-out" onclick="quickEntryModal('${person.id}', 'PERSON', 'OUT')">- OUT</button>
                     </div>
 
-                    <button class="toggle-btn" id="btn_body_person_${person.id}" onclick="toggleCardBody('body_person_${person.id}')">🔽 Open Entry & History</button>
+                    <button class="toggle-btn" id="btn_body_person_${person.id}" onclick="toggleCardBody('body_person_${person.id}')">${isHi ? '🔽 इतिहास और एंट्री खोलें' : '🔽 Open Entry & History'}</button>
 
                     <div class="card-body" id="body_person_${person.id}">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <span style="font-size:11px; font-weight:800; color:var(--text-muted);">HISTORY STATEMENT</span>
+                            <span style="font-size:11px; font-weight:800; color:var(--text-muted);">STATEMENT</span>
                             <div>
                                 <button class="btn-export" onclick="exportToCSV('${person.name}', state.transactions.filter(t => t.personId === '${person.id}'))">Excel</button>
                                 <button class="btn-export" onclick="exportToPDF('card_person_${person.id}')">PDF</button>
@@ -982,6 +948,7 @@
 
     function renderHistoryTable(transactions, relatedField, containerId) {
         if(transactions.length === 0) return '<p class="empty-msg">No transactions recorded.</p>';
+        const isHi = state.lang === 'HI';
         
         let rows = transactions.map(t => `
             <tr data-type="${t.type}" data-date="${t.date}">
@@ -1001,15 +968,15 @@
 
         return `
             <div class="pill-filters" id="pills_${containerId}">
-                <button class="filter-pill active" onclick="setFilterPill('ALL', '${containerId}', event)">All</button>
-                <button class="filter-pill" onclick="setFilterPill('TODAY', '${containerId}', event)">Today</button>
-                <button class="filter-pill" onclick="setFilterPill('IN', '${containerId}', event)">IN Only</button>
-                <button class="filter-pill" onclick="setFilterPill('OUT', '${containerId}', event)">OUT Only</button>
+                <button class="filter-pill active" onclick="setFilterPill('ALL', '${containerId}', event)">${isHi ? 'सभी' : 'All'}</button>
+                <button class="filter-pill" onclick="setFilterPill('TODAY', '${containerId}', event)">${isHi ? 'आज' : 'Today'}</button>
+                <button class="filter-pill" onclick="setFilterPill('IN', '${containerId}', event)">IN</button>
+                <button class="filter-pill" onclick="setFilterPill('OUT', '${containerId}', event)">OUT</button>
             </div>
             <div class="table-wrapper" id="${containerId}">
                 <table>
                     <thead>
-                        <tr><th>Details</th><th>Type</th><th>Amount</th><th>Date</th><th>Action</th></tr>
+                        <tr><th>${isHi ? 'विवरण' : 'Details'}</th><th>Type</th><th>${isHi ? 'राशि' : 'Amount'}</th><th>${isHi ? 'दिनांक' : 'Date'}</th><th>Action</th></tr>
                     </thead>
                     <tbody>${rows}</tbody>
                 </table>
