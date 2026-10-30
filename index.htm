@@ -442,7 +442,7 @@
         });
     }
 
-    // --- UNIVERSAL CREATE MODAL ---
+    // --- UNIVERSAL CREATE MODAL WITH OPENING BALANCE FOR ALL ---
     function openUniversalCreateModal() {
         const isHi = state.lang === 'HI';
         const html = `
@@ -452,15 +452,15 @@
             </div>
             <div class="form-group">
                 <label>${isHi ? 'अकाउंट टाइप चुनें (Account Type)' : 'Select Account Type'}</label>
-                <select id="uniType" onchange="onUniTypeChange()">
+                <select id="uniType">
                     <option value="BANK">🏦 ${isHi ? 'बैंक खाता (Bank Account)' : 'Bank Account'}</option>
                     <option value="CASH">💵 ${isHi ? 'कैश इन हैंड (Cash in Hand)' : 'Cash in Hand'}</option>
-                    <option value="CUSTOMER">🤝 ${isHi ? 'कस्टमर (Customer)' : 'Customer'}</option>
-                    <option value="SUPPLIER">👥 ${isHi ? 'सप्लायर (Supplier)' : 'Supplier'}</option>
+                    <option value="CUSTOMER">🤝 ${isHi ? 'कस्टमर (Customer - To Get)' : 'Customer (To Get)'}</option>
+                    <option value="SUPPLIER">👥 ${isHi ? 'सप्लायर (Supplier - To Give)' : 'Supplier (To Give)'}</option>
                     <option value="EXPENSE">🛒 ${isHi ? 'खर्चा हेड (Expense Head)' : 'Expense Head'}</option>
                 </select>
             </div>
-            <div class="form-group" id="uniOpBalGroup">
+            <div class="form-group">
                 <label>${isHi ? 'ओपनिंग बैलेंस (₹)' : 'Opening Balance (₹)'}</label>
                 <input type="number" id="uniOpBal" value="0">
             </div>
@@ -469,19 +469,13 @@
         openModal(isHi ? '+ Create Head' : '+ Create Head', html);
     }
 
-    function onUniTypeChange() {
-        const val = document.getElementById('uniType').value;
-        const group = document.getElementById('uniOpBalGroup');
-        group.style.display = (val === 'BANK' || val === 'CASH') ? 'block' : 'none';
-    }
-
     function submitUniversalCreate() {
         const name = document.getElementById('uniName').value.trim();
         const type = document.getElementById('uniType').value;
+        const opBal = parseFloat(document.getElementById('uniOpBal').value) || 0;
         if(!name) return alert('Please enter name');
 
         if(type === 'BANK' || type === 'CASH') {
-            const opBal = parseFloat(document.getElementById('uniOpBal').value) || 0;
             state.banks.push({ 
                 id: 'b_' + Date.now(), 
                 name: `${name} (${type === 'BANK' ? 'Bank' : 'Cash'})`, 
@@ -492,7 +486,26 @@
             switchTab('accounts');
         } else {
             let mappedType = (type === 'SUPPLIER') ? 'SUPPLIER' : ((type === 'CUSTOMER') ? 'CUSTOMER' : 'EXPENSE');
-            state.persons.push({ id: 'p_' + Date.now(), name, type: mappedType });
+            const newPersonId = 'p_' + Date.now();
+            state.persons.push({ id: newPersonId, name, type: mappedType });
+
+            // If initial opening balance is given for Customer/Supplier/Expense, record it as an opening transaction or balance adjustment
+            if(opBal !== 0) {
+                let defaultBank = state.banks[0];
+                if(defaultBank) {
+                    state.transactions.unshift({
+                        id: 't_' + Date.now(),
+                        bankId: defaultBank.id,
+                        bankName: defaultBank.name,
+                        personId: newPersonId,
+                        personName: name,
+                        type: mappedType === 'CUSTOMER' ? 'OUT' : 'IN',
+                        amount: Math.abs(opBal),
+                        description: 'Opening Balance Adjustment',
+                        date: new Date().toLocaleDateString('en-IN')
+                    });
+                }
+            }
             switchTab('persons');
         }
 
@@ -523,6 +536,10 @@
                     <option value="EXPENSE">🛒 ${isHi ? 'खर्चा (Expense)' : 'Expense'}</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label>${isHi ? 'ओपनिंग बैलेंस (₹)' : 'Opening Balance (₹)'}</label>
+                <input type="number" id="quickNewOpBal" value="0">
+            </div>
             <button class="btn-primary" style="margin-top:6px;" onclick="submitQuickCreateFromModal('${entityId}', '${entityType}', '${actionType}')">${isHi ? 'बनाकर चुनें' : 'Create & Select'}</button>
         `;
         openModal(isHi ? '+ Create Head' : '+ Create Head', html);
@@ -531,10 +548,26 @@
     function submitQuickCreateFromModal(entityId, entityType, actionType) {
         const name = document.getElementById('quickNewName').value.trim();
         const type = document.getElementById('quickNewType').value;
+        const opBal = parseFloat(document.getElementById('quickNewOpBal').value) || 0;
         if(!name) return alert('Please enter name');
 
         const newId = 'p_' + Date.now();
         state.persons.push({ id: newId, name, type });
+
+        if(opBal !== 0 && entityId) {
+            state.transactions.unshift({
+                id: 't_' + Date.now(),
+                bankId: entityId,
+                bankName: state.banks.find(b => b.id === entityId)?.name || 'Bank',
+                personId: newId,
+                personName: name,
+                type: type === 'CUSTOMER' ? 'OUT' : 'IN',
+                amount: Math.abs(opBal),
+                description: 'Opening Balance Adjustment',
+                date: new Date().toLocaleDateString('en-IN')
+            });
+        }
+
         saveData();
 
         quickEntryModal(entityId, entityType, actionType);
