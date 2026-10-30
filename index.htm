@@ -355,7 +355,7 @@
         }, 1400);
     });
 
-    let state = JSON.parse(localStorage.getItem('ledgerAppV21')) || {
+    let state = JSON.parse(localStorage.getItem('ledgerAppV22')) || {
         banks: [],
         persons: [],
         transactions: [],
@@ -377,7 +377,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('ledgerAppV21', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV22', JSON.stringify(state));
         render();
         updateLanguageLabels();
     }
@@ -442,7 +442,7 @@
         });
     }
 
-    // --- UNIVERSAL CREATE MODAL WITH OPENING BALANCE FOR ALL ---
+    // --- UNIVERSAL CREATE MODAL WITH WORKING OPENING BALANCE ---
     function openUniversalCreateModal() {
         const isHi = state.lang === 'HI';
         const html = `
@@ -489,22 +489,30 @@
             const newPersonId = 'p_' + Date.now();
             state.persons.push({ id: newPersonId, name, type: mappedType });
 
-            // If initial opening balance is given for Customer/Supplier/Expense, record it as an opening transaction or balance adjustment
+            // Automatically record opening balance transaction so it reflects on dashboard and card immediately
             if(opBal !== 0) {
-                let defaultBank = state.banks[0];
-                if(defaultBank) {
-                    state.transactions.unshift({
-                        id: 't_' + Date.now(),
-                        bankId: defaultBank.id,
-                        bankName: defaultBank.name,
-                        personId: newPersonId,
-                        personName: name,
-                        type: mappedType === 'CUSTOMER' ? 'OUT' : 'IN',
-                        amount: Math.abs(opBal),
-                        description: 'Opening Balance Adjustment',
-                        date: new Date().toLocaleDateString('en-IN')
-                    });
+                let targetBank = state.banks[0];
+                if(!targetBank) {
+                    // Create default cash if no bank exists
+                    targetBank = { id: 'b_default', name: 'Default Cash (Cash)', openingBalance: 0, balance: 0, isCash: true };
+                    state.banks.push(targetBank);
                 }
+                
+                let transType = 'OUT';
+                if(mappedType === 'SUPPLIER') transType = 'IN';
+                if(mappedType === 'EXPENSE') transType = 'OUT';
+
+                state.transactions.unshift({
+                    id: 't_' + Date.now(),
+                    bankId: targetBank.id,
+                    bankName: targetBank.name,
+                    personId: newPersonId,
+                    personName: name,
+                    type: transType,
+                    amount: Math.abs(opBal),
+                    description: 'Opening Balance',
+                    date: new Date().toLocaleDateString('en-IN')
+                });
             }
             switchTab('persons');
         }
@@ -555,15 +563,16 @@
         state.persons.push({ id: newId, name, type });
 
         if(opBal !== 0 && entityId) {
+            let transType = (type === 'SUPPLIER') ? 'IN' : 'OUT';
             state.transactions.unshift({
                 id: 't_' + Date.now(),
                 bankId: entityId,
                 bankName: state.banks.find(b => b.id === entityId)?.name || 'Bank',
                 personId: newId,
                 personName: name,
-                type: type === 'CUSTOMER' ? 'OUT' : 'IN',
+                type: transType,
                 amount: Math.abs(opBal),
-                description: 'Opening Balance Adjustment',
+                description: 'Opening Balance',
                 date: new Date().toLocaleDateString('en-IN')
             });
         }
