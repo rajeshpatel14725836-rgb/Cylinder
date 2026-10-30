@@ -21,7 +21,7 @@
             --expense-bg: #fffbeb;
             --input-bg: #f8fafc;
             --bottom-nav-bg: #ffffff;
-            --card-radius: 14px;
+            --card-radius: 12px;
         }
 
         body.dark-mode {
@@ -38,7 +38,7 @@
         }
 
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding: 12px 12px 80px 12px; transition: background-color 0.3s, color 0.3s; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 10px 10px 75px 10px; transition: background-color 0.3s, color 0.3s; }
         .container { max-width: 600px; margin: 0 auto; }
 
         /* Splash Screen */
@@ -48,51 +48,51 @@
             z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s ease;
         }
         .splash-title {
-            font-size: 44px; font-weight: 900; color: #000000; letter-spacing: 3px;
+            font-size: 40px; font-weight: 900; color: #000000; letter-spacing: 3px;
             animation: popIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; transform: scale(0.6);
         }
         .splash-tagline {
-            margin-top: 8px; font-size: 14px; font-weight: 700; color: #1e3a8a; letter-spacing: 1px;
+            margin-top: 6px; font-size: 13px; font-weight: 700; color: #1e3a8a; letter-spacing: 1px;
             animation: fadeIn 0.7s ease 0.3s forwards; opacity: 0;
         }
         @keyframes popIn { to { opacity: 1; transform: scale(1); } }
         @keyframes fadeIn { to { opacity: 1; } }
 
         /* Top Bar & Toggles */
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .brand-logo { font-size: 16px; font-weight: 800; color: #1e3a8a; display: flex; align-items: center; gap: 6px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .brand-logo { font-size: 15px; font-weight: 800; color: #1e3a8a; display: flex; align-items: center; gap: 6px; }
         body.dark-mode .brand-logo { color: #60a5fa; }
         .top-controls { display: flex; gap: 6px; }
         .toggle-chip {
             background: var(--card-bg); border: 1px solid var(--border-color);
-            padding: 6px 10px; border-radius: 20px; cursor: pointer; font-size: 11px; font-weight: 700;
+            padding: 5px 9px; border-radius: 16px; cursor: pointer; font-size: 11px; font-weight: 700;
             color: var(--text-main); box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
 
-        .search-box-wrapper { margin-bottom: 12px; }
+        .search-box-wrapper { margin-bottom: 10px; }
         .search-input {
-            width: 100%; padding: 10px 14px; font-size: 13px; font-weight: 600;
-            border: 1px solid var(--border-color); border-radius: 12px;
+            width: 100%; padding: 9px 12px; font-size: 12px; font-weight: 600;
+            border: 1px solid var(--border-color); border-radius: 10px;
             background: var(--card-bg); color: var(--text-main); outline: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
 
         /* Banner Dashboard */
         .dashboard-banner {
             background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: var(--card-radius); padding: 14px; margin-bottom: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            border-radius: var(--card-radius); padding: 12px; margin-bottom: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.02);
         }
         .main-balance-box {
-            text-align: center; padding-bottom: 10px;
-            border-bottom: 1px dashed var(--border-color); margin-bottom: 10px;
+            text-align: center; padding-bottom: 8px;
+            border-bottom: 1px dashed var(--border-color); margin-bottom: 8px;
         }
-        .main-balance-box span { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .main-balance-box h2 { font-size: 26px; font-weight: 800; color: var(--accent-blue); margin-top: 2px; }
+        .main-balance-box span { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .main-balance-box h2 { font-size: 24px; font-weight: 800; color: var(--accent-blue); margin-top: 2px; }
 
         .visual-bar-container {
-            height: 6px; width: 100%; background: var(--input-bg); border-radius: 3px;
-            overflow: hidden; display: flex; margin-bottom: 10px; border: 1px solid var(--border-color);
+            height: 5px; width: 100%; background: var(--input-bg); border-radius: 3px;
+            overflow: hidden; display: flex; margin-bottom: 8px; border: 1px solid var(--border-color);
         }
         .bar-get { background: var(--in-color); transition: width 0.3s; }
         .bar-give { background: var(--out-color); transition: width 0.3s; }
@@ -100,24 +100,24 @@
         .sub-analytics { display: flex; justify-content: space-around; text-align: center; }
         .sub-box { flex: 1; }
         .sub-box span { font-size: 9px; font-weight: 700; color: var(--text-muted); }
-        .sub-box h4 { font-size: 12px; font-weight: 800; margin-top: 2px; }
+        .sub-box h4 { font-size: 11px; font-weight: 800; margin-top: 2px; }
 
         .view-panel { display: none; }
         .view-panel.active { display: block; }
 
         /* Universal Add Container */
-        .universal-add-container { margin-bottom: 14px; }
+        .universal-add-container { margin-bottom: 12px; }
         .universal-add-btn {
-            width: 100%; padding: 12px; background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); 
-            color: white; font-size: 13px; font-weight: 800; border-radius: 12px; cursor: pointer;
-            text-align: center; border: none; box-shadow: 0 4px 12px rgba(37,99,235,0.2); transition: all 0.2s;
+            width: 100%; padding: 10px; background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); 
+            color: white; font-size: 12px; font-weight: 800; border-radius: 10px; cursor: pointer;
+            text-align: center; border: none; box-shadow: 0 3px 10px rgba(37,99,235,0.2); transition: all 0.2s;
         }
         .universal-add-btn:active { transform: scale(0.98); }
 
-        /* Compact Cards Styling */
+        /* Minimal & Sleek Cards Styling */
         .card {
-            background: var(--card-bg); border: 1px solid var(--border-color); padding: 12px 14px;
-            border-radius: var(--card-radius); margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            background: var(--card-bg); border: 1px solid var(--border-color); padding: 10px 12px;
+            border-radius: var(--card-radius); margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
             position: relative; overflow: hidden;
         }
         
@@ -127,108 +127,108 @@
         .card.strip-neutral { border-left: 4px solid var(--accent-blue); }
 
         .card-header { display: flex; justify-content: space-between; align-items: center; }
-        .card-title { font-size: 14px; font-weight: 800; color: var(--text-main); }
-        .card-balance { font-size: 14px; font-weight: 800; text-align: right; }
+        .card-title { font-size: 13px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
+        .card-balance { font-size: 13px; font-weight: 800; text-align: right; }
 
         .pill-indicator {
-            display: inline-block; padding: 2px 6px; border-radius: 8px; font-size: 9px; font-weight: 700; margin-top: 2px;
+            display: inline-block; padding: 1px 5px; border-radius: 6px; font-size: 8px; font-weight: 700; margin-top: 1px;
         }
         .pill-get { background: var(--in-bg); color: var(--in-color); }
         .pill-give { background: var(--out-bg); color: var(--out-color); }
         .pill-expense { background: var(--expense-bg); color: var(--expense-color); }
 
         .bank-mini-stats {
-            display: flex; gap: 6px; margin-top: 8px; font-size: 10px; color: var(--text-muted); font-weight: 700;
-            background: var(--input-bg); padding: 6px 10px; border-radius: 8px;
+            display: flex; gap: 6px; margin-top: 6px; font-size: 9px; color: var(--text-muted); font-weight: 700;
+            background: var(--input-bg); padding: 5px 8px; border-radius: 6px;
         }
 
         /* Quick Action Buttons */
-        .quick-actions { display: flex; gap: 6px; margin-top: 10px; }
-        .btn-quick-in { background: var(--in-color); color: white; border: none; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 8px; flex: 1; cursor: pointer; }
-        .btn-quick-out { background: var(--out-color); color: white; border: none; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 8px; flex: 1; cursor: pointer; }
+        .quick-actions { display: flex; gap: 6px; margin-top: 8px; }
+        .btn-quick-in { background: var(--in-color); color: white; border: none; padding: 6px 8px; font-size: 10px; font-weight: 700; border-radius: 6px; flex: 1; cursor: pointer; }
+        .btn-quick-out { background: var(--out-color); color: white; border: none; padding: 6px 8px; font-size: 10px; font-weight: 700; border-radius: 6px; flex: 1; cursor: pointer; }
 
         .toggle-btn {
             background: var(--input-bg); color: var(--accent-blue); border: 1px solid var(--border-color);
-            padding: 7px 10px; font-size: 10px; font-weight: 700; border-radius: 8px; cursor: pointer;
-            margin-top: 8px; width: 100%; text-align: center;
+            padding: 5px 8px; font-size: 9px; font-weight: 700; border-radius: 6px; cursor: pointer;
+            margin-top: 6px; width: 100%; text-align: center;
         }
-        .card-body { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-color); }
+        .card-body { display: none; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-color); }
         .card-body.open { display: block; }
 
-        .form-group { margin-bottom: 10px; }
-        label { display: block; font-size: 10px; margin-bottom: 3px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group { margin-bottom: 8px; }
+        label { display: block; font-size: 9px; margin-bottom: 2px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         input, select {
-            width: 100%; padding: 10px 12px; font-size: 13px; border: 1px solid var(--border-color);
-            border-radius: 10px; outline: none; background-color: var(--input-bg); color: var(--text-main); font-weight: 600;
+            width: 100%; padding: 9px 11px; font-size: 12px; border: 1px solid var(--border-color);
+            border-radius: 8px; outline: none; background-color: var(--input-bg); color: var(--text-main); font-weight: 600;
         }
 
         /* Modal Overlay */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
-            display: none; justify-content: center; align-items: center; z-index: 9000; padding: 16px;
+            display: none; justify-content: center; align-items: center; z-index: 9000; padding: 12px;
         }
         .modal-card {
-            background: var(--card-bg); width: 100%; max-width: 420px; border-radius: 18px;
-            padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; border: 1px solid var(--border-color);
+            background: var(--card-bg); width: 100%; max-width: 400px; border-radius: 16px;
+            padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; border: 1px solid var(--border-color);
         }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .modal-title { font-size: 15px; font-weight: 800; color: var(--text-main); }
-        .close-modal { font-size: 18px; font-weight: 800; border: none; background: none; color: var(--text-muted); cursor: pointer; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .modal-title { font-size: 14px; font-weight: 800; color: var(--text-main); }
+        .close-modal { font-size: 16px; font-weight: 800; border: none; background: none; color: var(--text-muted); cursor: pointer; }
 
         /* Date Quick Chips */
-        .date-chips { display: flex; gap: 6px; margin-top: 6px; }
+        .date-chips { display: flex; gap: 4px; margin-top: 4px; }
         .chip {
-            padding: 4px 10px; font-size: 10px; font-weight: 700; border-radius: 6px;
+            padding: 3px 8px; font-size: 9px; font-weight: 700; border-radius: 5px;
             background: var(--input-bg); border: 1px solid var(--border-color); cursor: pointer; color: var(--text-muted);
         }
         .chip.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
 
         /* Quick Filter Pills */
-        .pill-filters { display: flex; gap: 6px; overflow-x: auto; margin-top: 10px; padding-bottom: 4px; }
+        .pill-filters { display: flex; gap: 4px; overflow-x: auto; margin-top: 8px; padding-bottom: 2px; }
         .filter-pill {
-            background: var(--input-bg); border: 1px solid var(--border-color); padding: 5px 10px; font-size: 10px;
-            font-weight: 700; border-radius: 14px; cursor: pointer; color: var(--text-muted); white-space: nowrap;
+            background: var(--input-bg); border: 1px solid var(--border-color); padding: 4px 8px; font-size: 9px;
+            font-weight: 700; border-radius: 12px; cursor: pointer; color: var(--text-muted); white-space: nowrap;
         }
         .filter-pill.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
 
         /* Buttons */
-        button { padding: 10px 12px; font-size: 12px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        button { padding: 9px 11px; font-size: 11px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
         .btn-in { background: var(--in-color); color: white; flex: 1; }
         .btn-out { background: var(--out-color); color: white; flex: 1; }
-        .btn-primary { background: #1e3a8a; color: white; width: 100%; padding: 11px; font-size: 13px; }
+        .btn-primary { background: #1e3a8a; color: white; width: 100%; padding: 10px; font-size: 12px; }
         body.dark-mode .btn-primary { background: var(--accent-blue); }
-        .btn-export { background: #0284c7; color: white; padding: 4px 8px; font-size: 9px; border-radius: 6px; }
+        .btn-export { background: #0284c7; color: white; padding: 3px 6px; font-size: 8px; border-radius: 5px; }
 
-        .action-btns { display: flex; gap: 4px; margin-top: 4px; }
-        .btn-sm { padding: 3px 6px; font-size: 9px; border-radius: 5px; }
+        .action-btns { display: flex; gap: 4px; align-items: center; }
+        .btn-sm { padding: 2px 5px; font-size: 8px; border-radius: 4px; }
         .btn-edit { background: #f59e0b; color: white; }
         .btn-del { background: #ef4444; color: white; }
 
         /* History Table */
-        .table-wrapper { overflow-x: auto; margin-top: 8px; border-radius: 8px; border: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; font-size: 10px; text-align: left; }
-        th { background: var(--input-bg); color: var(--text-muted); font-weight: 700; padding: 8px; border-bottom: 1px solid var(--border-color); }
-        td { padding: 8px; border-bottom: 1px solid var(--border-color); color: var(--text-main); font-weight: 600; }
-        .badge-in { background: var(--in-bg); color: var(--in-color); padding: 2px 5px; border-radius: 8px; font-weight: 700; }
-        .badge-out { background: var(--out-bg); color: var(--out-color); padding: 2px 5px; border-radius: 8px; font-weight: 700; }
-        .empty-msg { font-size: 11px; color: var(--text-muted); text-align: center; padding: 10px 0; font-weight: 600; }
+        .table-wrapper { overflow-x: auto; margin-top: 6px; border-radius: 6px; border: 1px solid var(--border-color); }
+        table { width: 100%; border-collapse: collapse; font-size: 9px; text-align: left; }
+        th { background: var(--input-bg); color: var(--text-muted); font-weight: 700; padding: 6px; border-bottom: 1px solid var(--border-color); }
+        td { padding: 6px; border-bottom: 1px solid var(--border-color); color: var(--text-main); font-weight: 600; }
+        .badge-in { background: var(--in-bg); color: var(--in-color); padding: 1px 4px; border-radius: 6px; font-weight: 700; }
+        .badge-out { background: var(--out-bg); color: var(--out-color); padding: 1px 4px; border-radius: 6px; font-weight: 700; }
+        .empty-msg { font-size: 10px; color: var(--text-muted); text-align: center; padding: 8px 0; font-weight: 600; }
 
         /* Fixed Bottom Navigation Bar */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bottom-nav-bg);
             border-top: 1px solid var(--border-color); display: flex; justify-content: space-around;
-            align-items: center; padding: 6px 0; z-index: 1000; box-shadow: 0 -4px 15px rgba(0,0,0,0.04);
+            align-items: center; padding: 5px 0; z-index: 1000; box-shadow: 0 -3px 12px rgba(0,0,0,0.04);
         }
         .nav-item {
-            display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 700;
+            display: flex; flex-direction: column; align-items: center; font-size: 9px; font-weight: 700;
             color: var(--text-muted); text-decoration: none; cursor: pointer; flex: 1; border: none; background: none;
         }
         .nav-item.active { color: var(--accent-blue); }
-        .nav-icon { font-size: 16px; margin-bottom: 1px; }
+        .nav-icon { font-size: 15px; margin-bottom: 1px; }
 
         /* Footer */
-        .app-footer { text-align: center; margin-top: 20px; padding-bottom: 10px; font-size: 11px; font-weight: 700; color: var(--text-muted); }
+        .app-footer { text-align: center; margin-top: 16px; padding-bottom: 8px; font-size: 10px; font-weight: 700; color: var(--text-muted); }
         .app-footer span { color: var(--accent-blue); }
 
         /* A4 Printable Layout */
@@ -305,13 +305,13 @@
 
     <!-- ================= ACCOUNTS VIEW (Banks) ================= -->
     <div id="accountsView" class="view-panel active">
-        <h3 id="lblBankHeader" style="font-size: 12px; margin-bottom: 8px; color: var(--text-muted); font-weight: 800;">BANK & CASH ACCOUNTS</h3>
+        <h3 id="lblBankHeader" style="font-size: 11px; margin-bottom: 6px; color: var(--text-muted); font-weight: 800;">BANK & CASH ACCOUNTS</h3>
         <div id="banksList"></div>
     </div>
 
     <!-- ================= PARTIES & EXPENSES VIEW ================= -->
     <div id="personsView" class="view-panel">
-        <h3 id="lblClientHeader" style="font-size: 12px; margin-bottom: 8px; color: var(--text-muted); font-weight: 800;">CUSTOMERS, SUPPLIERS & EXPENSES</h3>
+        <h3 id="lblClientHeader" style="font-size: 11px; margin-bottom: 6px; color: var(--text-muted); font-weight: 800;">CUSTOMERS, SUPPLIERS & EXPENSES</h3>
         <div id="personsList"></div>
     </div>
 
@@ -355,7 +355,7 @@
         }, 1400);
     });
 
-    let state = JSON.parse(localStorage.getItem('ledgerAppV20')) || {
+    let state = JSON.parse(localStorage.getItem('ledgerAppV21')) || {
         banks: [],
         persons: [],
         transactions: [],
@@ -377,7 +377,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('ledgerAppV20', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV21', JSON.stringify(state));
         render();
         updateLanguageLabels();
     }
@@ -464,7 +464,7 @@
                 <label>${isHi ? 'ओपनिंग बैलेंस (₹)' : 'Opening Balance (₹)'}</label>
                 <input type="number" id="uniOpBal" value="0">
             </div>
-            <button class="btn-primary" style="margin-top:8px;" onclick="submitUniversalCreate()">${isHi ? 'सुरक्षित करें (Save)' : 'Save Head'}</button>
+            <button class="btn-primary" style="margin-top:6px;" onclick="submitUniversalCreate()">${isHi ? 'सुरक्षित करें (Save)' : 'Save Head'}</button>
         `;
         openModal(isHi ? '+ Create Head' : '+ Create Head', html);
     }
@@ -523,7 +523,7 @@
                     <option value="EXPENSE">🛒 ${isHi ? 'खर्चा (Expense)' : 'Expense'}</option>
                 </select>
             </div>
-            <button class="btn-primary" style="margin-top:8px;" onclick="submitQuickCreateFromModal('${entityId}', '${entityType}', '${actionType}')">${isHi ? 'बनाकर चुनें' : 'Create & Select'}</button>
+            <button class="btn-primary" style="margin-top:6px;" onclick="submitQuickCreateFromModal('${entityId}', '${entityType}', '${actionType}')">${isHi ? 'बनाकर चुनें' : 'Create & Select'}</button>
         `;
         openModal(isHi ? '+ Create Head' : '+ Create Head', html);
     }
@@ -669,7 +669,7 @@
                     <span class="chip" onclick="setQuickDate('modal_date', 'YESTERDAY', this)">${isHi ? 'बीता कल' : 'Yesterday'}</span>
                 </div>
             </div>
-            <button class="${actionType === 'IN' ? 'btn-in' : 'btn-out'}" style="width:100%; margin-top:8px;" onclick="submitModalTrans('${entityId}', '${entityType}', '${actionType}')">
+            <button class="${actionType === 'IN' ? 'btn-in' : 'btn-out'}" style="width:100%; margin-top:6px;" onclick="submitModalTrans('${entityId}', '${entityType}', '${actionType}')">
                 ${isHi ? 'एंट्री सेव करें' : 'Save Entry'}
             </button>
         `;
@@ -806,10 +806,10 @@
         const btnElem = document.getElementById('btn_' + id);
         if (bodyElem.classList.contains('open')) {
             bodyElem.classList.remove('open');
-            btnElem.innerText = state.lang === 'HI' ? '🔽 इतिहास और एंट्री खोलें' : '🔽 Open Entry & History';
+            btnElem.innerText = state.lang === 'HI' ? '🔽 इतिहास देखें' : '🔽 Open History';
         } else {
             bodyElem.classList.add('open');
-            btnElem.innerText = state.lang === 'HI' ? '🔼 छिपाएँ' : '🔼 Hide Details';
+            btnElem.innerText = state.lang === 'HI' ? '🔼 छिपाएँ' : '🔼 Hide';
         }
     }
 
@@ -885,15 +885,15 @@
                     </div>
                     <div class="card-header">
                         <div>
-                            <span class="card-title">${bank.name.includes('Cash') ? '💵' : '🏦'} ${bank.name}</span>
-                            <div class="action-btns">
+                            <div class="card-title">${bank.name.includes('Cash') ? '💵' : '🏦'} ${bank.name}</div>
+                            <div class="action-btns" style="margin-top:2px;">
                                 <button class="btn-sm btn-edit" onclick="editBank('${bank.id}')">${isHi ? 'संपादित' : 'Edit'}</button>
                                 <button class="btn-sm btn-del" onclick="deleteBank('${bank.id}')">${isHi ? 'हटाएं' : 'Delete'}</button>
                             </div>
                         </div>
                         <div>
                             <div class="card-balance">₹${bank.balance.toLocaleString('en-IN')}</div>
-                            <div style="font-size: 9px; color: var(--text-muted); text-align:right; font-weight:700;">${isHi ? 'शेष' : 'Bal'}</div>
+                            <div style="font-size: 8px; color: var(--text-muted); text-align:right; font-weight:700;">${isHi ? 'शेष' : 'Bal'}</div>
                         </div>
                     </div>
 
@@ -911,8 +911,8 @@
                     <button class="toggle-btn" id="btn_body_bank_${bank.id}" onclick="toggleCardBody('body_bank_${bank.id}')">${isHi ? '🔽 इतिहास देखें' : '🔽 Open History'}</button>
 
                     <div class="card-body" id="body_bank_${bank.id}">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                            <span style="font-size:10px; font-weight:800; color:var(--text-muted);">STATEMENT</span>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <span style="font-size:9px; font-weight:800; color:var(--text-muted);">STATEMENT</span>
                             <div>
                                 <button class="btn-export" onclick="exportToCSV('${bank.name}', state.transactions.filter(t => t.bankId === '${bank.id}'))">Excel</button>
                                 <button class="btn-export" onclick="exportToPDF('card_bank_${bank.id}')">PDF</button>
@@ -926,7 +926,7 @@
             });
         }
 
-        // --- Render Parties & Expenses with Compact [C], [S], [E] badging ---
+        // --- Render Parties & Expenses ---
         const personsList = document.getElementById('personsList');
         personsList.innerHTML = '';
 
@@ -948,7 +948,7 @@
                 let shortTag = `[C]`;
                 if (person.type === 'EXPENSE') {
                     cardClass = 'strip-expense';
-                    indicatorHtml = `<span class="pill-indicator pill-expense">${isHi ? 'खर्चा हेड' : 'Expense'}</span>`;
+                    indicatorHtml = `<span class="pill-indicator pill-expense">${isHi ? 'खर्चा' : 'Expense'}</span>`;
                     shortTag = `[E]`;
                 } else if (person.type === 'SUPPLIER') {
                     shortTag = `[S]`;
@@ -965,7 +965,7 @@
                     </div>
                     <div class="card-header">
                         <div>
-                            <span class="card-title">👤 ${person.name} <span style="font-size:10px; color:var(--text-muted); font-weight:700;">${shortTag}</span></span>
+                            <div class="card-title">👤 ${person.name} <span style="font-size:9px; color:var(--text-muted); font-weight:700;">${shortTag}</span></div>
                             <div class="action-btns" style="margin-top:2px;">
                                 <button class="btn-sm btn-edit" onclick="editPerson('${person.id}')">${isHi ? 'संपादित' : 'Edit'}</button>
                                 <button class="btn-sm btn-del" onclick="deletePerson('${person.id}')">${isHi ? 'हटाएं' : 'Delete'}</button>
@@ -987,8 +987,8 @@
                     <button class="toggle-btn" id="btn_body_person_${person.id}" onclick="toggleCardBody('body_person_${person.id}')">${isHi ? '🔽 इतिहास देखें' : '🔽 Open History'}</button>
 
                     <div class="card-body" id="body_person_${person.id}">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                            <span style="font-size:10px; font-weight:800; color:var(--text-muted);">STATEMENT</span>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <span style="font-size:9px; font-weight:800; color:var(--text-muted);">STATEMENT</span>
                             <div>
                                 <button class="btn-export" onclick="exportToCSV('${person.name}', state.transactions.filter(t => t.personId === '${person.id}'))">Excel</button>
                                 <button class="btn-export" onclick="exportToPDF('card_person_${person.id}')">PDF</button>
@@ -1011,7 +1011,7 @@
             <tr data-type="${t.type}" data-date="${t.date}">
                 <td>
                     <strong>${t[relatedField]}</strong><br>
-                    <span style="font-size: 9px; color: var(--text-muted);">${t.description}</span>
+                    <span style="font-size: 8px; color: var(--text-muted);">${t.description}</span>
                 </td>
                 <td><span class="${t.type === 'IN' ? 'badge-in' : 'badge-out'}">${t.type}</span></td>
                 <td><strong>₹${t.amount.toLocaleString('en-IN')}</strong></td>
