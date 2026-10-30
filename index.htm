@@ -355,7 +355,7 @@
         }, 1400);
     });
 
-    let state = JSON.parse(localStorage.getItem('ledgerAppV22')) || {
+    let state = JSON.parse(localStorage.getItem('ledgerAppV23')) || {
         banks: [],
         persons: [],
         transactions: [],
@@ -377,7 +377,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('ledgerAppV22', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV23', JSON.stringify(state));
         render();
         updateLanguageLabels();
     }
@@ -442,7 +442,7 @@
         });
     }
 
-    // --- UNIVERSAL CREATE MODAL WITH WORKING OPENING BALANCE ---
+    // --- UNIVERSAL CREATE MODAL ---
     function openUniversalCreateModal() {
         const isHi = state.lang === 'HI';
         const html = `
@@ -452,7 +452,7 @@
             </div>
             <div class="form-group">
                 <label>${isHi ? 'अकाउंट टाइप चुनें (Account Type)' : 'Select Account Type'}</label>
-                <select id="uniType">
+                <select id="uniType" onchange="onUniTypeChangeModel()">
                     <option value="BANK">🏦 ${isHi ? 'बैंक खाता (Bank Account)' : 'Bank Account'}</option>
                     <option value="CASH">💵 ${isHi ? 'कैश इन हैंड (Cash in Hand)' : 'Cash in Hand'}</option>
                     <option value="CUSTOMER">🤝 ${isHi ? 'कस्टमर (Customer - To Get)' : 'Customer (To Get)'}</option>
@@ -460,13 +460,26 @@
                     <option value="EXPENSE">🛒 ${isHi ? 'खर्चा हेड (Expense Head)' : 'Expense Head'}</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label>${isHi ? 'ओपनिंग बैलेंस (₹)' : 'Opening Balance (₹)'}</label>
+            <div class="form-group" id="uniOpBalWrapper">
+                <label id="uniOpBalLabel">${isHi ? 'ओपनिंग बैलेंस (₹)' : 'Opening Balance (₹)'}</label>
                 <input type="number" id="uniOpBal" value="0">
             </div>
             <button class="btn-primary" style="margin-top:6px;" onclick="submitUniversalCreate()">${isHi ? 'सुरक्षित करें (Save)' : 'Save Head'}</button>
         `;
         openModal(isHi ? '+ Create Head' : '+ Create Head', html);
+    }
+
+    function onUniTypeChangeModel() {
+        const type = document.getElementById('uniType').value;
+        const label = document.getElementById('uniOpBalLabel');
+        const isHi = state.lang === 'HI';
+        if(type === 'CUSTOMER') {
+            label.innerText = isHi ? 'ओपनिंग लेना है (Opening To Get ₹)' : 'Opening To Get (₹)';
+        } else if(type === 'SUPPLIER') {
+            label.innerText = isHi ? 'ओपनिंग देना है (Opening To Give ₹)' : 'Opening To Give (₹)';
+        } else {
+            label.innerText = isHi ? 'ओपनिंग बैलेंस (₹)' : 'Opening Balance (₹)';
+        }
     }
 
     function submitUniversalCreate() {
@@ -487,33 +500,12 @@
         } else {
             let mappedType = (type === 'SUPPLIER') ? 'SUPPLIER' : ((type === 'CUSTOMER') ? 'CUSTOMER' : 'EXPENSE');
             const newPersonId = 'p_' + Date.now();
-            state.persons.push({ id: newPersonId, name, type: mappedType });
-
-            // Automatically record opening balance transaction so it reflects on dashboard and card immediately
-            if(opBal !== 0) {
-                let targetBank = state.banks[0];
-                if(!targetBank) {
-                    // Create default cash if no bank exists
-                    targetBank = { id: 'b_default', name: 'Default Cash (Cash)', openingBalance: 0, balance: 0, isCash: true };
-                    state.banks.push(targetBank);
-                }
-                
-                let transType = 'OUT';
-                if(mappedType === 'SUPPLIER') transType = 'IN';
-                if(mappedType === 'EXPENSE') transType = 'OUT';
-
-                state.transactions.unshift({
-                    id: 't_' + Date.now(),
-                    bankId: targetBank.id,
-                    bankName: targetBank.name,
-                    personId: newPersonId,
-                    personName: name,
-                    type: transType,
-                    amount: Math.abs(opBal),
-                    description: 'Opening Balance',
-                    date: new Date().toLocaleDateString('en-IN')
-                });
-            }
+            state.persons.push({ 
+                id: newPersonId, 
+                name, 
+                type: mappedType,
+                openingBalance: opBal // Store opening balance directly on the person object without touching bank balances
+            });
             switchTab('persons');
         }
 
@@ -560,23 +552,7 @@
         if(!name) return alert('Please enter name');
 
         const newId = 'p_' + Date.now();
-        state.persons.push({ id: newId, name, type });
-
-        if(opBal !== 0 && entityId) {
-            let transType = (type === 'SUPPLIER') ? 'IN' : 'OUT';
-            state.transactions.unshift({
-                id: 't_' + Date.now(),
-                bankId: entityId,
-                bankName: state.banks.find(b => b.id === entityId)?.name || 'Bank',
-                personId: newId,
-                personName: name,
-                type: transType,
-                amount: Math.abs(opBal),
-                description: 'Opening Balance',
-                date: new Date().toLocaleDateString('en-IN')
-            });
-        }
-
+        state.persons.push({ id: newId, name, type, openingBalance: opBal });
         saveData();
 
         quickEntryModal(entityId, entityType, actionType);
@@ -627,8 +603,11 @@
         if(!person) return;
         const newName = prompt("Update Name:", person.name);
         if(!newName || !newName.trim()) return;
+        const newOpBal = prompt("Update Opening Balance (₹):", person.openingBalance || 0);
+        if(newOpBal === null || isNaN(parseFloat(newOpBal))) return;
 
         person.name = newName.trim();
+        person.openingBalance = parseFloat(newOpBal);
         state.transactions.forEach(t => { if(t.personId === personId) t.personName = person.name; });
         saveData();
     }
@@ -867,14 +846,20 @@
         let totalGet = 0, totalGive = 0, totalExpense = 0;
         state.persons.forEach(person => {
             const personTrans = state.transactions.filter(t => t.personId === person.id);
-            let pBal = 0;
+            let pBal = person.openingBalance || 0; // Include direct opening balance without affecting banks
+
             personTrans.forEach(t => {
-                if(t.type === 'OUT') pBal += t.amount;
-                if(t.type === 'IN') pBal -= t.amount;
+                if (person.type === 'SUPPLIER') {
+                    if(t.type === 'IN') pBal += t.amount;
+                    if(t.type === 'OUT') pBal -= t.amount;
+                } else {
+                    if(t.type === 'OUT') pBal += t.amount;
+                    if(t.type === 'IN') pBal -= t.amount;
+                }
             });
 
             if (person.type === 'EXPENSE') {
-                let expSum = 0;
+                let expSum = person.openingBalance || 0;
                 personTrans.forEach(t => {
                     if(t.type === 'OUT') expSum += t.amount;
                     if(t.type === 'IN') expSum -= t.amount;
@@ -978,10 +963,15 @@
             state.persons.forEach(person => {
                 const personTrans = state.transactions.filter(t => t.personId === person.id);
 
-                let personBalance = 0;
+                let personBalance = person.openingBalance || 0;
                 personTrans.forEach(t => {
-                    if(t.type === 'OUT') personBalance += t.amount;
-                    if(t.type === 'IN') personBalance -= t.amount;
+                    if (person.type === 'SUPPLIER') {
+                        if(t.type === 'IN') personBalance += t.amount;
+                        if(t.type === 'OUT') personBalance -= t.amount;
+                    } else {
+                        if(t.type === 'OUT') personBalance += t.amount;
+                        if(t.type === 'IN') personBalance -= t.amount;
+                    }
                 });
 
                 let cardClass = personBalance >= 0 ? 'strip-in' : 'strip-out';
