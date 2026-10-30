@@ -300,7 +300,7 @@
 
     <!-- Universal Action Hub -->
     <div class="universal-add-container" id="universalAddCont">
-        <button class="universal-add-btn" onclick="openUniversalCreateModal()">➕ <span id="lblCreateBtn">Create New Account / Head</span></button>
+        <button class="universal-add-btn" onclick="openUniversalCreateModal()">➕ <span id="lblCreateBtn">+ Create Head</span></button>
     </div>
 
     <!-- ================= ACCOUNTS VIEW (Banks) ================= -->
@@ -355,7 +355,7 @@
         }, 1400);
     });
 
-    let state = JSON.parse(localStorage.getItem('ledgerAppV19')) || {
+    let state = JSON.parse(localStorage.getItem('ledgerAppV20')) || {
         banks: [],
         persons: [],
         transactions: [],
@@ -377,7 +377,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('ledgerAppV19', JSON.stringify(state));
+        localStorage.setItem('ledgerAppV20', JSON.stringify(state));
         render();
         updateLanguageLabels();
     }
@@ -389,7 +389,7 @@
         document.getElementById('lblGet').innerText = isHi ? 'लेना है (Get)' : 'You Will Get (Get)';
         document.getElementById('lblGive').innerText = isHi ? 'देना है (Give)' : 'You Will Give (Give)';
         document.getElementById('lblExp').innerText = isHi ? 'कुल खर्चा (Expense)' : 'Total Expense (Expense)';
-        document.getElementById('lblCreateBtn').innerText = isHi ? 'नया खाता या हेड बनाएं (+ Create)' : 'Create New Account / Head (+ Create)';
+        document.getElementById('lblCreateBtn').innerText = isHi ? '+ Create Head' : '+ Create Head';
         document.getElementById('lblBankHeader').innerText = isHi ? 'बैंक और कैश खाते' : 'BANK & CASH ACCOUNTS';
         document.getElementById('lblClientHeader').innerText = isHi ? 'कस्टमर, सप्लायर और खर्चे' : 'CUSTOMERS, SUPPLIERS & EXPENSES';
         document.getElementById('navLblAcc').innerText = isHi ? 'खाते' : 'Accounts';
@@ -455,9 +455,9 @@
                 <select id="uniType" onchange="onUniTypeChange()">
                     <option value="BANK">🏦 ${isHi ? 'बैंक खाता (Bank Account)' : 'Bank Account'}</option>
                     <option value="CASH">💵 ${isHi ? 'कैश इन हैंड (Cash in Hand)' : 'Cash in Hand'}</option>
-                    <option value="CUSTOMER">🤝 ${isHi ? 'कस्टमर / उधार लेने वाला (Customer / Debtor)' : 'Customer / Debtor (To Get)'}</option>
-                    <option value="SUPPLIER">👥 ${isHi ? 'सप्लायर / उधार देने वाला (Supplier / Creditor)' : 'Supplier / Creditor (To Give)'}</option>
-                    <option value="EXPENSE">🛒 ${isHi ? 'खर्चा हेड (Expense Head - Rent, Petrol)' : 'Expense Head (Own Use, Rent, Petrol)'}</option>
+                    <option value="CUSTOMER">🤝 ${isHi ? 'कस्टमर (Customer)' : 'Customer'}</option>
+                    <option value="SUPPLIER">👥 ${isHi ? 'सप्लायर (Supplier)' : 'Supplier'}</option>
+                    <option value="EXPENSE">🛒 ${isHi ? 'खर्चा हेड (Expense Head)' : 'Expense Head'}</option>
                 </select>
             </div>
             <div class="form-group" id="uniOpBalGroup">
@@ -466,7 +466,7 @@
             </div>
             <button class="btn-primary" style="margin-top:8px;" onclick="submitUniversalCreate()">${isHi ? 'सुरक्षित करें (Save)' : 'Save Head'}</button>
         `;
-        openModal(isHi ? 'नया खाता या हेड बनाएं' : 'Create New Account / Head', html);
+        openModal(isHi ? '+ Create Head' : '+ Create Head', html);
     }
 
     function onUniTypeChange() {
@@ -500,7 +500,7 @@
         saveData();
     }
 
-    // --- QUICK IN/OUT ENTRY WITH "+ CREATE NEW" IN DROPDOWN ---
+    // --- QUICK IN/OUT ENTRY WITH "+ CREATE HEAD" IN DROPDOWN ---
     function onDropdownChange(selectElem, entityId, entityType, actionType) {
         if(selectElem.value === 'CREATE_NEW') {
             selectElem.value = "";
@@ -525,7 +525,7 @@
             </div>
             <button class="btn-primary" style="margin-top:8px;" onclick="submitQuickCreateFromModal('${entityId}', '${entityType}', '${actionType}')">${isHi ? 'बनाकर चुनें' : 'Create & Select'}</button>
         `;
-        openModal(isHi ? 'नया हेड जोड़ें' : 'Add New Head', html);
+        openModal(isHi ? '+ Create Head' : '+ Create Head', html);
     }
 
     function submitQuickCreateFromModal(entityId, entityType, actionType) {
@@ -537,7 +537,6 @@
         state.persons.push({ id: newId, name, type });
         saveData();
 
-        // Wapas entry modal par wapas jayein aur naye wale ko select kar lein
         quickEntryModal(entityId, entityType, actionType);
         setTimeout(() => {
             const sel = document.getElementById('modal_select_person');
@@ -624,14 +623,14 @@
         if(entityType === 'BANK') {
             const bank = state.banks.find(b => b.id === entityId);
             entityName = bank ? bank.name : "";
-            let personOpts = state.persons.map(p => `<option value="${p.id}">${p.name} (${p.type})</option>`).join('');
+            let personOpts = state.persons.map(p => `<option value="${p.id}">${p.name} [${p.type === 'CUSTOMER' ? 'C' : (p.type === 'SUPPLIER' ? 'S' : 'E')}]</option>`).join('');
             
             dropdownHtml = `
                 <div class="form-group">
                     <label>${isHi ? 'पार्टी या खर्चा चुनें' : 'Select Party / Expense'}</label>
                     <select id="modal_select_person" onchange="onDropdownChange(this, '${entityId}', '${entityType}', '${actionType}')">
                         <option value="">-- Select --</option>
-                        <option value="CREATE_NEW" style="color:var(--accent-blue); font-weight:800;">➕ ${isHi ? '+ नया हेड बनाएं (Create New)' : '+ Create New Party/Expense'}</option>
+                        <option value="CREATE_NEW" style="color:var(--accent-blue); font-weight:800;">➕ ${isHi ? '+ Create Head' : '+ Create Head'}</option>
                         ${personOpts}
                     </select>
                 </div>
@@ -927,7 +926,7 @@
             });
         }
 
-        // --- Render Parties & Expenses ---
+        // --- Render Parties & Expenses with Compact [C], [S], [E] badging ---
         const personsList = document.getElementById('personsList');
         personsList.innerHTML = '';
 
@@ -946,9 +945,13 @@
                 let cardClass = personBalance >= 0 ? 'strip-in' : 'strip-out';
                 let indicatorHtml = `<span class="pill-indicator ${personBalance >= 0 ? 'pill-get' : 'pill-give'}">${personBalance >= 0 ? (isHi ? 'लेना है' : 'To Get') : (isHi ? 'देना है' : 'To Give')}</span>`;
 
+                let shortTag = `[C]`;
                 if (person.type === 'EXPENSE') {
                     cardClass = 'strip-expense';
                     indicatorHtml = `<span class="pill-indicator pill-expense">${isHi ? 'खर्चा हेड' : 'Expense'}</span>`;
+                    shortTag = `[E]`;
+                } else if (person.type === 'SUPPLIER') {
+                    shortTag = `[S]`;
                 }
 
                 const card = document.createElement('div');
@@ -962,9 +965,8 @@
                     </div>
                     <div class="card-header">
                         <div>
-                            <span class="card-title">👤 ${person.name}</span>
-                            <div style="font-size: 9px; color: var(--text-muted); font-weight: 700; margin-top:1px;">Type: ${person.type}</div>
-                            <div class="action-btns">
+                            <span class="card-title">👤 ${person.name} <span style="font-size:10px; color:var(--text-muted); font-weight:700;">${shortTag}</span></span>
+                            <div class="action-btns" style="margin-top:2px;">
                                 <button class="btn-sm btn-edit" onclick="editPerson('${person.id}')">${isHi ? 'संपादित' : 'Edit'}</button>
                                 <button class="btn-sm btn-del" onclick="deletePerson('${person.id}')">${isHi ? 'हटाएं' : 'Delete'}</button>
                             </div>
